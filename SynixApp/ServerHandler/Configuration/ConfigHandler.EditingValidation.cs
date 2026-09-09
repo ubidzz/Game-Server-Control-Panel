@@ -354,6 +354,9 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 						source.Key));
 			}
 
+			if (format == ConfigFormat.YAML)
+				return FormatYamlReplacement(source, value);
+
 			if (source.Type == ConfigValueType.Boolean)
 			{
 				if (!TryParseBoolean(value, out bool booleanValue))

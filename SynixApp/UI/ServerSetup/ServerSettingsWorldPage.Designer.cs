@@ -29,6 +29,8 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 			lblWorldDescription = new Label();
 			lblWorldSeed = new Label();
 			txtWorldSeed = new TextBox();
+			lblWorldSeedHint = new Label();
+			btnGenerateSeed = new ModernSettingsButton();
 			lblWorldSize = new Label();
 			numWorldSize = new ModernSettingsNumericUpDown();
 			((System.ComponentModel.ISupportInitialize)numWorldSize).BeginInit();
@@ -43,6 +45,8 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 			cardWorldGeneration.Controls.Add(lblWorldDescription);
 			cardWorldGeneration.Controls.Add(lblWorldSeed);
 			cardWorldGeneration.Controls.Add(txtWorldSeed);
+			cardWorldGeneration.Controls.Add(lblWorldSeedHint);
+			cardWorldGeneration.Controls.Add(btnGenerateSeed);
 			cardWorldGeneration.Controls.Add(lblWorldSize);
 			cardWorldGeneration.Controls.Add(numWorldSize);
 			cardWorldGeneration.CornerRadius = 12;
@@ -107,6 +111,25 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 			txtWorldSeed.Size = new Size(580, 36);
 			txtWorldSeed.TabIndex = 4;
 
+			// btnGenerateSeed
+			btnGenerateSeed.Location = new Point(452, 112);
+			btnGenerateSeed.Name = "btnGenerateSeed";
+			btnGenerateSeed.Size = new Size(152, 36);
+			btnGenerateSeed.TabIndex = 5;
+			btnGenerateSeed.Text = LocalizationManager.Get("ServerSetup.World.Seed.Generate");
+			btnGenerateSeed.Visible = false;
+
+			// lblWorldSeedHint
+			lblWorldSeedHint.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			lblWorldSeedHint.BackColor = Color.FromArgb(17, 27, 45);
+			lblWorldSeedHint.Font = new Font("Segoe UI", 8.5F);
+			lblWorldSeedHint.ForeColor = Color.FromArgb(158, 172, 194);
+			lblWorldSeedHint.Location = new Point(24, 158);
+			lblWorldSeedHint.Name = "lblWorldSeedHint";
+			lblWorldSeedHint.Size = new Size(866, 38);
+			lblWorldSeedHint.TabIndex = 7;
+			lblWorldSeedHint.Visible = false;
+
 			// lblWorldSize
 			lblWorldSize.AutoSize = true;
 			lblWorldSize.BackColor = Color.FromArgb(17, 27, 45);
@@ -153,6 +176,8 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 		internal Label lblWorldDescription;
 		internal Label lblWorldSeed;
 		internal TextBox txtWorldSeed;
+		internal Label lblWorldSeedHint;
+		internal ModernSettingsButton btnGenerateSeed;
 		internal Label lblWorldSize;
 		internal ModernSettingsNumericUpDown numWorldSize;
 	}

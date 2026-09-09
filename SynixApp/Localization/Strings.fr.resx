@@ -3568,7 +3568,7 @@ Ouvrir le dossier de définition maintenant ?</value>
     <value>Enregistré : {0}</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Filter" xml:space="preserve">
-    <value>Fichiers de configuration|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|Tous les fichiers|*.*</value>
+    <value>Fichiers de configuration|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|Tous les fichiers|*.*</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Title" xml:space="preserve">
     <value>Sélectionnez un modèle de configuration de jeu complet</value>
@@ -6047,6 +6047,15 @@ Libérez de l'espace ou choisissez un autre emplacement, puis réessayez.</value
   </data>
   <data name="FileSystem.Error.FolderMoveFailed" xml:space="preserve">
     <value>Le dossier n’a pas pu être déplacé : {0}</value>
+  </data>
+  <data name="FileSystem.Error.UnsafeDeletionPath" xml:space="preserve">
+    <value>Synix a refusé de supprimer « {0} », car ce dossier ne peut pas être supprimé en toute sécurité comme dossier de serveur ou de sauvegarde. Les racines des lecteurs, les dossiers Windows et des applications, les racines des données utilisateur et les dossiers partagés de Synix sont protégés.</value>
+  </data>
+  <data name="FileSystem.Error.LinkedDeletionPath" xml:space="preserve">
+    <value>Synix a refusé de supprimer « {0} », car ce dossier ou l’un de ses dossiers parents est un lien. Les dossiers liés ne peuvent pas être supprimés automatiquement.</value>
+  </data>
+  <data name="FileSystem.Error.DeletionPathUnavailable" xml:space="preserve">
+    <value>Synix n’a pas pu vérifier en toute sécurité le dossier à supprimer « {0} ».</value>
   </data>
   <data name="Configuration.Activity.Error" xml:space="preserve">
     <value>[ERREUR DE CONFIGURATION] {0}</value>
@@ -10579,5 +10588,41 @@ Toutes les autres valeurs de configuration personnalisées seront supprimées.</
   </data>
   <data name="MessageText.19580FB3CF2A0F82762D" xml:space="preserve">
     <value>Vous devez arrêter le serveur avant de valider ses fichiers.</value>
+  </data>
+  <data name="ModManager.Error.LinkedPath" xml:space="preserve">
+    <value>Cette opération utilise un fichier ou un dossier lié. Choisissez un dossier normal ; Synix ne suivra pas ce lien.</value>
+  </data>
+  <data name="ModManager.Error.PreviousFileMissing" xml:space="preserve">
+    <value>Un ancien fichier du module nécessaire à la restauration est manquant. Aucun fichier n’a été modifié. Restaurez le fichier de récupération manquant ou utilisez une sauvegarde vérifiée du serveur avant de supprimer ce module.</value>
+  </data>
+  <data name="ModManager.Error.RecoveryRetained" xml:space="preserve">
+    <value>L’importation du module a échoué et certaines modifications n’ont pas pu être annulées. Les fichiers de récupération ont été conservés dans {0}. Gardez le serveur arrêté et restaurez ces fichiers ou une sauvegarde vérifiée avant de le démarrer.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchValue" xml:space="preserve">
+    <value>Le champ de lancement {0} ne peut pas être transmis en toute sécurité à ce lanceur batch Windows. Les guillemets doubles intégrés, sauts de ligne et expressions de variables ne sont pas pris en charge ici. La valeur n’a pas été modifiée.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchArguments" xml:space="preserve">
+    <value>La commande batch complète contient une syntaxe dangereuse ou une expansion de variables. Vérifiez les valeurs de lancement et les arguments supplémentaires ; rien n’a été démarré.</value>
+  </data>
+  <data name="ServerStart.Arguments.CustomHidden" xml:space="preserve">
+    <value>[Arguments personnalisés fournis ; contenu masqué dans le journal]</value>
+  </data>
+  <data name="Configuration.Editor.Error.YamlUnsupported" xml:space="preserve">
+    <value>La ligne YAML {0} est invalide ou utilise une fonction que cet éditeur ne peut pas modifier sans risque. Prise en charge : un document avec des clés/listes indentées et des valeurs sur une seule ligne. Les collections en ligne, les valeurs multilignes, les balises, les ancres et les alias ne sont pas pris en charge. Rien n’a été enregistré.</value>
+  </data>
+  <data name="GameInput.WorldSeed.RequiredNumber" xml:space="preserve">
+    <value>La graine du monde est obligatoire pour {0} : entrez un entier de {1} à {2}. Corrigez-la dans Configuration du serveur &gt; Génération du monde.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Required" xml:space="preserve">
+    <value>Graine du monde (obligatoire)</value>
+  </data>
+  <data name="ServerSetup.World.Seed.RangeHint" xml:space="preserve">
+    <value>Entier de {0} à {1}. Pour un monde existant, conservez sa graine d’origine.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Generate" xml:space="preserve">
+    <value>Générer une graine</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Hint" xml:space="preserve">
+    <value>Générez une graine pour un nouveau monde, ou saisissez la vôtre. Pour un monde existant, conservez sa graine d’origine.</value>
   </data>
 </root>

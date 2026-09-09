@@ -1,6 +1,31 @@
+# ============================================================================
+# PROJECT: Synix Game Server Control Panel
+# AUTHOR: Jason Turner (ubidzz)
+# COPYRIGHT: © 2026 All Rights Reserved.
+#
+# LEGAL NOTICE:
+# This source code is proprietary and confidential.
+# 1. Permission is granted for PERSONAL, NON-COMMERCIAL use only.
+# 2. You may modify this code for your own use, but you may NOT redistribute,
+#    rebrand, or sell this code or derivative works without written consent.
+# 3. The "Synix" brand and logic remain the property of Jason Turner.
+# ============================================================================
+
 # Additional named German interface resources.
 # The Game Definition Builder guide intentionally remains English like the Help Center.
 [ordered]@{
+    'ServerSetup.World.Seed.Hint' = 'Erzeugen Sie einen Seed für eine neue Welt oder geben Sie einen eigenen ein. Behalten Sie bei bestehenden Welten den ursprünglichen Seed.'
+    'ServerSetup.World.Seed.Generate' = 'Seed erzeugen'
+    'GameInput.WorldSeed.RequiredNumber' = 'Für {0} ist ein Welt-Seed als ganze Zahl von {1} bis {2} erforderlich. Korrigieren Sie ihn unter Servereinrichtung > Weltgenerierung.'
+    'ServerSetup.World.Seed.Required' = 'Welt-Seed (erforderlich)'
+    'ServerSetup.World.Seed.RangeHint' = 'Ganze Zahl von {0} bis {1}. Behalten Sie bei einer bestehenden Welt den ursprünglichen Seed.'
+    'Configuration.Editor.Error.YamlUnsupported' = 'YAML-Zeile {0} ist ungültig oder verwendet eine Funktion, die dieser Editor nicht sicher ändern kann. Unterstützt: ein Dokument mit eingerückten Zuordnungen/Listen und einzeiligen Werten. Inline-Sammlungen, mehrzeilige Werte, Tags, Anker und Aliase werden nicht unterstützt. Nichts wurde gespeichert.'
+    'ModManager.Error.LinkedPath' = 'Dieser Add-on-Vorgang verwendet eine verknüpfte Datei oder einen verknüpften Ordner. Wähle einen normalen Ordner; Synix folgt dieser Verknüpfung nicht.'
+    'ModManager.Error.PreviousFileMissing' = 'Eine zur Wiederherstellung benötigte frühere Add-on-Datei fehlt. Es wurden keine Dateien geändert. Stelle die fehlende Wiederherstellungsdatei wieder her oder verwende eine geprüfte Serversicherung, bevor du dieses Add-on entfernst.'
+    'ModManager.Error.RecoveryRetained' = 'Der Add-on-Import ist fehlgeschlagen und einige Änderungen konnten nicht rückgängig gemacht werden. Wiederherstellungsdateien wurden unter {0} aufbewahrt. Lass den Server gestoppt und stelle diese Dateien oder eine geprüfte Serversicherung wieder her, bevor du ihn startest.'
+    'LaunchCommand.Error.UnsafeBatchValue' = 'Das Startfeld {0} kann diesem Windows-Batch-Starter nicht sicher übergeben werden. Eingebettete doppelte Anführungszeichen, Zeilenumbrüche oder Variablenausdrücke werden hier nicht unterstützt. Der Wert wurde nicht geändert.'
+    'LaunchCommand.Error.UnsafeBatchArguments' = 'Der vollständige Batch-Befehl enthält unsichere Befehlssyntax oder Variablenersetzung. Prüfe die Startwerte und zusätzlichen Argumente; es wurde nichts gestartet.'
+    'ServerStart.Arguments.CustomHidden' = '[Benutzerdefinierte Argumente vorhanden; Inhalt im Protokoll ausgeblendet]'
     'Satisfactory.ConnectHeading' = "Diesen Server verbinden"
     'Satisfactory.ConnectAutomatically' = "Automatisch verbinden"
     'Satisfactory.ConnectingAutomatically' = "Verbindung: Befehl senden, Token erfassen und Verbindung prüfen…"
@@ -779,7 +804,7 @@
     'GameDefinitions.Builder.ProjectNotFound' = "Synix Control Panel.csproj konnte in diesem Entwicklungs-Build nicht gefunden werden."
     'GameDefinitions.Builder.Saved.Body' = "Die validierten Definitions- und Konfigurationsvorlagen wurden im Projekt gespeichert. Erstellen Sie Synix neu und führen Sie die automatisierten Tests aus, bevor Sie es verwenden.`n`nJetzt den Definitionsordner öffnen?"
     'GameDefinitions.Builder.SavedPath' = "Gespeichert: {0}"
-    'GameDefinitions.Builder.TemplatePicker.Filter' = "Konfigurationsdateien|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|Alle Dateien|*.*"
+    'GameDefinitions.Builder.TemplatePicker.Filter' = "Konfigurationsdateien|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|Alle Dateien|*.*"
     'GameDefinitions.Builder.TemplatePicker.Title' = "Wählen Sie eine vollständige Spielkonfigurationsvorlage aus"
     'GameDefinitions.Builder.ValidSummary' = "Gültige Definition • Revision {0} • {1} Vorlage(n) • {2} sichere Aktion(en)"
     'GameDefinitions.Queue.ArgumentRecorded' = "{0}: Argumentüberprüfung, aufgezeichnet vom Test auf dem realen Server."
@@ -1579,6 +1604,9 @@
     'FileHandler.Activity.MigrationUpgraded' = "[MIGRATION] {0} Serverdatensatz/-sätze wurden auf Datenschema {1} aktualisiert. Die Originaldatei wurde vor dem Speichern gesichert."
     'FileHandler.Activity.MigrationProtected' = "[MIGRATION] Gespeicherte Passwörter und Discord-Webhooks für {0} Server wurden mit der Windows-Benutzerverschlüsselung geschützt."
     'FileSystem.Error.FolderMoveFailed' = "Der Ordner konnte nicht verschoben werden: {0}"
+    'FileSystem.Error.UnsafeDeletionPath' = 'Synix hat das Löschen von „{0}“ verweigert, da dieser Ordner nicht sicher als Server- oder Sicherungsordner gelöscht werden kann. Laufwerkswurzeln, Windows- und Anwendungsordner, Stammordner für Benutzerdaten und gemeinsam genutzte Synix-Ordner sind geschützt.'
+    'FileSystem.Error.LinkedDeletionPath' = 'Synix hat das Löschen von „{0}“ verweigert, da der Ordner oder einer seiner übergeordneten Ordner eine Verknüpfung ist. Verknüpfte Ordner können nicht automatisch gelöscht werden.'
+    'FileSystem.Error.DeletionPathUnavailable' = 'Synix konnte den zu löschenden Ordner „{0}“ nicht sicher überprüfen.'
     'Configuration.Activity.Error' = "[KONFIGURATIONSFEHLER] {0}"
     'Configuration.Activity.Warning' = "[KONFIGURATIONSWARNUNG] {0}"
     'Configuration.Definition.Duplicate' = "Doppelte Konfigurationsdefinition: {0}."

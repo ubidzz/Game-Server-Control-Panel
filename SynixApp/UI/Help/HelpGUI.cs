@@ -44,13 +44,13 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 			string Index)[] CategoryDefinitions =
 		[
 			("Start", "Getting Started & Setup", "01"),
-			("Dash", "Dashboard & Controls", "02"),
+			("Dash", "Dashboard & Settings", "02"),
 			("Config", "Server Configuration", "03"),
-			("Net", "Networking & IP Rules", "04"),
-			("Maint", "Maintenance & Discord", "05"),
-			("Watch", "Watchdog & Safeguards", "06"),
+			("Net", "Networking & Connections", "04"),
+			("Maint", "Backups & Maintenance", "05"),
+			("Watch", "Monitoring & Safeguards", "06"),
 			("Trouble", "Troubleshooting & System", "07"),
-			("Games", "Game Engines & Custom Rules", "08"),
+			("Games", "Game Guides", "08"),
 			("Support", "Support, License & Donate", "09")
 		];
 
@@ -96,410 +96,1172 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 
 		private void InitializeData()
 		{
-			_helpData = new Dictionary<string, HelpItem>(
-				StringComparer.OrdinalIgnoreCase)
+			_helpData = CreateHelpArticles();
+		}
+
+		internal const string WelcomeText = """
+			Choose a topic on the left to read its instructions. All help articles work offline and remain in English.
+
+			NEW TO SYNIX?
+			Open First-Time Setup Guide in Getting Started & Setup.
+
+			MANAGING A SERVER?
+			Choose the category for the task, such as configuration, networking, backups, or a game-specific control.
+
+			LOOKING FOR AN ERROR?
+			Press Ctrl+F and search for a feature, game, or short part of the message. Search checks article titles and full text and brings matching text into view.
+
+			Use the clear-search button to return to all topics. Download and support links open in your browser only when you choose them.
+			""";
+
+		// Author one task-focused guide per topic; do not append external documentation.
+		// Keep help offline, in English, and independent of Synix release numbers.
+		// Game syntax stays exact. Only actionable download/support links belong here.
+		// Build without a form so content and navigation can be tested together.
+		internal static Dictionary<string, HelpItem> CreateHelpArticles()
+		{
+			Dictionary<string, HelpItem> articles = new(StringComparer.OrdinalIgnoreCase)
 			{
+				["First-Time Setup Guide"] = CreateArticle(
+					"Start",
+					"""
+					Use this guide to create your first server. Synix runs it on this PC, so leave the PC on while people are playing. You do not need to write a launch command for a normal supported setup.
 
-				["First-Time Setup Guide"] = new HelpItem("Start",
-					"WELCOME TO SYNIX CONTROL PANEL!\n\n" +
-					"Synix manages local dedicated game servers from one Windows desktop dashboard. Most day-to-day actions do not require administrator access.\n\n" +
-					"CREATE YOUR FIRST SERVER:\n" +
-					"1. Wait for the footer to report that SteamCMD is ready. Synix installs its shared SteamCMD files automatically when needed.\n" +
-					"2. Click '+ Add Server' on the Server Dashboard.\n" +
-					"3. General: enter a unique Server Name, choose the Game Server template, and select a version when the template provides one.\n" +
-					"4. World Generation: choose the map, game mode, player limit, RAM, and other settings that are available for that game. Disabled controls are intentionally unsupported by the selected template.\n" +
-					"5. Network & RCON: review the service ports. Every server instance must use ports that do not conflict with another Synix server or running process. Cluster members need their own query ports.\n" +
-					"6. Automation: choose backup, update, restart schedule, and Discord notification options.\n" +
-					"7. Install & Launch: keep the default folder or choose a custom empty folder, review launch options, and click 'Save Server'.\n" +
-					"8. Select the new row on the dashboard and click 'Start'. The first installation can take several minutes; follow Activity & Diagnostics for progress.\n\n" +
-					"The bottom status message in Server Setup names the exact missing field or port conflict. Save Server unlocks only after those requirements are resolved."),
+					1. Open Synix and let the SteamCMD dependency check finish.
+					2. Choose Add Server, then create a new server. If the server files already exist, choose Import Existing Server instead.
+					3. On General, enter a unique server name and select the game. Choose the edition, game version, or loader if those choices appear.
+					4. Keep the suggested values unless you need something different. Review the enabled setup pages and resolve the exact required-setting message at the bottom.
+					5. Choose Save Server. This adds an entry to the dashboard; it does not mean the game has finished installing.
+					6. Select that entry and choose Start. Allow the download and first-start preparation to finish, following any prompts Synix shows.
+					7. Complete any setup owned by the game, such as an agreement, account sign-in, or creating a session in its in-game server manager.
+					8. Join from this PC or another device on your home network. Once that works, create a backup before adding mods or making major changes.
 
-				["Server Setup Page Guide"] = new HelpItem("Start",
-					"USING SERVER SETUP:\n\n" +
-					"Beginner Mode shows the settings most people need and keeps the recommended launch command. Advanced Mode adds RCON and raw launch arguments. Discord notifications remain available in either mode. Switching modes never deletes a saved value.\n\n" +
-					"• General: server identity, game template, version, map/profile choices, passwords, and Minecraft runtime choices when applicable.\n" +
-					"• World Generation: world name, seed, size, and other template-supported world options.\n" +
-					"• Network & RCON: game, query, app, and RCON ports. Synix checks active processes and every saved server for conflicts, including stopped servers.\n" +
-					"• Automation: backup on start, update on start, restart scheduling, and Discord alerts.\n" +
-					"• Install & Launch: server folder, default-path selection, extra launch arguments, and final save.\n\n" +
-					"TEMPLATE-AWARE CONTROLS:\n" +
-					"Synix enables only the controls supported by the selected game. The Configuration Support banner explains whether support is Full, Guided, Launch-setting, or Basic. The lower-left completion bar and detailed footer update while you work. A disabled field is not an error and should not be forced into that game's launch command."),
+					IF YOU GET STUCK
+					Open Readiness for the selected server and read Activity & Diagnostics. Follow the specific error rather than repeatedly clicking Start. For Minecraft or Satisfactory, the Game Guides category explains the additional steps.
 
-				["After Saving: Install, Start, and Verify"] = new HelpItem("Start",
-					"WHAT HAPPENS AFTER YOU CLICK SAVE SERVER:\n\n" +
-					"1. Synix stores the server definition and adds it to the Game Servers list.\n" +
-					"2. Select the server row and click Start. The First-Start Assistant shows an automatic safety checklist, configuration support status, connection guidance, and setup completion score. If files are missing, Synix runs the correct installer before launch.\n" +
-					"3. Watch Activity & Diagnostics. Download, validation, launch arguments, process binding, and probe results appear there.\n" +
-					"4. Wait for the status to change from Starting to Running. Some games create their configuration files only after the first complete boot.\n" +
-					"5. Stop the server cleanly before editing generated files. Use Configure or Server Options -> Open Config Editor when that template exposes a config file.\n" +
-					"6. Start the server again and test joining through the LAN address before troubleshooting public access.\n\n" +
-					"Do not close an installer or server console while Synix reports Starting, Updating, Backing Up, Restoring, or Stopping."),
+					Hosting for people outside your network is a separate networking step. First confirm that the server works locally.
+					"""),
 
-				["Understanding Server {Identity}"] = new HelpItem("Start",
-					"WHAT IS AN {IDENTITY}?\n\n" +
-					"Synix containerizes every game server using a unique, sanitized `{Identity}` string.\n\n" +
-					"WHY THIS IS CRITICAL:\n" +
-					"• Collision Prevention: Prevents multiple instances of the same game (e.g., two Rust servers) from reading or overwriting each other's configuration files.\n" +
-					"• Folder Path Sanitization: Synix strips out illegal Windows characters (`<`, `>`, `*`, `?`, `\"`, `\\`, `|`, `/`) and spaces to ensure launch arguments execute cleanly without command-line parameter failure.\n" +
-					"• Total Portability: The entire root structure is relative. Moving `C:\\Synix` to another drive auto-heals all internal pointers."),
+				["Installing and Updating Synix"] = CreateArticle(
+					"Start",
+					"""
+					Use an official release package. It includes the .NET runtime needed by Synix; game servers may still need their own prerequisites.
 
-				["File Structure, Default Directories & Custom Paths"] = new HelpItem("Start",
-					"SYNIX FILE ECOSYSTEM & FOLDER MANAGEMENT:\n\n" +
-					"All files are isolated in user-space to keep your host OS clean:\n\n" +
-					"• Root Control Engine: `C:\\Synix` (Application executables and internal JSON state databases).\n" +
-					"• SteamCMD Core: `C:\\Synix\\SteamCMD` (Shared Steam binary downloader library).\n" +
-					"• Default Active Server Directory: `C:\\Synix\\Games\\[Game_Name]\\{Server_Name}` (Contains dedicated binaries, game configs, and world saves).\n" +
-					"• Custom Folder Locations: Users are not strictly bound to the default path; you can assign a custom directory path for any server during setup or editing.\n" +
-					"• Backup Repository: `C:\\Synix\\BackupGames\\[Game_Name]\\{Server_Name}` (Default) OR your Custom Backup Location defined in Settings. Note: When deleting a server, you can use the verification checkbox to automatically wipe all associated .zip backup archives at the same time."),
+					CHOOSE AN INSTALLATION METHOD
+					• MSI: Download SynixSetup.msi, run it, then open Synix Control Panel from the Start menu. The normal per-user application location is %LocalAppData%\Programs\Synix.
+					• WinGet: Use the exact package ubidzz.Synix. The WinGet Installation and Updates article contains the commands.
+					• Standalone executable: Place the official standalone download in a writable folder and run it there. Moving that executable is not a complete transfer of your servers.
 
-				["Winget Package Installation"] = new HelpItem("Start",
-					"WINGET DEPLOYMENT & MAINTENANCE:\n\n" +
-					"Synix can be installed, updated, or removed via Windows Package Manager (`winget`) using Command Prompt (`cmd`) or PowerShell.\n\n" +
-					"INSTALLATION COMMAND:\n" +
-					"  winget install synix\n\n" +
-					"UNINSTALLATION COMMAND:\n" +
-					"  winget uninstall synix\n\n" +
-					"Note: Winget automatically registers Synix in your Start Menu and Windows Settings 'Installed Apps' list."),
+					Official downloads:
+					https://github.com/ubidzz/Synix-Control-Panel/releases/latest
 
-				["Main Dashboard Operations"] = new HelpItem("Dash",
-					"USING THE SERVER DASHBOARD:\n\n" +
-					"1. Select a server row. The action bar at the bottom changes to that server and unlocks its controls.\n" +
-					"2. Start runs pre-flight checks, optional backup/update work, installation when required, and then launches the server.\n" +
-					"3. Restart performs a verified stop before launching again. It does not intentionally start a second copy.\n" +
-					"4. Stop requests a clean shutdown and keeps the status in Stopping until the tracked PID and server process have exited. A forced process-tree shutdown is used only when the game does not stop normally.\n" +
-					"5. Configure reopens Server Setup for the selected server. Save only after resolving the exact validation message shown in the footer.\n" +
-					"6. Server Options opens folder, configuration, update, backup, connection-test, batch-export, and delete actions that are supported by the selected game.\n\n" +
-					"Use the search box and status filter above the grid to find a server. Activity & Diagnostics records each operation and is the first place to check when a status does not change as expected."),
+					UPDATE THE APPLICATION
+					1. Finish active downloads, backups, and maintenance.
+					2. Stop your game servers through Synix and close Synix normally.
+					3. Use the updater or installer for your chosen installation method.
+					4. Reopen Synix and check that your server entries and paths are correct.
 
-				["Server Options Menu"] = new HelpItem("Dash",
-					"ACTIONS AVAILABLE FROM SERVER OPTIONS:\n\n" +
-					"• Open Server Folder: opens the server's active installation directory.\n" +
-					"• Open Backup Folder: opens the backup repository for that server.\n" +
-					"• Open Config Editor: opens the configured game file in Synix's format-aware editor.\n" +
-					"• Update Server: runs the supported game update workflow.\n" +
-					"• Validate Game Files: asks the supported installer to verify/repair game files.\n" +
-					"• Create Batch File: exports the resolved launch command for supported templates. Configured passwords and online-service tokens are written as readable text so the file can start independently; keep it private.\n" +
-					"• Backup Server: creates a manual archive.\n" +
-					"• Restore Server Backup: appears when saved backups exist and lets you choose which archive to restore.\n" +
-					"• Mod & Plugin Manager: discovers installed add-ons and opens the safe workflow supported by that game's framework or provider.\n" +
-					"• Live Process Details: shows every verified launcher, console host, child, and worker PID in this server group.\n" +
-					"• Connection Information: shows the correct same-network and internet addresses with copy buttons and the ports that may need forwarding.\n" +
-					"• Test LAN/WAN Connectivity: appears only for games with a reliable supported probe.\n" +
-					"• Delete Server: removes the Synix server entry and, after confirmation, can remove associated files/backups.\n\n" +
-					"Some actions are intentionally hidden or disabled for templates that use a different installer, generate settings only after first boot, or cannot be tested reliably."),
+					If replacing an older EXE-based installation with the MSI, uninstall the older application first. Keep its server data and custom server folders. Do not delete C:\Synix to update the program.
 
-				["Mod & Plugin Manager"] = new HelpItem("Dash",
-					"MANAGING ADD-ONS WITHOUT A DATABASE OF EVERY MOD:\n\n" +
-					"1. Select a server and open Server Options -> Mod & Plugin Manager.\n" +
-					"2. Read the support banner. Ready means Synix has a verified installation rule. Detection Only means Synix can show provider-owned content but will not copy or delete it.\n" +
-					"3. Stop the server before changing add-ons. Synix checks for the server's full process group so files are not changed while a child process is still using them.\n" +
-					"4. File-based systems such as Oxide/uMod, Fabric, or Forge accept only the file types declared by their profile. Replaced files receive a rollback copy and Synix verifies their SHA-256 hashes.\n" +
-					"   Before installation, Synix rejects unsafe archive paths, symbolic links, disguised libraries, scripts, and executable payloads. It requests a Microsoft Defender custom scan when available and warns when source code requests powerful file, process, registry, or network capabilities. The approved SHA-256 must still match the exact package copied into the server.\n" +
-					"5. Provider systems use IDs instead of copied files when the game supports it. ARK: Survival Ascended stores ordered CurseForge IDs in its -mods argument. ARK: Survival Evolved stores ordered Steam Workshop IDs in its ARK configuration files and enables automatic mod management. The game provider still downloads and updates the content.\n" +
-					"6. Browse Catalog opens the provider's website. Synix does not keep a hardcoded list of individual mods, so the provider remains the source of current names, versions, and downloads. Provider-downloaded content cannot be scanned before the provider installs it, so use only mod IDs from sources you trust.\n\n" +
-					"IMPORTANT: no antivirus or automated review can prove that a mod is safe. Mods and plugins run with the game server's Windows permissions. Run Synix and game servers as a standard Windows user, never as an administrator, unless a specific operation requires elevation.\n\n" +
-					"Unknown games remain safe: if Synix recognizes a common plugins or mods folder, it can show its contents read-only until a verified profile is added."),
+					An application update does not update the games you host. Use the selected server's Update action for that.
 
-				["Server Readiness Center"] = new HelpItem("Dash",
-					"CHECK ONE SERVER BEFORE YOU START IT:\n\n" +
-					"1. Select a server on the dashboard and click Readiness in the bottom action bar.\n" +
-					"2. Synix checks the selected server's files, required runtimes, configuration, ports, Windows Firewall program rule, tracked processes, available disk space, and recent log.\n" +
-					"3. Ready means the check passed. Review means the server can usually continue, but the item deserves attention. Blocked means the listed problem should be fixed first.\n" +
-					"4. Select a Review or Blocked row. When Synix has a safe repair, the action button explains exactly what it will do. No repair runs just by opening the center.\n" +
-					"5. Click Check Again after making a change. Copy Report creates a plain-text summary you can keep or share for help.\n\n" +
-					"This view uses the same proven checks as the full Troubleshooter, but limits server-specific checks to the selected server and leaves the global Synix update check out. The full computer-wide Troubleshooter remains available in Settings -> Advanced."),
+					If Windows reports access denied while replacing the executable, check that the copy being replaced is no longer running. Do not overwrite a running application or remove server data to work around the error.
+					"""),
 
-				["Server Details & Double-Click Inspector"] = new HelpItem("Dash",
-					"INSPECTING A SERVER:\n\n" +
-					"Double-click a server row to open Server Info. This read-only view collects the selected server's identity, ports, credentials state, automation choices, paths, schedule, arguments, and current status in one window.\n\n" +
-					"LIVE METERS:\n" +
-					"When the server is running, the CPU and RAM cards update from its bound process. A stopped server reports zero usage. Closing Server Info disposes its timer and process resources; it does not stop the game server."),
+				["WinGet Installation and Updates"] = CreateArticle(
+					"Start",
+					"""
+					Open Windows Terminal or PowerShell and use the exact package identifier below. These commands manage Synix itself, not individual game servers.
 
-				["Live Resource Telemetry Graph"] = new HelpItem("Dash",
-					"RESOURCE TELEMETRY:\n\n" +
-					"The CPU Usage and RAM Usage cards at the top of the dashboard show total host usage. These numbers describe the computer, not only one game server.\n\n" +
-					"RESOURCE MONITOR:\n" +
-					"Open Resource Monitor to see every verified process in each running server group with Server Name, PID, primary/child role, executable, CPU usage, and RAM usage. Server Options -> Live Process Details filters the same view to one selected server. Closing either monitor window does not stop a server."),
+					INSTALL
+					winget install --exact --id ubidzz.Synix
 
-				["Global Settings Menu & Privacy Mode"] = new HelpItem("Dash",
-					"SYNIX GLOBAL SETTINGS:\n\n" +
-					"Access the global settings menu via the gear icon in the top right corner of the main dashboard.\n\n" +
-					"• General: choose whether native server console windows are shown and switch between Dark Mode and Light Mode. The theme is saved and reapplied across Synix windows.\n" +
-					"• Backups: enable a custom backup location and set the maximum archives retained per server from 1 to 100. Changing the location does not move or delete older archives.\n" +
-					"• Privacy & Security: Privacy Mode hides IP addresses, passwords, and other sensitive values while screen sharing. DDoS Attack Detection is marked experimental and should be treated as an alerting aid, not a replacement for router or hosting-provider protection.\n" +
-					"• Advanced: Elevated System Tasks controls automatic firewall cleanup when a server is deleted. The separate Clean Orphaned Rules action works whether that setting is on or off and requests administrator permission only when matching rules need removal. It compares executable paths under C:\\Synix\\Games\\[Game]\\[Server] with saved servers and the individual server folders still on disk; ports and custom installation folders are not scanned."),
+					CHECK THE INSTALLED PACKAGE
+					winget list --exact --id ubidzz.Synix
 
-				["Dark Mode, Light Mode, and Console Windows"] = new HelpItem("Dash",
-					"DISPLAY AND CONSOLE SETTINGS:\n\n" +
-					"Open Settings -> General.\n\n" +
-					"• Dark Mode ON: uses the original navy Synix theme.\n" +
-					"• Dark Mode OFF: switches supported forms and controls to the light card-based theme.\n" +
-					"• Show Server Console Window ON: opens the game's native command window when a server starts. This is useful for live console interaction and troubleshooting.\n" +
-					"• Show Server Console Window OFF: runs supported servers silently in the background. Games that require an interactive manager, including Space Engineers, keep that required window visible.\n\n" +
-					"Changing the visual theme does not restart game servers. If an already-open secondary window does not repaint immediately, close and reopen that window."),
+					UPDATE
+					Close Synix and finish its running work before using:
+					winget upgrade --exact --id ubidzz.Synix
 
-				["Adding and Editing Servers"] = new HelpItem("Config",
-					"NEW SERVER VS EXISTING SERVER:\n\n" +
-					"• Add Server opens Server Setup in NEW SERVER mode. Choosing a game template fills its supported defaults and determines which controls are available.\n" +
-					"• Configure opens the selected entry in EDIT SERVER mode. Existing values are loaded so you can adjust the server without creating a duplicate.\n" +
-					"• The exact validation message at the bottom identifies missing fields, invalid values, paths, or port conflicts. Save Server remains locked until the configuration is valid.\n" +
-					"• The Folder Path is read-only. Change it with Browse Folder or the default-folder option so Synix can validate and normalize the selected path.\n" +
-					"• Renaming a server changes its Synix identity. Review its folder and game-specific save locations carefully before saving an existing installation.\n\n" +
-					"Stop a running server before changing ports, folders, versions, or launch arguments."),
+					UNINSTALL THE APPLICATION
+					winget uninstall --exact --id ubidzz.Synix
 
-				["The Port Trio & App Port Architecture"] = new HelpItem("Config",
-					"UNDERSTANDING SERVICE PORTS:\n\n" +
-					"• Game Port: carries player/game traffic for most dedicated servers. The protocol is game-specific and is not always UDP.\n" +
-					"• Query Port: used by a server browser, A2S query, REST service, or other status protocol when the game supports one. Synix stores the value independently from launch arguments. If a template does not use a {query} argument, the exported launch command remains clean.\n" +
-					"• RCON Port: remote console administration endpoint for games that support RCON. Enable it only with a strong unique password.\n" +
-					"• App Port: an additional API or companion-service endpoint required by specific games.\n\n" +
-					"When the Game Port changes, Synix can preserve the template's default game-to-query offset and update Query Port automatically. Every enabled port must be unique for simultaneously running servers. Disabled port controls are not used by that template."),
+					KEEP YOUR DATA
+					Server installations, saves, and backups are separate from the application package. Do not delete C:\Synix or any custom data folders unless you intentionally want to remove that data.
 
-				["Using the Format-Aware Config Editor"] = new HelpItem("Config",
-					"SAFE CONFIGURATION FILE EDITING:\n\n" +
-					"1. Stop the server so the game cannot overwrite the file while you edit it.\n" +
-					"2. Select the server and choose Server Options -> Open Config Editor.\n" +
-					"3. If the game uses more than one configuration file, choose the file you want from the list in the title bar. Synix asks before leaving a file with unsaved changes.\n" +
-					"4. Structured View shows a clean setting name, detected type, and editable value. Hover the setting cell to see its complete nested path.\n" +
-					"5. Boolean values use a True/False dropdown. Text and number values remain normal editable cells.\n" +
-					"6. Use the search field and type filter to find a setting. Raw Preview helps you inspect the original file.\n" +
-					"7. Click Save Changes, then restart the server.\n\n" +
-					"FORMAT PROTECTION:\n" +
-					"Synix uses a lexical span patcher for supported INI, XML, JSON, and space-delimited configurations. It replaces only the value spans you changed, preserving the original comments, section headers, key order, line endings, whitespace, quotes, and surrounding structure. It does not rewrite the entire file with a generic serializer."),
+					IF A COMMAND FAILS
+					Read the reported reason. If WinGet reports an installer hash mismatch, stop and report it; do not bypass hash verification. A missing update can mean that the repository has not published a newer package yet.
 
-				["Config Editor Safety and Recovery"] = new HelpItem("Config",
-					"BEFORE SAVING A GAME CONFIG:\n\n" +
-					"• Create a manual backup before large changes.\n" +
-					"• Do not change the raw file externally while the Config Editor is open.\n" +
-					"• Keep the setting's expected type. A Boolean should remain True/False and a number should remain a valid number for that game.\n" +
-					"• Palworld's large OptionSettings value is displayed as individual rows but is packed back into the single-line structure expected by the engine.\n" +
-					"• If a game rejects a value, stop it, restore the previous backup or correct the value, and start it again.\n\n" +
-					"The editor protects file formatting, but it cannot guarantee that every value is valid for every game version. Refer to the game's official server documentation for valid ranges and names."),
+					WinGet approval and a matching download hash do not code-sign Synix or guarantee that Windows security software will trust it.
+					"""),
 
-				["Local Link vs WAN Link Diagnostic"] = new HelpItem("Net",
-					"LAN AND WAN CONNECTION TESTING:\n\n" +
-					"Select a server, open Server Options, and use Test LAN Connectivity or Test WAN Connectivity when those actions are available.\n\n" +
-					"• LAN test targets the computer's local network address. Use it first to confirm the server is running and reachable inside your home network.\n" +
-					"• WAN test targets the public address. It helps diagnose router forwarding, host firewall, and protocol-specific reachability from outside the local network.\n" +
-					"• The probe type is selected by the game template. Synix may use an A2S UDP query, TCP connection, REST/HTTP request, or another supported health check.\n" +
-					"• Query Port is saved even when a game calculates it internally or does not place it in the launch command.\n\n" +
-					"IMPORTANT: The test actions are hidden for games that do not expose a dependable compatible query or health endpoint. Hidden buttons mean 'unsupported test', not 'server offline'. Verify those games from their client/server browser and the Activity & Diagnostics process logs."),
+				["Importing Existing Servers"] = CreateArticle(
+					"Start",
+					"""
+					Import Existing Server registers a supported installation that is already on disk. It is not a reinstall and is different from importing a complete Synix transfer package.
 
-				["Port Forwarding Master Guide"] = new HelpItem("Net",
-					"PORT FORWARDING INSTRUCTIONS:\n\n" +
-					"To make your server accessible on the internet, forward the required ports on your home router:\n\n" +
-					"1. Determine your LAN IP (e.g., `192.168.1.50`) from the bottom status bar in Synix.\n" +
-					"2. Open your router's admin panel (typically `192.168.1.1` or `192.168.0.1`).\n" +
-					"3. Check the selected game's official dedicated-server documentation for every required port and whether each uses UDP, TCP, or both. Do not assume every game follows the same protocol map.\n" +
-					"4. Create router rules that forward those external ports to the same ports on this computer's LAN IP.\n" +
-					"5. Allow the game server executable through Windows Defender Firewall when Windows prompts you.\n" +
-					"6. Reserve this computer's LAN IP in the router so it does not change later.\n" +
-					"7. Save the router settings and run the WAN test when the selected game supports it. Otherwise ask someone outside your home network to join.\n\n" +
-					"Do not expose RCON or a web administration port unless you need it. Use a strong password, forward only required ports, and never place the Synix data folder on a public file share."),
+					BEFORE YOU IMPORT
+					Make a separate backup, including any saves outside the installation folder. Stop the server and disable another manager or scheduler that could start it while Synix is managing it.
 
-				["NAT Hairpinning & Joining Your Own Server"] = new HelpItem("Net",
-					"ROUTER LOOPBACK / NAT HAIRPINNING:\n\n" +
-					"Symptom: Your friends can join via your Public IP, but you get 'Connection Timeout' when trying to use your own Public IP.\n\n" +
-					"CAUSE: Most home routers lack 'NAT Loopback/Hairpinning' support and block internal devices from routing back into their own public WAN interface.\n\n" +
-					"SOLUTION: Connect to your server using your local LAN IP (e.g., `192.168.x.x`) or loopback address (`127.0.0.1`). External players must continue to use your Public IP."),
+					REGISTER THE INSTALLATION
+					1. Choose Add Server → Import Existing Server.
+					2. Select the actual server installation folder, not a shortcut, ZIP file, or game-client folder.
+					3. Let Synix inspect it, then confirm the detected game, edition, executable, and settings.
+					4. Give the entry a unique name and complete any missing values.
+					5. Finish the import, open Configure, and review its paths and ports.
+					6. Run Readiness, then perform one controlled start. Check that the intended world and configuration were loaded.
 
-				["Steam Master Server Query Rules"] = new HelpItem("Net",
-					"SERVER BROWSER AND QUERY RULES:\n\n" +
-					"Many Steam-based games use A2S_INFO on a Query Port, but this is not universal. Other titles use EOS, REST/HTTP, direct TCP, a game-specific browser, or no reliable public query endpoint.\n\n" +
-					"IMPORTANT RULES:\n" +
-					"• Give simultaneously running instances unique enabled ports.\n" +
-					"• Keep the template's default game/query offset unless the game's documentation says otherwise.\n" +
-					"• A successful local process binding does not prove router forwarding is correct.\n" +
-					"• A public server browser can take time to index a new server.\n" +
-					"• EOS-based listing is not the same as a public EOS Web API that can be queried without game-specific credentials. Synix hides manual tests when it cannot make a dependable test."),
+					WHAT IMPORT CHANGES
+					Registration does not move the installation, redownload it, or replace its configuration files. Later actions you explicitly choose, such as Update, Validate, or configuration repair, can change files.
 
-				["Synix Network Guard"] = new HelpItem("Net",
-					"SYNIX NETWORK GUARD MODULE:\n\n" +
-					"Network Guard continuously monitors global bandwidth across your network adapter.\n\n" +
-					"FEATURES:\n" +
-					"• Surge Monitoring: Detects extreme packet/bandwidth floods that exceed regular gameplay.\n" +
-					"• False-Positive Suppression: Automatically suppresses network flood warnings when active SteamCMD downloads or game updates are detected.\n" +
-					"• Alert Overlay: Displays visual desktop notifications if network saturation occurs while you are tabbed out."),
+					Custom launch wrappers, modpacks, passwords, and external saves may not be detected automatically. The same installation path cannot be registered twice.
 
-				["Smart Backup on Start"] = new HelpItem("Maint",
-					"AUTOMATED WORLD BACKUPS:\n\n" +
-					"Enabling 'Backup on Start' in server settings triggers an automated archival process before the game boots.\n\n" +
-					"BEHAVIOR:\n" +
-					"1. Synix targets the server's save data directory (default or custom path).\n" +
-					"2. Compresses world state into a ZIP file.\n" +
-					"3. Stores the ZIP archive in your designated Backup Repository with a timestamp suffix.\n" +
-					"4. Rolling Limit Enforcement: Synix checks the 'Max Saved Backups Limit' in your Global Settings and automatically deletes the oldest archive if the limit is exceeded.\n" +
-					"5. Automated crash recoveries bypass backups to ensure rapid reboot times."),
+					IF DETECTION FAILS
+					Check that you selected a dedicated-server installation supported by the chosen profile. Do not rename an unrelated executable to force a match. Report the game and a redacted folder layout so its definition can be checked.
+					"""),
 
-				["Manual Backups and Restore Workflow"] = new HelpItem("Maint",
-					"CREATE A MANUAL BACKUP:\n\n" +
-					"1. Stop the server and wait until its status is Stopped for the most consistent world archive.\n" +
-					"2. Select it, open Server Options, and choose Backup Server.\n" +
-					"3. Wait for Activity & Diagnostics to confirm completion. Do not start or delete the server while the backup state is active.\n" +
-					"4. Use Open Backup Folder to locate the timestamped ZIP archive.\n\n" +
-					"RESTORE A BACKUP:\n" +
-					"1. Stop the server, select it, and open Server Options.\n" +
-					"2. Choose Restore Server Backup. This action only appears when Synix finds backups for that server.\n" +
-					"3. Select the timestamped backup you want and confirm the warning.\n" +
-					"4. Synix safely unpacks the backup, preserves the current server folder, and automatically rolls back if activation fails.\n" +
-					"5. Wait for the completion message, then start the server and verify its world and settings.\n\n" +
-					"A custom backup path changes where new archives are written; Synix does not move or delete archives left in the previous location."),
+				["Server Names and Folders"] = CreateArticle(
+					"Start",
+					"""
+					Each dashboard entry needs its own name and installation folder. Synix turns the server name into a Windows-safe identity for supported folder and launch settings. This keeps separate instances from unintentionally sharing files; it is not a virtual machine or security boundary.
 
-				["Smart Update on Start & Manifest Validation"] = new HelpItem("Maint",
-					"AUTOMATED GAME UPDATES:\n\n" +
-					"• Update on Start: When enabled, Synix contacts SteamCMD before launching the server to download any newly released game patches.\n" +
-					"• Validate Binaries: Comparing local files against the official Steam Master Manifest repairs corrupt executables without altering or deleting save files."),
+					DEFAULT LOCATIONS
+					• C:\Synix — main Synix data workspace.
+					• C:\Synix\SteamCMD — shared game downloader.
+					• C:\Synix\Games\<game>\<server> — normal server installations.
+					• C:\Synix\BackupGames — normal backup root.
+					• C:\Synix\SynixData\logs — application logs and crash reports.
 
-				["Discord Webhook Integration"] = new HelpItem("Maint",
-					"SETTING UP DISCORD WEBHOOK NOTIFICATIONS:\n\n" +
-					"Receive real-time notifications directly in your Discord server:\n\n" +
-					"1. Open Discord -> Server Settings -> Integrations -> Webhooks.\n" +
-					"2. Click 'New Webhook', copy the Webhook URL.\n" +
-					"3. Open Synix -> Edit Server -> Paste URL into 'Discord Webhook' field.\n" +
-					"4. Synix will post rich embedded messages for:\n" +
-					"   • 🚀 Server Boot Events\n" +
-					"   • 🛑 Graceful Shutdowns\n" +
-					"   • ⚠️ Watchdog Recovery & Crash Reboots"),
+					The MSI application files are normally under %LocalAppData%\Programs\Synix. Some preferences and Windows-protected values also belong to your Windows account.
 
-				["Autonomous Watchdog Loop"] = new HelpItem("Watch",
-					"AUTONOMOUS WATCHDOG HEALTH MONITORING:\n\n" +
-					"Synix tracks each managed server's process identity, PID, exit events, and supported health signals in the background.\n\n" +
-					"• Normal Stop: an intentional stop suppresses crash recovery and does not immediately restart the server.\n" +
-					"• Restart or Scheduled Restart: Synix first requests a clean shutdown, verifies the old process has exited, and then launches the replacement.\n" +
-					"• Unexpected Exit: when automatic recovery is enabled, the watchdog records the failure context and can restart the server.\n" +
-					"• Unsupported Probe: process tracking remains authoritative when a game has no dependable network probe.\n\n" +
-					"Review Activity & Diagnostics before repeatedly clicking Start or Restart. If a process survives a stop attempt, Synix should keep the live PID/status instead of falsely reporting Stopped."),
+					CUSTOM LOCATIONS
+					Use Install & Launch when choosing a server folder. For a new installation, choose an empty writable folder with enough space for the game and updates. Do not point two profiles at the same directory.
 
-				["Resource Guard (RAM Buffer & CPU Throttling)"] = new HelpItem("Watch",
-					"PROACTIVE HARDWARE STEWARDSHIP:\n\n" +
-					"Resource Guard prevents game server hosting from crashing your Windows host operating system.\n\n" +
-					"SAFETY POLICIES:\n" +
-					"• 5GB RAM Overhead: Synix calculates system memory headroom and enforces a strict 5GB RAM reserve for Windows kernel tasks.\n" +
-					"• 85% CPU Ingress Throttle: New server boot sequences are blocked if host CPU utilization exceeds 85% to maintain game server tick rates."),
+					Open Server Folder shows the selected server's actual location. Open Backup Folder shows its backup location; do not guess either path from its display name.
 
-				["Process Rebinding on Application Restart"] = new HelpItem("Watch",
-					"APPLICATION REBINDING LOGIC:\n\n" +
-					"If Synix is closed or updated while game servers or SteamCMD are actively running, reopening Synix initiates process rebinding.\n\n" +
-					"The engine queries active OS processes, matches them to saved server identities and executable information, and restores live monitoring without intentionally interrupting active players.\n\n" +
-					"After reopening Synix, watch Activity & Diagnostics for rebind success or a specific rebind error. Do not click Start on an instance that is visibly still running until the rebind check finishes."),
+					SAVES CAN LIVE ELSEWHERE
+					A game may store worlds in AppData, Documents, another drive, or its own deployment system. Confirm the game's real save location before backing up or moving it.
 
-				["No-Admin Philosophy & Windows Firewall"] = new HelpItem("Trouble",
-					"USER-MODE SOVEREIGNTY (NO-ADMIN):\n\n" +
-					"Synix runs entirely in User-Mode without requesting Administrator (UAC) privileges by default. It will not edit your Windows registry or modify host system settings.\n\n" +
-					"SMART FIREWALL CLEANUP (OPTIONAL):\n" +
-					"Elevated System Tasks controls automatic firewall cleanup during server deletion. Clean Orphaned Rules is a separate manual action that works whether that setting is on or off. It compares firewall executable paths under C:\\Synix\\Games\\[Game]\\[Server] with the saved server list and the individual server folders still on disk. The shared game folder may remain; a rule is eligible only when its specific server folder is gone. Port-only rules and custom installation folders are not scanned. If matching rules are found and you approve the cleanup, Synix requests Just-In-Time administrator permission. Declining UAC leaves the rules unchanged.\n\n" +
-					"FIREWALL REQUIREMENTS:\n" +
-					"Because Synix runs without Admin privileges by default, Windows Defender Firewall may prompt you the first time a game server binary executes. Always check 'Allow on Private and Public Networks' when prompted by Windows."),
+					Renaming or moving folders in File Explorer does not guarantee that every saved path will update. Use Synix's supported import/transfer workflow and review paths before the next start. Separate instances also need nonconflicting network ports.
+					"""),
 
-				["Missing Visual C++ Redistributables & DLL Errors"] = new HelpItem("Trouble",
-					"RESOLVING MISSING DLL ERRORS:\n\n" +
-					"Symptom: Server fails to launch or throws error `MSVCP140.dll` / `VCRUNTIME140.dll missing`.\n\n" +
-					"SOLUTION:\n" +
-					"Install the official Microsoft Visual C++ Redistributable Package (x64):\n" +
-					"https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-supported-redistributable-version"),
+				["Uninstalling Synix Safely"] = CreateArticle(
+					"Start",
+					"""
+					Decide whether you are removing only the control panel or also permanently deleting your hosted servers. Those are different actions.
 
-				["Windows SmartScreen & SAC Warnings"] = new HelpItem("Trouble",
-					"SECURITY PROMPTS & SMART APP CONTROL:\n\n" +
-					"As an independent community project without a paid Microsoft Digital Signature, Synix may trigger security prompts on new Windows installations:\n\n" +
-					"• Windows SmartScreen: Click `More Info` -> `Run Anyway`.\n" +
-					"• Windows 11 Smart App Control (SAC): SAC blocks unsigned executables entirely. If enabled, set SAC to 'Evaluation' or 'Off' to run community tools like Synix."),
+					REMOVE ONLY THE APPLICATION
+					1. Finish any installation, transfer, or backup that is running.
+					2. Stop your servers through Synix, wait for them to finish saving, and exit Synix.
+					3. Keep a verified copy of important worlds, configuration files, and credentials.
+					4. Uninstall Synix through Windows Installed apps or your package manager.
 
-				["Where are My Server Backups Located?"] = new HelpItem("Trouble",
-					"LOCATING BACKUP ARCHIVES:\n\n" +
-					"By default, all automated ZIP backups created by Synix are stored at:\n\n" +
-					"  C:\\Synix\\BackupGames\\[Game_Name]\\{Server_Name}\\\n\n" +
-					"If you have activated a Custom Backup Location in the Synix Settings menu, your backups will be routed to that specific drive/folder instead.\n\n" +
-					"Note: Synix actively monitors this folder and will automatically delete the oldest backup if your rolling 'Max Saved Backups Limit' (configurable in Settings) is reached.\n\n" +
-					"You can extract any ZIP directly over your active server folder to restore previous world saves."),
+					Keep C:\Synix, custom server folders, external game saves, and backup locations if you intend to use them again. Reinstalling the application does not require deleting these folders.
 
-				["Reading Activity, Logs, and Crash Reports"] = new HelpItem("Trouble",
-					"WHERE TO START TROUBLESHOOTING:\n\n" +
-					"1. Activity & Diagnostics: read the most recent timestamped entries around the failed action. Look for INSTALL, ARGUMENT, PROBE, SHUTDOWN, WATCHDOG, REBIND, or ERROR context.\n" +
-					"2. Native server console: enable Settings -> General -> Show Server Console Window when you need the game's own startup or shutdown messages.\n" +
-					"3. Server folder: use Server Options -> Open Server Folder and inspect the game's logs/configuration files.\n" +
-					"4. Synix logs: fatal crash messages name the dated log file under the Synix data Logs directory. Attach that log when requesting support.\n\n" +
-					"Before sharing a screenshot or log, enable Privacy Mode and still review the text for passwords, webhook URLs, public IPs, RCON secrets, or tokens. Synix scrubs known launch-argument credentials, but a game may print its own sensitive data."),
+					REMOVE ONE SERVER ENTRY
+					Use the selected server's Delete action in Synix and read the confirmation. Removing a dashboard entry is not the same as agreeing to delete installation files or backups. Confirm exactly which data will be removed.
 
-				["Server Stuck on Starting, Stopping, or Offline"] = new HelpItem("Trouble",
-					"STATUS TROUBLESHOOTING CHECKLIST:\n\n" +
-					"STARTING:\n" +
-					"• Allow time for first installation, updates, world generation, and game-specific initialization.\n" +
-					"• Check that the executable remains running and read the server console for an EULA, missing runtime, bad argument, or port-binding error.\n" +
-					"• For games without a supported network probe, Synix relies on process health rather than pretending an unsupported query succeeded.\n\n" +
-					"STOPPING:\n" +
-					"• Wait for the game to save. Minecraft uses its native `stop` command and can take time for all dimensions to finish saving.\n" +
-					"• If the console asks 'Terminate batch job (Y/N)?', the legacy wrapper is holding the window open. Use the current Synix-generated launcher and let Synix verify the Java process tree has exited.\n\n" +
-					"OFFLINE OR FAILED PROBE:\n" +
-					"• Confirm the configured ports match the game's own generated config, then check Windows Firewall and router rules. A running PID and a reachable public endpoint are separate checks."),
+					Do not use deletion as a troubleshooting shortcut. A backup stored only inside a folder you are deleting is not a recovery copy.
 
-				["Why Connection Test Actions May Be Hidden"] = new HelpItem("Trouble",
-					"HIDDEN LAN/WAN TESTS ARE INTENTIONAL:\n\n" +
-					"Synix only shows manual connection tests for game templates with a dependable supported test method. Some servers do not answer A2S, expose only an internal/EOS listing flow, auto-calculate ports, or require game-specific authentication. Showing a generic UDP/TCP result for those games would create false failures or false success.\n\n" +
-					"When the actions are hidden, verify the server with:\n" +
-					"• Activity & Diagnostics process/binding messages.\n" +
-					"• The game's native server browser or direct-connect feature.\n" +
-					"• A second device on the LAN, followed by a player outside your home network for WAN testing.\n" +
-					"• The game's official port and hosting documentation."),
+					If you are switching to another control panel, confirm that it can start the correct installation and load the intended world before removing your old data.
+					"""),
 
-				["Internal IReadOnlyList<GameInfo> Database"] = new HelpItem("Games",
-					"INTERNAL GAME DATABASE ARCHITECTURE:\n\n" +
-					"Synix does not use SQLite or external SQL databases. Instead, it relies entirely on a high-performance, compiled internal `IReadOnlyList<GameInfo>` database.\n\n" +
-					"WHY THIS DESIGN:\n" +
-					"• Absolute Thread Safety: Compiled directly into the engine, guaranteeing instant lookups with zero database corruption risks.\n" +
-					"• Strict Parameter Enforced: Because game executables and Steam AppIDs require strict arguments, manual custom game plugins or third-party database tables are not supported."),
+				["Using the Dashboard"] = CreateArticle(
+					"Dash",
+					"""
+					Click a server row before using the controls along the bottom. The selected row determines which server an action affects.
 
-				["Dune: Awakening Setup & Definition Rules"] = new HelpItem("Games",
-					"DUNE: AWAKENING DEFINITION-DRIVEN INTEGRATION:\n\n" +
-					"Dune's built-in game definition declares its hardware requirements, elevated launcher, external deployment lifecycle, and launch-file export restriction. The shared Synix engine reads those fields instead of relying on game-name checks.\n\n" +
-					"1. Admin Execution: Synix launches the official battlegroup script with the required permission.\n" +
-					"2. Deployment Tracking: Dune owns the Hyper-V virtual machines, so Synix does not mistake the launcher process for the complete server lifecycle.\n" +
-					"3. Launch Export: Synix does not replace the official deployment script with a generated launch file."),
+					FIND A SERVER
+					Use the search box to filter by game or server name. The status filter narrows the list further. If an entry seems missing, clear both filters before assuming it was deleted.
 
-				["Rust & Rust+ Mobile App Integration"] = new HelpItem("Games",
-					"RUST SERVER & RUST+ MOBILE CONFIGURATION:\n\n" +
-					"• Steam AppID: 258550\n" +
-					"• App Port (Rust+): Set to a unique port above 10000 (e.g., 28082 TCP).\n" +
-					"• Identity Isolation: Synix enforces `+server.identity \"{Server_Name}\"` automatically to isolate world save files and blueprints cleanly.\n\n" +
-					"RUST SERVER FRAMEWORK:\n" +
-					"• Vanilla: Uses the official Steam server files.\n" +
-					"• Oxide: Synix downloads and verifies only the latest official Oxide.Rust runtime.\n" +
-					"• Plugins: Synix never installs or manages plugins. Add your own files to oxide\\plugins.\n" +
-					"• Updates: Synix reapplies Oxide after Steam updates and validations. Switching back to Vanilla requires one Update or Validate to restore the official files."),
+					READ THE SUMMARY
+					• Installed Servers counts registered server entries.
+					• Running Now shows entries currently reported as running.
+					• CPU Usage and RAM Usage describe the whole PC, not just Synix.
+					• Player data is available only when the selected game exposes a supported source.
 
-				["Minecraft Java, Bedrock, Fabric, Forge, and NeoForge"] = new HelpItem("Games",
-					"MINECRAFT SERVER AUTOMATION:\n\n" +
-					"Choose Minecraft in Server Setup, then choose Java Edition or Bedrock Edition. The remaining fields change for that edition only; other game templates are unaffected.\n\n" +
-					"• Java version discovery: Synix reads Mojang's version manifest to populate supported releases.\n" +
-					"• Java loader discovery: Fabric, Forge, and NeoForge versions are filtered for the selected Minecraft version. NeoForge is offered for Minecraft 1.21 and newer.\n" +
-					"• Portable Java: Synix determines the Java major required by the selected game version and can download a private Eclipse Temurin runtime, avoiding changes to the computer's system Java.\n" +
-					"• Vanilla: downloads and launches the official server JAR.\n" +
-					"• Fabric: installs the selected Fabric loader and prepares the executable server launcher. Install Fabric API and gameplay mods yourself when the modpack requires them.\n" +
-					"• Forge: runs the Forge server installer and launches the generated modern or legacy Forge server structure.\n" +
-					"• NeoForge: reads NeoForge's official Maven catalog, runs its official server installer, and launches its generated Windows argument file.\n" +
-					"• Bedrock: reads Minecraft's current official Windows download, extracts the server safely, preserves existing worlds and configuration files during updates, and launches bedrock_server.exe without Java arguments.\n" +
-					"• EULA: you must accept Mojang's EULA before the server can complete startup.\n" +
-					"• Mods: Synix creates/uses the server structure, but users remain responsible for installing compatible mods and matching client-side requirements.\n\n" +
-					"Java normally uses port 25565. Bedrock normally uses UDP port 19132 plus the separate IPv6 port 19133. Every Minecraft server instance needs its own ports."),
+					EVERYDAY CONTROLS
+					• Start, Stop, and Restart manage the selected server.
+					• Configure opens its setup fields.
+					• Readiness checks issues that can prevent it from working.
+					• Server Options contains file, maintenance, connection, and game-specific tools.
+					• Double-click a row to inspect that server in more detail.
 
-				["Minecraft Setup and First Launch"] = new HelpItem("Games",
-					"CREATE A MINECRAFT SERVER:\n\n" +
-					"1. Click Add Server and choose Minecraft.\n" +
-					"2. Choose Java Edition or Bedrock Edition.\n" +
-					"3. For Java, select the game version and Vanilla, Fabric, Forge, or NeoForge. Review the portable Java version selected by Synix. For Bedrock, Synix selects the current official Windows package automatically.\n" +
-					"4. Choose RAM, world, player, and network settings, then save the server and click Start.\n" +
-					"5. Java requires acceptance of Mojang's EULA. Bedrock includes its own bundled agreements and configuration files.\n" +
-					"6. Open Server Options -> Minecraft Server Console to see the managed console and send a command even when native server windows are hidden.\n" +
-					"7. Stop the server with Synix before adding mods, packs, or changing `server.properties`.\n" +
-					"8. Match every Java mod to the exact Minecraft and loader versions selected. Bedrock behavior/resource packs use Bedrock's own world and pack structure.\n\n" +
-					"Synix keeps Minecraft control local by default. Java 1.21.9 and newer can use Minecraft's local management protocol; older Java servers can use local RCON when configured. Bedrock uses its managed console while Synix owns the running process. Synix Stop sends Minecraft's native `stop` command and waits for the server process to exit."),
+					Activity & Diagnostics shows progress and relevant warnings. Read the latest message before repeating an action. CLEAR clears the visible activity area; it is not a command to erase all log files.
 
-				["Official Support Links"] = new HelpItem("Support",
-					"COMMUNITY & SUPPORT RESOURCES:\n\n" +
-					"• GitHub Issues: https://github.com/ubidzz/Synix-Control-Panel/issues \n" +
-					"• Official Discord: https://discord.gg/2WR7ArC2Vr \n" +
-					"• Feature Requests: https://discord.gg/ZKTcpgmXNM \n" +
-					"• Game Support Requests: https://discord.gg/DxUXPtyVm9 \n" +
-					"• YouTube Video Showcase: https://www.youtube.com/watch?v=EcVLT4kgdb8&t=1796s"),
+					A running process is not necessarily ready for players. Installation, world loading, agreements, and game-owned setup can continue after a process appears. Confirm readiness in the game log and by joining.
+					"""),
+
+				["Starting, Stopping, and Restarting"] = CreateArticle(
+					"Dash",
+					"""
+					Use Synix's lifecycle buttons for normal server operation. This lets the watchdog distinguish an intentional stop from a crash.
+
+					START
+					Select the entry and choose Start once. Synix checks the applicable prerequisites, paths, ports, and selected pre-start maintenance, prepares missing supported files, and launches the server. Wait for the result before trying again.
+
+					STOP
+					Choose Stop and allow the game time to save and close. Synix uses a supported graceful shutdown where available, then a staged process-termination fallback if needed. Forced termination can lose unsaved progress.
+
+					RESTART
+					Choose Restart to stop the current process group and start a fresh instance. Do not start another copy manually while this is happening.
+
+					IF A BUTTON IS UNAVAILABLE
+					Another operation may already own the server, the entry may be in a transitional state, or that game may use an external deployment. Read the activity message and the profile's capabilities.
+
+					Avoid killing the server in Task Manager or stopping it from an unrelated tool for ordinary maintenance. That can look like an unexpected exit and trigger recovery.
+
+					Games managed through virtual machines or external deployment services need their own lifecycle checks. A launcher closing does not prove those services have stopped.
+					"""),
+
+				["Server Options and Inspection"] = CreateArticle(
+					"Dash",
+					"""
+					Select a dashboard entry and open Server Options. Only tools supported by that profile and its current state are offered.
+
+					FILES AND MAINTENANCE
+					• Open Server Folder and Open Backup Folder open the active locations.
+					• The configuration editor opens supported game configuration files.
+					• Update Server downloads the supported game update.
+					• Validate Game Files checks or repairs installer-managed files.
+					• Backup and Restore preserve or recover the selected installation.
+					• Create Batch File exports a launch script when the profile supports it.
+					• Delete removes an entry and offers only the file-removal choices shown in its confirmation.
+
+					CONNECTIONS AND GAME TOOLS
+					Connection Information shows addresses, ports, and copy actions. Connectivity tests, the Mod & Plugin Manager, Minecraft tools, and the Satisfactory Control Center appear where supported.
+
+					INSPECT A RUNNING SERVER
+					Double-click its row for server details. Live Process Details shows verified launchers, console hosts, and worker processes belonging to that entry. A multi-process game may have more than one process ID.
+
+					Use the resource monitor to inspect that server's CPU and memory history. These readings are distinct from the dashboard's whole-PC summary.
+
+					Closing a details or resource-monitor window does not stop the game. Use the dashboard's Stop action when that is your intention.
+					"""),
+
+				["Server Readiness and First Start"] = CreateArticle(
+					"Dash",
+					"""
+					Open Readiness for the selected server before its first start or when something fails. It gathers the checks supported by that profile, such as files, runtimes, configuration, disk space, ports, process state, and relevant logs.
+
+					UNDERSTAND THE RESULT
+					• Ready: No blocking issue was found by the available checks.
+					• Review: Read the finding and decide whether action is needed.
+					• Blocked: Resolve the stated issue before continuing.
+
+					Readiness does not automatically apply every suggested repair. Inspect the proposed action and its confirmation.
+
+					AFTER YOU SAVE A NEW PROFILE
+					The first Start can download files, install a supported runtime, generate configuration, and wait for game initialization. Follow first-start guidance and Activity & Diagnostics rather than treating the saved dashboard entry as an installed game.
+
+					Some games need an agreement, authentication, or in-game claiming/session setup before anyone can join. Complete that step in the place the game requires.
+
+					COMPATIBILITY VERIFICATION
+					Install, Start, Stop, and Monitoring results record operations Synix has observed. Not verified yet means there is no recorded result; it does not mean the game is known to be broken.
+
+					A Ready result or a successful local verification is not a guarantee of internet access, healthy mods, or compatibility with every client. Finish by testing the intended connection and world.
+					"""),
+
+				["Game Support Catalog"] = CreateArticle(
+					"Dash",
+					"""
+					Open Add Server → Game Support Catalog to check what Synix knows about a game before creating an entry. The catalog uses the definitions included with your installed application.
+
+					1. Search for the game name.
+					2. Use the configuration, player-data, crossplay, compatibility, or verification filters to narrow the list.
+					3. Select the game and open its details, or double-click its row.
+					4. Read the supported setup, server-program, prerequisite, and verification information.
+
+					Clear the filters if the game is unexpectedly absent. Minecraft's Java and Bedrock choices are part of its setup workflow rather than two interchangeable mod systems.
+
+					READ CAPABILITIES CAREFULLY
+					A profile can offer managed configuration, guided setup, launch settings, or limited/basic support. A listed executable or Steam AppID describes how installation works; it does not certify every game release.
+
+					An authenticated SteamCMD requirement means the profile requests account access. Game ownership and the publisher's rules can impose additional requirements.
+
+					DEFAULT PORTS ARE NOT A FIREWALL CHECKLIST
+					A stored query-port value does not prove that a query listener exists or that it must be exposed. Use the actual game configuration and protocol requirements.
+
+					The catalog is the place to inspect the installed definitions. Local verification records show what has been observed on this PC, not universal results for every machine or mod combination.
+					"""),
+
+				["Settings and Interface Language"] = CreateArticle(
+					"Dash",
+					"""
+					Open the gear icon on the dashboard for application-wide settings. Use a server's Configure button for settings that belong to only that server.
+
+					GENERAL
+					• Show Server Console Window controls whether supported servers show their native console. A hidden window does not mean the server is stopped.
+					• Dark Mode switches the application theme.
+					• SteamCMD Download Speed chooses full speed or the supported download limit.
+					• Language changes supported interface labels, dialogs, and status messages.
+
+					Other pages contain backup locations and transfers, privacy/security options, problem reporting, and advanced/background settings. You do not need to enable advanced options to create a normal server.
+
+					LANGUAGE BEHAVIOR
+					Choose from the languages offered in the selector. Help articles and technical text logs/support reports intentionally remain in English. An unavailable translation can fall back to English.
+
+					Game-facing text is not translated: commands, configuration keys and values, map names, modes, filenames, launch arguments, identifiers, and output-recognition text must remain in the form the game expects.
+
+					Changing the interface language does not change a game's command syntax or translate its console output. If an ordinary Synix label is unexpectedly untranslated, report its exact wording, window, and selected language.
+					"""),
+
+				["Privacy and Saved Credentials"] = CreateArticle(
+					"Dash",
+					"""
+					Open Settings → Privacy & Security before screen sharing or reviewing security options.
+
+					PRIVACY MODE
+					Privacy Mode masks supported sensitive displays, such as addresses and credentials. It does not change your public IP, encrypt network traffic, or clean every game log and configuration file.
+
+					Inspect a screenshot before sharing it. A copy action on a masked field may still copy the real value.
+
+					SAVED PASSWORDS AND TOKENS
+					Synix protects supported saved passwords, tokens, and webhook values for the current Windows user. The game may still require readable credentials in its own configuration or launch arguments.
+
+					A plain folder copy to another Windows account does not guarantee those protected values can be unlocked. Use the encrypted transfer workflow for supported credential migration.
+
+					WINDOWS PERMISSIONS
+					Run Synix and normal game servers with standard Windows permissions. A specific system change or game launcher can request elevation separately; it is not a reason to run everything permanently as administrator.
+
+					Optional firewall cleanup concerns supported Synix-owned stale rules. Review the proposed rules before approving removal. It does not manage every custom folder or authorize deleting unrelated firewall rules.
+
+					If a secret is exposed, replace or revoke it at the service that issued it. Hiding the field or removing Synix's saved copy does not invalidate that credential elsewhere.
+					"""),
+
+				["SteamCMD Downloads and Progress"] = CreateArticle(
+					"Dash",
+					"""
+					SteamCMD downloads and updates the dedicated-server files for supported Steam games. Synix prepares its shared copy automatically; an ordinary server setup does not need a separate SteamCMD tab.
+
+					FOLLOW THE ACTIVE OPERATION
+					Select the server and read Activity & Diagnostics. The dashboard animation indicates installation work is in progress. SteamCMD can switch between downloading, allocating, unpacking, and validating, so its output does not always provide a steady percentage or a reliable time remaining.
+
+					Allow disk work to finish even when network traffic drops. Read the final success or failure message before starting another operation.
+
+					LIMIT DOWNLOAD SPEED
+					Open Settings → General → SteamCMD Download Speed. Choose the supported limited mode and enter the displayed rate, or select full speed.
+
+					This affects SteamCMD downloads, not players' bandwidth, every game's non-Steam downloader, or all traffic on the PC.
+
+					SIGN-IN AND FAILURES
+					Some game profiles require an authorized Steam account and Steam Guard confirmation. Use Synix's sign-in prompt; do not place account credentials in public scripts or reports.
+
+					For a failed download, read the exact SteamCMD error and check free disk space, folder access, network access, and any account requirement. Validation may redownload installer-managed files, so preserve custom modifications before using it.
+					"""),
+
+				["Server Setup Pages"] = CreateArticle(
+					"Config",
+					"""
+					Choose Configure for an existing server, or use the setup window while creating one. Change only the fields that apply to your game.
+
+					BEGINNER AND ADVANCED MODES
+					Beginner mode emphasizes common settings and the recommended launch command. Advanced mode reveals additional technical controls, including supported RCON and raw launch options. Switching modes does not erase saved values. Discord notifications are available in either mode.
+
+					WHAT EACH PAGE CONTROLS
+					• General: Server name, game, edition/version, and supported gameplay-profile choices.
+					• Security: Passwords and other access settings supported by the template.
+					• World Generation: World name, seed, size, and applicable world options.
+					• Network & RCON: Supported gameplay, query, companion/API, and administrative endpoints.
+					• Automation: Backup/update-on-start and scheduled maintenance.
+					• Discord: Notification destinations and event routing.
+					• Install & Launch: Installation folder and supported launch options.
+
+					Game-specific disabled fields are intentional. A game may own that setting itself or lack support for it; forcing extra arguments into the command is not a safe substitute.
+
+					THE FOUR CHECKPOINTS
+					Server details → Required settings → Review → Save server
+
+					These track configuration readiness, not download or installation progress. Review is optional; required valid settings determine whether saving is available. Read the exact footer message when something needs attention.
+
+					When editing a server, stop it first if the change affects files or options read at launch. Save Changes updates its profile; it does not promise that a running game has applied those values. Restart through Synix when the game requires it.
+					"""),
+
+				["Editing Configuration Files"] = CreateArticle(
+					"Config",
+					"""
+					Use Configure for the common fields Synix manages. Use the configuration-file editor in Server Options when you need to inspect or change the game's actual configuration.
+
+					1. Stop the server if it reads the file at startup or rewrites it while running.
+					2. Make a backup and confirm the selected server and file.
+					3. Read the existing values and comments.
+					4. Change only the settings you intend to change.
+					5. Resolve the editor's validation errors and review its warnings.
+					6. Save, start the server through Synix, and check the latest game log.
+
+					SUPPORTED FORMATS
+					Synix provides format-aware handling for supported INI/properties, JSON, XML, YAML, and other profile-specific formats. Not every file or option has a managed editor.
+					YAML editing supports nested settings, indented lists, and single-line values while keeping comments and indentation. Complex YAML features such as anchors, aliases, inline collections, and multiline values are refused without saving.
+
+					Keep configuration keys, accepted values, map names, and commands exactly as the game expects them. Do not translate them to match the interface language.
+
+					VALIDATION IS NOT A GAME TEST
+					A well-formed file can still contain incompatible settings. Mods or game updates can add options the editor does not recognize. Check that the game loaded the intended file and world after restarting.
+
+					If another editor or the game changes the file while it is open, reload and compare before saving. Game files can contain readable passwords or tokens; review and redact them before sharing.
+
+					Satisfactory's live API options belong in its Control Center and are separate from editing its on-disk configuration files.
+					"""),
+
+				["Configuration Repair and Recovery"] = CreateArticle(
+					"Config",
+					"""
+					Use this guide when the configuration editor reports a missing managed field, invalid structure, or a template mismatch.
+
+					UNDERSTAND THE CHOICES
+					• Normal save updates supported values in the selected configuration.
+					• Repair addresses a reported supported problem.
+					• Reset restores template defaults and can remove custom settings.
+
+					A reset is not the first step for every server failure. Missing game runtimes, occupied ports, and broken mods are not fixed by repeatedly replacing configuration files.
+
+					BEFORE REPAIRING
+					Stop the game, keep an untouched copy of the affected files, and read the exact proposed change. Some profiles have complete templates; others expect the game to generate files on first start or require manual setup.
+
+					Synix reports missing required tags rather than assuming it can replace every line safely. Applying a managed template revision can preserve a one-time copy named .synix.before-template-v<revision>.bak.
+
+					AFTER A FAILED SAVE OR REPAIR
+					Keep any backup or recovery files and read the recovery message. Compare the original and changed configuration before choosing what to restore. Do not erase evidence by repeatedly trying Reset.
+
+					After recovery, start once and check the game's own log. Confirm that it is reading the correct path and that custom settings you need are still present.
+					"""),
+
+				["Launch Options and External Scripts"] = CreateArticle(
+					"Config",
+					"""
+					Install & Launch contains the selected server folder and its supported launch options. Keep the recommended command unless you understand the game's argument syntax.
+
+					EDITING ARGUMENTS
+					Use Advanced mode when raw arguments are needed. Check quoting, executable paths, and game-required option names. Synix already supplies supported managed arguments; adding another copy can produce conflicting settings.
+
+					Do not translate switches or replace an expected technical value with its translated label. Never add credentials to a command merely to make them easier to copy.
+
+					EXPORTED LAUNCH FILES
+					For supported profiles, Server Options → Create Batch File writes the resolved launch command to a script.
+
+					That file may contain readable passwords or service tokens so it can run independently. Keep it private and inspect it before sharing or moving it.
+
+					Running the script outside Synix does not provide all of Synix's operation locks, watchdog coordination, backups, or scheduled maintenance. Do not run it while Synix already has that server running.
+
+					EXTERNAL DEPLOYMENTS
+					Some game profiles launch their own deployment tools instead of a single ordinary server process. Those tools may require a separate permission prompt and may not support launch-file export. Follow the profile's game guide rather than substituting a different executable or wrapper.
+					"""),
+
+				["Connecting Locally and Over the Internet"] = CreateArticle(
+					"Net",
+					"""
+					First prove that the game works on your own network. Router changes cannot fix a game that has not started or completed its initial setup.
+
+					CHOOSE THE RIGHT ADDRESS
+					• On the server PC: Use the game's supported local or loopback connection.
+					• On another home-network device: Use the server PC's LAN address.
+					• Outside your home network: Use your public address or the game's supported discovery/join method.
+
+					Open Connection Information for the selected entry to inspect its endpoints. A private LAN address cannot be used directly by internet players.
+
+					TEST LOCALLY
+					1. Wait for the game to finish loading.
+					2. Check the configured port and the server's Readiness results.
+					3. Join from the host PC, then from another LAN device.
+					4. If LAN access fails, check the game log and Windows Firewall access for the actual server executable.
+
+					ALLOW INTERNET PLAYERS
+					1. Give the host a stable LAN address, usually with a router DHCP reservation.
+					2. Identify the required ports and TCP/UDP protocols for the actual game configuration.
+					3. Forward only those endpoints to the host's LAN address.
+					4. Allow the matching game traffic through Windows Firewall on the network profiles you use.
+					5. Test from a genuinely separate internet connection.
+
+					Do not enable a router DMZ, disable the firewall, or expose every administrative port as a general fix. Keep router credentials private.
+
+					Synix is a local desktop manager. It does not include a hosted web panel or public relay that makes these network requirements disappear.
+					"""),
+
+				["Understanding Server Ports"] = CreateArticle(
+					"Net",
+					"""
+					Open Configure → Network & RCON to review the endpoints supported by the selected game. Use the game's actual configuration, not a generic list of ports.
+
+					PORT ROLES
+					• Game port: Player traffic.
+					• Query port: Server information or discovery, if that query protocol is supported.
+					• RCON/admin port: An optional administration channel.
+					• App/API port: A game-specific companion or management service.
+
+					TCP and UDP are different protocols. Two different protocols can use the same port number, but two servers cannot share a conflicting listening endpoint. Synix also checks saved profiles for port conflicts, including stopped entries.
+
+					Keep enabled endpoints unique for separate instances and preserve any game-required relationship between ports. Do not assume all gameplay is UDP or that every query field represents a real listener.
+
+					ADMINISTRATION IS NOT GAMEPLAY
+					Players usually do not need access to RCON or another admin endpoint. Keep management local unless you have a specific secured remote-administration plan.
+
+					GAME-SPECIFIC EXAMPLES
+					• Minecraft Java and Bedrock use different connection behavior; follow the selected edition.
+					• Satisfactory's local API uses its configured game/API port; its legacy query-field value is not an extra requirement for Synix.
+					• Dune's query-field metadata represents its RMQ deployment port, not an ordinary Steam A2S query service.
+					• Rust+ uses its own companion endpoint in addition to gameplay.
+
+					Template defaults are starting values, not a universal router-opening checklist. Check the actual listener before changing a firewall rule.
+					"""),
+
+				["Connection Tests and Player Counts"] = CreateArticle(
+					"Net",
+					"""
+					Select a server and use its connection-test or player tools when they are available. Synix chooses checks according to the game's supported query, TCP/UDP/HTTP, local API, and process capabilities.
+
+					WHAT A RESULT MEANS
+					A low-level connection response does not prove that a player can authenticate and join. A live process also does not prove that its query service is ready.
+
+					Player count and player names are separate capabilities. A server can report how many players are connected without exposing a named roster. An empty roster is not a confirmed zero-player count.
+
+					HIDDEN TOOLS OR N/A
+					Some EOS-only or crossplay modes do not expose a dependable supported query or player-management channel. Synix may show N/A or omit a test instead of displaying a misleading result.
+
+					Check the selected edition and configured management channel for Minecraft. Satisfactory player counts depend on its optional local API connection. Do not invent developer-only EOS credentials to force a test.
+
+					SERVER-BROWSER LISTINGS
+					Many Steam games use A2S queries, but this is not universal. Registration, game settings, and the browser service affect visibility, and there is no guaranteed listing time.
+
+					If a server is absent from a browser, test the game's direct-connect method and review its log. Changing unrelated query ports repeatedly can introduce additional problems.
+					"""),
+
+				["NAT, Public Addresses, and Failed WAN Tests"] = CreateArticle(
+					"Net",
+					"""
+					Use this guide when LAN play works but a public-address test does not.
+
+					YOUR OWN PUBLIC ADDRESS FAILS
+					Some routers do not support NAT loopback, also called hairpinning. A connection from inside the home to its own public address can fail even while outside players can join.
+
+					Use the LAN address at home and ask someone on another internet connection to test the public address. A failed in-PC WAN probe alone is not proof of an internet outage.
+
+					PORT FORWARDING MAKES NO DIFFERENCE
+					Check for another router upstream, double NAT, or carrier-grade NAT (CGNAT). Compare the router's WAN information with the public address and ask the ISP whether inbound connections are supported.
+
+					A forwarding rule on your router cannot open an ISP-controlled upstream NAT. Depending on the connection, a public-address service, suitable VPN/tunnel, or hosted server may be needed. These are external arrangements, not built-in Synix features.
+
+					DO NOT CONFUSE MANAGEMENT WITH PLAYER ACCESS
+					A remote-control connection and the game's player connection are separate paths. Enabling a local API or Discord notifications does not automatically make the game reachable from the internet.
+
+					Keep any network test narrowly scoped to the game's real port and protocol. Do not publish passwords, tokens, router screenshots, or private network details when asking for help.
+					"""),
+
+				["Creating and Keeping Backups"] = CreateArticle(
+					"Maint",
+					"""
+					A selected-server backup preserves files in that server's installation folder. Check where the game actually saves its world before relying on it.
+
+					CREATE A BACKUP
+					1. Stop the server through Synix and wait for its processes to exit.
+					2. Select the backup action in Server Options.
+					3. Review the source, destination, estimated size, and available disk space.
+					4. Confirm and wait for completion.
+					5. Choose Open Backup Folder to locate the archive. Keep its integrity receipt with it.
+
+					COVERAGE
+					The backup includes the installation folder, not only a small save subfolder. Large games can need substantial time and storage.
+
+					Saves in AppData, Documents, another drive, or a game-owned virtual machine may be outside that folder. Back those up separately using the game's supported method.
+
+					LOCATION AND RETENTION
+					The normal backup root is C:\Synix\BackupGames. Settings → Backups lets you choose another root and set the saved-backup limit.
+
+					The destination must be outside the source server folder. Changing the backup root does not move or delete existing archives; check the old location for older backups.
+
+					Retention removes older archives when the configured limit is exceeded during backup creation. Keep permanent recovery points outside that rolling-backup location.
+
+					Store another verified copy of important worlds on separate storage. A failed disk can destroy both the server and backups kept on that same disk. A ZIP of an external deployment folder is not automatically a consistent VM or database backup.
+					"""),
+
+				["Restoring a Server Backup"] = CreateArticle(
+					"Maint",
+					"""
+					Restore can replace the selected server's installation contents. Choose the correct server and preserve anything newer before proceeding.
+
+					1. Stop the server and make a separate copy of current files you may need.
+					2. Open the Restore backup workflow in Server Options.
+					3. Select the intended archive and review its server, date, size, and integrity status.
+					4. Verify it before restoring. Synix backups with SHA-256 receipts can be checked against those receipts; older archives may be identified as legacy.
+					5. Read the replacement warning and confirm only if this is the recovery point you want.
+					6. Let staging and recovery finish without closing Synix or disconnecting storage.
+					7. Start the server and confirm that the intended world and settings were restored.
+
+					WHAT VERIFICATION PROVES
+					An integrity check detects changes relative to a receipt. It does not prove that a world was healthy when saved or that an archive from another person is trustworthy.
+
+					IF RESTORE IS INTERRUPTED
+					Keep the archive and any rollback or recovery files. Read the recovery message before trying another restore or removing files.
+
+					Do not extract a ZIP over a running server. If the game keeps saves outside the installation folder, restore those separately with the game's supported procedure.
+
+					Keep the original backup until you have tested the restored server and a client connection.
+					"""),
+
+				["Moving Synix to Another PC"] = CreateArticle(
+					"Maint",
+					"""
+					Use Settings → Backups for a complete Synix export/import. This is different from registering one existing server folder.
+
+					CHECK WHAT MUST MOVE
+					The export packages the main C:\Synix tree. Custom server or backup folders outside it and external game saves need separate handling. Record their paths before starting. Ordinary Windows preferences may also need review on the destination.
+
+					EXPORT
+					1. Stop servers and finish active maintenance, downloads, and backups.
+					2. Choose encrypted or normal export.
+					3. Select a destination outside the source tree and review size and temporary-space requirements.
+					4. For encrypted export, choose a strong transfer password and store it separately.
+					5. Wait for the .synixbackup package to finish, then verify it.
+
+					CHOOSE THE RIGHT PROTECTION
+					Encrypted export protects the package and supports portable transfer of supported credentials to the destination Windows account.
+
+					Normal export is not encrypted. Game files and logs inside it may expose secrets. Copying Windows-bound encrypted values does not by itself make them usable under another account.
+
+					IMPORT
+					1. Back up the destination's current Synix data first.
+					2. Open the import/verification controls and choose the intended package.
+					3. Provide the transfer password if requested and verify the package.
+					4. Review the destination, disk requirements, and overwrite warnings.
+					5. Let staging, validation, and recovery complete.
+					6. Check server paths, ports, schedules, backup locations, and credentials before starting anything.
+
+					Reconnect Satisfactory if its local identity or protected connection no longer matches. Keep the original package and old data until the imported servers are tested.
+
+					Supported data migrations preserve a pre-migration database copy. If import or migration fails, keep that copy and the recovery message instead of replacing the active database while Synix is running.
+					"""),
+
+				["Automatic Backups and Updates"] = CreateArticle(
+					"Maint",
+					"""
+					Open Configure → Automation for the selected server to choose work that happens before supported launches.
+
+					BACKUP ON START
+					Enable this to create a stopped-server backup before applicable starts. Set the backup root and retention in application Settings → Backups.
+
+					Crash-recovery starts deliberately skip the normal backup routine. Automatic startup backups are not a replacement for keeping independent recovery points before major changes.
+
+					UPDATE ON START
+					Enable this to perform the supported game update check before launch. It updates game-server files, not the Synix application.
+
+					An update check is not a promise that every start downloads files. SteamCMD and the game's installer decide what is needed.
+
+					VALIDATION AND CUSTOM FILES
+					A manual Validate action can repair or redownload installer-managed files. Preserve modifications before updating or validating; do not assume custom files always remain untouched.
+
+					TEST YOUR CHOICES
+					Save the settings and perform an attended start. Read the activity results for backup, update, and launch. A completed download does not prove that the game has loaded its world successfully.
+
+					Allow enough free space for archives, downloads, temporary files, and the installed game. If pre-start work reports a failure, investigate the stated reason rather than launching the same server outside Synix to bypass it.
+					"""),
+
+				["Scheduling Smart Maintenance"] = CreateArticle(
+					"Maint",
+					"""
+					Configure a server's maintenance schedule only after you have tested its normal backup, update, stop, and start behavior.
+
+					1. Open its automation/schedule settings and enable the schedule.
+					2. Choose the days and time.
+					3. Enable Smart Maintenance and select the available backup/update options.
+					4. Decide whether to wait for players and set the maximum delay.
+					5. Save and test during a maintenance window you can supervise.
+
+					Schedules use the PC's local time. Keep its clock and time zone correct.
+
+					WHEN THE SCHEDULE IS DUE
+					Synix can wait for connected players, then coordinate stopping the verified process group, backing up while stopped, updating, and restarting according to the selected options.
+
+					The maximum delay is a limit, not a promise to wait forever. Maintenance can proceed when it expires even if players remain. A zero delay gives no waiting period.
+
+					PLAYER INFORMATION HAS LIMITS
+					Waiting depends on the information the selected game can provide. An API-linked Satisfactory server treats stale or unavailable counts conservatively during the configured waiting period. That does not make unsupported query data reliable.
+
+					Notify players in advance and read the resulting activity messages. Discord notifications can report supported maintenance events when their routes are configured.
+
+					The PC must be awake and the relevant Synix process or background agent must be running. A shut-down or sleeping computer cannot perform normal scheduled downloads and restarts.
+					"""),
+
+				["Discord Notifications"] = CreateArticle(
+					"Maint",
+					"""
+					Discord webhooks send selected server events to a channel. They are notifications, not a Discord bot for remotely controlling Synix.
+
+					SET UP A DESTINATION
+					1. Create or obtain a webhook for a channel you are authorized to manage.
+					2. Open the selected server's Configure → Discord page.
+					3. Enter the webhook and choose the available event-routing options.
+					4. Save the configuration.
+					5. Use a test action if offered, or confirm delivery during a planned event.
+
+					Startup, shutdown, recovery, backup, and maintenance messages depend on the routes enabled and whether the operation actually occurred.
+
+					PROTECT THE URL
+					A webhook URL contains a posting credential. Anyone who obtains it may be able to send messages to that channel. Keep it out of public screenshots, issues, scripts, and chats.
+
+					Synix protects its saved webhook for the Windows user. If the URL is exposed, rotate or delete it in Discord, then update Synix's destination. Review the server names and event details sent to a shared channel.
+
+					IF MESSAGES DO NOT ARRIVE
+					Check the selected event route, the URL, channel/webhook availability, and whether the PC can reach Discord. Inspect the reported error without publishing the full URL.
+
+					Notifications use an outbound connection to Discord. They do not require opening an inbound router control port.
+					"""),
+
+				["Watchdog and Crash Recovery"] = CreateArticle(
+					"Watch",
+					"""
+					The watchdog watches recognized server processes and can initiate configured recovery after an unexpected exit or detected problem.
+
+					NORMAL OPERATION
+					Use Synix's Stop and Restart controls for intentional changes. Synix coordinates those actions with the watchdog so a requested shutdown is not treated as a crash.
+
+					Closing a game's window, killing it in Task Manager, or stopping it through another manager may look unexpected and trigger recovery.
+
+					REPEATED RESTARTS
+					Stop the server through Synix, then inspect the latest game log. Fix the underlying runtime, configuration, port, memory, or mod issue before starting it again. Recovery cannot repair an incompatible mod or an unfinished game-owned setup.
+
+					A process failure and an unavailable query are different problems. Recovery timing depends on the game and current state, so do not diagnose every delay using one assumed timeout.
+
+					LIMITATIONS
+					Synix tracks supported launchers and child processes belonging to the server. Externally managed virtual machines or deployment services can outlive the launcher and need game-owned controls.
+
+					The watchdog is not a substitute for verified backups or watching a newly changed server during its first successful start.
+					"""),
+
+				["Resource Checks and Network Guard"] = CreateArticle(
+					"Watch",
+					"""
+					Synix checks resource pressure before certain launches to reduce the chance of overloading the host. If a start is delayed or blocked, read the stated resource issue.
+
+					KEEP ROOM FOR THE HOST
+					Allow memory for Windows and background applications as well as the game. Keep disk space available for updates, temporary files, saves, and backups.
+
+					A configured Minecraft memory limit affects its game/runtime. It is not a universal hard limit for every process launched by every game.
+
+					Resource checks do not put a server in a CPU/RAM container or guarantee that Windows can never run out of resources. Use the resource monitor and the whole-PC dashboard summaries to understand the actual load.
+
+					NETWORK GUARD
+					The experimental network-warning feature watches unusual bandwidth/resource conditions and accounts for known SteamCMD activity to reduce false warnings.
+
+					It is not a firewall, traffic filter, or DDoS protection service. An alert does not identify an attacker or prove an attack occurred.
+
+					When warned, compare the activity with known downloads, backups, and other applications. Inspect the relevant logs before changing security or network settings.
+					"""),
+
+				["Background Operation and Reopening Synix"] = CreateArticle(
+					"Watch",
+					"""
+					Closing a child window, minimizing Synix, and explicitly exiting the application are different actions. Review your configured behavior and any exit prompt.
+
+					REOPENING THE CONTROL PANEL
+					Synix can recognize supported server processes that are still running and recover ownership of them. Allow the initial process check to finish before starting another instance.
+
+					Process recognition must match the selected installation, not merely a familiar executable name. Custom wrappers or externally managed services may need additional attention.
+
+					BACKGROUND SETTINGS
+					Optional startup/background-agent settings support monitoring at Windows sign-in. They are not required to create your first server.
+
+					Scheduled work needs the relevant Synix process or agent, an available Windows session, and an awake PC. Sign-in startup is not a promise that work will run while the machine is shut down.
+
+					BEFORE RESTARTING WINDOWS
+					Finish backups, downloads, and transfers. Stop games through Synix so they can save normally, then exit or restart Windows.
+
+					Do not assume a hidden game console has stopped or that closing a monitoring window shuts down its game. Check the dashboard and use intentional lifecycle controls.
+					"""),
+
+				["Installation and Windows Security Problems"] = CreateArticle(
+					"Trouble",
+					"""
+					Read the exact Windows message before deciding what to change. A blocked executable, a file-access error, and a missing game runtime are different problems.
+
+					SYNIX WILL NOT INSTALL OR OPEN
+					Use an official release or the exact WinGet package ubidzz.Synix. If replacing a file reports access denied, close the Synix instance using that path normally and retry. Check folder access and security-software messages if the problem continues.
+
+					Do not delete server data or disable protection as a general repair.
+
+					SMARTSCREEN
+					A reputation warning can offer More info → Run anyway, depending on Windows policy. The presence of that option is not proof that a file is safe. Verify the official source and investigate the warning before deciding whether to proceed.
+
+					SMART APP CONTROL
+					This can block an app when Windows cannot establish enough trust. It has no individual-app bypass comparable to SmartScreen's Run anyway. Do not disable Windows security features solely to run Synix.
+
+					ANTIVIRUS OR HASH FAILURE
+					Investigate the exact detection and file. Do not assume an alert is a false positive because the file is named Synix. A matching SHA-256 hash identifies the downloaded file; it does not establish trust or code signing.
+
+					Report the exact warning and installation method with private details removed. Avoid generic exclusions or bypassing installer hash verification.
+					"""),
+
+				["Missing Game Requirements"] = CreateArticle(
+					"Trouble",
+					"""
+					Open the selected server's Readiness result to identify the missing prerequisite. The runtime included with Synix does not replace a game's separate requirements.
+
+					MISSING DLL MESSAGES
+					Errors mentioning MSVCP140.dll or VCRUNTIME140.dll commonly point to a Visual C++ runtime requirement. Use the game's instructions and the matching supported Microsoft redistributable.
+
+					Microsoft's redistributable information:
+					https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist
+
+					Do not download individual DLL files from random websites or place unrelated DLLs beside the server executable.
+
+					OTHER REQUIREMENTS
+					A game can require an account, server entitlement, particular Java runtime, Windows feature, or supported hardware. Complete those requirements before changing unrelated ports or resetting configuration.
+
+					For Minecraft Java, use a supported version/loader combination from Synix's selectors. Bedrock does not use Java.
+
+					For a deployment requiring Hyper-V or hardware virtualization, inspect its game-specific readiness checks. Do not enable system features or run every server as administrator simply to bypass a warning.
+
+					After fixing the requirement, perform one new start and review the first meaningful game-log error if it still fails.
+					"""),
+
+				["Server Startup and Shutdown Problems"] = CreateArticle(
+					"Trouble",
+					"""
+					Read the selected server's latest activity and game log. Look for the first actual failure rather than only the final shutdown message.
+
+					STUCK ON STARTING OR EXITING EARLY
+					1. Confirm the selected installation folder, executable, game edition, and loader.
+					2. Check required files, free RAM/disk space, and occupied ports.
+					3. Complete any agreement, account sign-in, token requirement, or in-game session setup.
+					4. For mods, compare the game, loader, dependencies, and client requirements.
+					5. Stop through Synix before changing files, then test one start.
+
+					A live launcher can remain after the real server failed. A healthy server can also be waiting for world loading or have an unavailable query/API. Inspect those states separately.
+
+					STOP OR RESTART TAKES TIME
+					Games need time to save and close worker processes. Wait for Synix's result and read its shutdown message. A forced fallback can lose unsaved progress.
+
+					Do not simultaneously kill processes, start another copy, or use another manager against the same installation.
+
+					A TOOL OR SETTING IS MISSING
+					Check the profile's capabilities and current state. Some options are disabled because the game owns them or no supported management channel exists. N/A player data is not automatically a server failure.
+
+					If the problem persists, record the action, exact error, and a short redacted log excerpt before making further unrelated changes.
+					"""),
+
+				["Reading Logs and Crash Reports"] = CreateArticle(
+					"Trouble",
+					"""
+					Use the log that belongs to the part that failed.
+
+					SYNIX ACTIVITY
+					Activity & Diagnostics shows progress and user-relevant warnings on the dashboard. Clearing that area only clears the visible messages; it does not erase all saved diagnostics.
+
+					APPLICATION LOGS
+					Synix text logs and fatal-crash reports are normally under:
+					C:\Synix\SynixData\logs
+
+					A crash dialog may name a specific file. Use that path and the time of the failure to find the relevant entry.
+
+					Handled diagnostic exceptions can be written to the text log without appearing on the dashboard. A logged handled exception is not automatically evidence of an application crash.
+
+					GAME LOGS
+					Use the selected server's actual game log for world-loading, configuration, mod, and game-runtime errors. Its location depends on the game and can be outside the installation root.
+
+					READ IN CONTEXT
+					Note the action and time, then inspect the messages around the first meaningful failure. A shutdown line at the end can be a consequence rather than the cause.
+
+					Before sharing any excerpt, remove passwords, tokens, webhooks, private addresses, and personal paths. Satisfactory's own console/log can contain an administrator token. Keep the original private log for your own investigation.
+					"""),
+
+				["Minecraft Setup and Mod Loaders"] = CreateArticle(
+					"Games",
+					"""
+					Choose the Minecraft edition before choosing mods or connection settings. Java and Bedrock are separate server types; Bedrock is not a Java loader.
+
+					SET UP THE SERVER
+					1. Create a Minecraft entry and select Java or Bedrock.
+					2. For Java, choose the Minecraft version, loader, and compatible loader version offered by the selectors.
+					3. Review the world, native game mode, player limit, memory, ports, and enabled security fields.
+					4. Save and Start through Synix.
+					5. Read any agreement or first-start prompt before accepting it.
+					6. Wait for the world to finish loading, then join with the matching client edition and version.
+					7. Back up the working world before adding mods.
+
+					JAVA AND BEDROCK
+					Java choices include Vanilla, Fabric, Forge, and supported NeoForge combinations. Use the choices actually offered; do not invent a version string to bypass compatibility checks. Synix prepares the supported Java runtime/loader combination.
+
+					Bedrock uses the official Bedrock Dedicated Server package and does not use Java.
+
+					MATCH THE MODS
+					Choose the loader required by your mods. Match the Minecraft version, loader, dependencies, and any client-side requirements.
+
+					Fabric, Forge, NeoForge, and plugin-server packages are not interchangeable. Creating a mods or plugins folder does not install the required loader or server framework. Browse Catalog is not automatic modpack or dependency installation.
+
+					CONFIGURATION
+					Configure manages supported server.properties and edition-specific settings. Native modes include Survival, Creative, and Adventure; technical values and commands keep the form Minecraft expects.
+
+					Stop before changing files that require a restart. Do not replace an existing world with a fresh template as a repair shortcut.
+
+					IF PLAYERS CANNOT JOIN
+					Check edition, game/loader versions, required mods, and the selected edition's actual port/protocol. For an early exit, inspect the game log for agreement, runtime, memory, or dependency errors.
+					"""),
+
+				["Minecraft Console and Player Tools"] = CreateArticle(
+					"Games",
+					"""
+					Select the Minecraft server and open its console or player tools from Server Options.
+
+					COMMAND CHANNELS
+					Supported configurations can use a Synix-managed console, a supported localhost management channel, or optional RCON. The available channel depends on the edition and server configuration.
+
+					A hidden native window can still leave a supported local command channel available. If controls are disabled, check that the server is running and that its management settings are valid.
+
+					PREPARED ACTIONS
+					Where supported, Synix provides announcements, player lists, moderation, operator and allowlist changes, time/weather controls, and saving.
+
+					Select the intended player and read the action before confirming it. Giving operator access grants powerful game permissions. Do not grant it merely to solve a connection problem.
+
+					RAW COMMANDS
+					Use the syntax expected by that edition. Commands such as list and save-all are game input and are not translated with the Synix interface. Check the game's command rules before sending a command that changes worlds or permissions.
+
+					COUNTS AND NAMES
+					A query can provide a player count without an authenticated named roster. An empty names table does not by itself prove nobody is connected.
+
+					Use the dashboard Stop or Restart action for lifecycle changes so the watchdog knows the shutdown is intentional.
+
+					Keep optional RCON or administration endpoints local unless you have a secured remote-management arrangement. Public gameplay does not require exposing those credentials or endpoints.
+					"""),
+
+				["Mod and Plugin Manager"] = CreateArticle(
+					"Games",
+					"""
+					Open Server Options → Mod & Plugin Manager for a supported profile. Synix detects installed content and supported destinations; it is not a catalog containing every mod.
+
+					INSTALL A LOCAL PACKAGE
+					1. Back up the world, existing add-ons, and affected configuration.
+					2. Stop the server through Synix and wait for its process group to exit.
+					3. Check the detected add-on system, install area, and safety checklist.
+					4. Choose Install From File for a supported package.
+					5. Review the destination, scan result, warnings, and confirmation.
+					6. Let staging, backup, and installation finish.
+					7. Refresh the list, restart if required, and check the game log and a client connection.
+
+					Simplified view hides some technical detail without bypassing the checks.
+
+					WORKFLOW TYPES
+					Supported workflows include Minecraft JAR packages, Rust Oxide/uMod plugins, local 7 Days to Die packages, ARK: Survival Evolved Workshop IDs, and ARK: Survival Ascended provider IDs. Some systems are detection-only or require their framework first.
+
+					For provider IDs, Synix manages supported configuration while the game/provider delivers content. Content not yet downloaded cannot be pre-scanned locally.
+
+					WHAT CHECKS CAN AND CANNOT DO
+					Imports check package layout and destinations and reject unsafe paths, links, disallowed executable content, oversized packages, duplicate destinations, and confirmed malware detections.
+
+					An unavailable or inconclusive Defender scan is a warning, not proof of malware. A clean scan and recorded hash also do not prove a third-party package is trustworthy. Mods run with the server's Windows permissions.
+
+					CATALOGS, REMOVAL, AND RECOVERY
+					Browse Catalog opens the provider website. It does not automatically resolve dependencies or install a complete modpack.
+
+					Stop before Remove Selected and review its target and rollback information. Synix records changes it performs, not every manual edit. Keep independent backups: removing a mod can make a world unloadable or remove mod-owned content.
+
+					An empty table means no supported add-ons were found in the active locations. Check the profile, folder, and framework before assuming all files on disk were searched.
+					"""),
+
+				["Satisfactory: Connect Automatically"] = CreateArticle(
+					"Games",
+					"""
+					Satisfactory requires initial setup in its own in-game Server Manager. Synix can install and launch the dedicated server, but it does not replace claiming the server or creating its session.
+
+					FINISH THE GAME'S SETUP
+					1. Create the Satisfactory entry and Start it in Synix.
+					2. Wait for the dedicated server to finish loading.
+					3. Open Satisfactory's in-game Server Manager and add or select the server.
+					4. Claim it, set the administrator password, and sign in as administrator.
+					5. Create or load the session you want to use.
+
+					Synix manages supported launch/configuration values, including the launch port and MaxPlayers. Applicable files are under FactoryGame\Saved\Config\WindowsServer.
+
+					CONNECT SYNIX
+					1. Keep the server running with -NewConsole. Check imported or older entries; if you add this argument, restart through Synix.
+					2. Use the same Windows permission level for Synix and the server, preferably normal user permissions.
+					3. Select that server and open Server Options → Satisfactory Control Center → Connect API.
+					4. Choose Connect automatically once and wait.
+
+					Synix sends server.GenerateAPIToken, reads the complete fresh output, verifies the local API, and saves the token encrypted for your Windows account. The token grants administrator access, not just monitoring.
+
+					Success reports Token verified and saved securely and opens Overview. You do not need to copy a console line or paste a token manually.
+
+					If the attempt fails, Synix keeps any previously saved connection and does not automatically retry the command. Read the specific result before trying again.
+
+					This connects to the selected server on this PC; it does not require a new router rule for Synix. Normal Start, Stop, and Restart still work without an API token.
+					"""),
+
+				["Satisfactory: Settings, Saves, and Commands"] = CreateArticle(
+					"Games",
+					"""
+					Open the Satisfactory Control Center after connecting the local API. Select the tab for the operation you need.
+
+					OVERVIEW
+					Choose Refresh to read session name, connected-player count/limit, game state, average tick rate, play time, and technology tier.
+
+					Dashboard player counts update automatically while the connection is healthy; the Overview table refreshes on request. This API provides counts, not a named-player roster. A paused session or a server waiting for a session is not a stopped process.
+
+					SERVER SETTINGS
+					Choose Refresh, edit supported values, then Apply changes. Recheck pending values after refreshing. Some options require a restart; applying changes does not automatically restart the game.
+
+					Setting keys and accepted values remain in the game's technical language.
+
+					SAVED GAMES
+					• Save now: Enter a name or use a dated Synix name. Reusing a name may overwrite an existing save.
+					• Load selected: Review the confirmation. Synix saves current progress first when a session is active; loading can disconnect players.
+					• Upload save: Adds the selected file and may replace a same-named save. It does not automatically load it.
+					• Download selected: Saves a copy to the local path you choose.
+
+					Keep an independent backup before replacing or loading an important world. Save transfers have a 512 MB safety limit. The API can be temporarily unavailable while a session loads.
+
+					ADVANCED CONSOLE
+					Send one supported game command at a time and read the confirmation. Scripts, token/password commands, and insecure-access changes are blocked here.
+
+					Supported stop commands are routed through Synix's stop workflow. Command output stays in this window rather than being posted to the dashboard or Synix text logs; the game may still write its own logs.
+					"""),
+
+				["Satisfactory: Connection Problems and Token Safety"] = CreateArticle(
+					"Games",
+					"""
+					Read the result of Connect automatically before retrying. A command appearing in the game console does not prove that token capture, verification, and saving all succeeded.
+
+					CHECK THE SPECIFIC FAILURE
+					• Console unavailable: Confirm -NewConsole, the selected server, and matching Windows permission levels.
+					• Unfinished command in the input: Clear it yourself. Synix will not overwrite it.
+					• Command runs but no token is captured: Let startup finish, check writable game logs, and allow complete fresh output to arrive.
+					• Filters interfere: Clear include/exclude filters and let the console respond.
+					• API port belongs to another process: Correct the selected server's configured game port. Do not send its token to an unrelated listener.
+					• Token rejected or saved connection cannot be unlocked: Complete game-owned setup, then reconnect.
+					• API unavailable: Wait for startup or save loading and inspect the game log.
+
+					A fresh response can contain the same token value as an earlier response. Capture uses output produced after the command, not an arbitrary old token in a log.
+
+					PROTECT OR REMOVE ACCESS
+					Satisfactory prints administrator tokens in its own console and logs. Keep them private and remove token lines from screenshots and reports.
+
+					Synix verifies that the local endpoint belongs to the selected server and pins its certificate. Do not disable certificate checks to resolve a failure.
+
+					Remove saved token deletes Synix's stored connection; it does not revoke the token at the server.
+
+					To revoke existing application tokens, use server.InvalidateAPITokens in Satisfactory's own server console or Server Manager console. This also affects other integrations using those tokens.
+
+					For another Windows account or moved installation, reconnect if the protected saved connection cannot be used.
+					"""),
+
+				["Rust and Rust+ Companion Setup"] = CreateArticle(
+					"Games",
+					"""
+					Choose the Rust profile and review its world, identity, gameplay, query, and companion settings before the first start.
+
+					SERVER IDENTITY
+					Synix supplies the supported +server.identity value from the server's identity. Keep separate installations and identities for separate instances so they do not unintentionally share worlds or configuration.
+
+					RUST+
+					Configure a unique supported App Port for the companion service, then follow Rust's pairing and network requirements. Its endpoint is separate from player gameplay and optional RCON administration.
+
+					Check the actual configured ports rather than copying a rule from another Rust server. Protect RCON credentials and do not publish them to help people join.
+
+					VANILLA AND OXIDE
+					Vanilla uses the official server files. Selecting Oxide adds the supported official framework after the Steam files. Framework installation does not select or vet individual plugins.
+
+					Use the Mod & Plugin Manager's supported local workflow for a detected Oxide/uMod installation. Plugins still need compatible versions and trusted sources.
+
+					Synix reapplies the supported Oxide runtime after Rust updates or validation when that framework is selected. To return to official Vanilla files, change the framework selection and run the supported Update or Validate workflow.
+
+					Before a framework or game change, preserve the world, configuration, and plugin data. Inspect both the game and Oxide logs after restarting; a successful framework download does not prove that every plugin loaded correctly.
+					"""),
+
+				["Dune: Awakening Deployment"] = CreateArticle(
+					"Games",
+					"""
+					Dune uses an external deployment system with game-owned virtual machines and battlegroup state. It is not an ordinary single-process game server.
+
+					PREREQUISITES
+					Read Synix's readiness checks for system memory, AVX2, hardware virtualization, Hyper-V, and a supported Professional-or-higher Windows edition. Memory needs depend on the battlegroup and maps you run.
+
+					Synix does not silently enable virtualization or install Hyper-V. Complete the game's official prerequisites before deploying.
+
+					INSTALL AND INITIALIZE
+					1. Create a Dune: Awakening entry and review its requirements and installation folder.
+					2. Save and Start it.
+					3. Synix launches the official battlegroup.bat tool with the administrator prompt required by that deployment.
+					4. Choose initial-setup in the game's tool and supply your Self-Host Token.
+					5. Complete the VM, network, and battlegroup setup in that tool.
+
+					Obtain the Self-Host Token through the official Funcom account portal using its eligibility/setup process:
+					https://account.duneawakening.com/
+
+					Keep the token private. Elevation for this deployment tool does not mean every Synix server should run as administrator.
+
+					NETWORKING AND CONTROL LIMITS
+					Use the deployment's actual host/VM network layout and required ports. The query-field metadata in Synix represents RMQ, not a normal A2S query listener.
+
+					A closed launcher window does not prove that its VMs stopped. Confirm running state and perform battlegroup operations with the game's deployment controls.
+
+					Synix can install, update, launch, and back up the selected installation folder. Do not assume ordinary process termination, player queries, or watchdog recovery fully controls the external deployment. Launch-file export is not offered for this profile.
+
+					Use game-supported shutdown and backup procedures for persistent VM/database data. A deployment-folder ZIP alone is not a verified consistent backup of it.
+					"""),
+
+				["Getting Support and Reporting a Problem"] = CreateArticle(
+					"Support",
+					"""
+					Open Settings → Report a Problem to prepare a report, or use the official support destinations below.
+
+					MAKE THE PROBLEM REPRODUCIBLE
+					Include the installation method, the Synix and Windows versions you are actually using, the game/profile, and relevant edition/loader details.
+
+					Describe:
+					• What you clicked or changed.
+					• What you expected and what happened.
+					• The exact error and a short log excerpt near its time.
+					• Whether the setup worked before and what changed.
+
+					REVIEW BEFORE SHARING
+					Remove passwords, tokens, webhook URLs, personal paths, and network information you do not want public. Privacy Mode does not sanitize every attached file. Do not attach complete logs or game configurations without reviewing them.
+
+					For a translation issue, include the selected language, window name, and exact visible wording. For a game-definition problem, include a redacted installation layout and the relevant game documentation.
+
+					OFFICIAL DESTINATIONS
+					Issue reports:
+					https://github.com/ubidzz/Synix-Control-Panel/issues
+
+					Community Discord:
+					https://discord.gg/WduKEU3j8s
+
+					Project repository:
+					https://github.com/ubidzz/Synix-Control-Panel
+
+					A successful application install or build cannot test every game, mod, and network environment. Clear reproduction steps help distinguish a Synix problem from a game or host-setup problem.
+					"""),
+
+				["Game Definitions and Contributions"] = CreateArticle(
+					"Support",
+					"""
+					This topic is for advanced users and contributors. You do not need developer tools to create a server from a supported profile.
+
+					HOW DEFINITIONS WORK
+					Built-in game definitions describe downloads, executables, Steam AppIDs and login requirements, launch arguments, ports, configuration behavior, prerequisites, and controller capabilities.
+
+					Definitions select supported built-in behavior. They do not dynamically load arbitrary handlers, assemblies, or downloaded scripts. Dropping a JSON file into an installed application folder does not add a new compiled game profile.
+
+					CORRECT OR ADD A PROFILE
+					1. Start with official dedicated-server instructions and real generated configuration files.
+					2. Use server-root-relative paths where required and exact game-facing identifiers.
+					3. Include complete supported templates at their correct installed locations.
+					4. Update the appropriate definition/configuration/template revisions.
+					5. Validate the library, build with the SDK required by the project, and run relevant tests.
+					6. Test installation, start, stop, and monitoring with the actual game before recording verification.
+
+					The Definition Builder is a development-build tool, not a normal release-setup requirement.
+
+					SOURCE ORGANIZATION
+					• UI: Feature windows.
+					• ServerHandler: Game controllers and server integrations.
+					• SynixEngine: Application lifecycle, maintenance, networking, backups, and security.
+					• Design: Shared controls, themes, and layout helpers.
+					• Database/GameDefinitions: Game profiles and templates.
+					• Database/ModSystems: Supported add-on workflows.
+					• Localization: Interface catalogs and generators.
+					• Tests: Feature-focused checks.
+
+					For translations, update user-facing resources together and preserve placeholders. Do not translate commands, keys, tokens, or output-recognition markers. Help and technical reports remain English.
+
+					Read the License & Proprietary Terms before redistributing code or builds. Keep real credentials and private logs out of contributions and fixtures.
+					"""),
 
 				["License & Proprietary Terms"] = new HelpItem("Support",
 					"SYNIX CONTROL PANEL — LIMITED PROPRIETARY SOURCE-AVAILABLE LICENSE\n" +
@@ -639,6 +1401,14 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 					"Synix Control Panel is developed with passion for the server hosting community. \nYour support keeps updates frequent and features growing!\n\n" +
 					"Click the button below or scan the QR code to open the official PayPal \ndonation page securely in your browser.")
 			};
+
+			return articles;
+		}
+
+		private static HelpItem CreateArticle(string category, string answer)
+		{
+			return new HelpItem(category,
+				answer.ReplaceLineEndings("\n").Trim());
 		}
 
 		private void PopulateTree(string filter = "")
@@ -730,7 +1500,7 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 			}
 		}
 
-		private static bool MatchesFilter(
+		internal static bool MatchesFilter(
 			KeyValuePair<string, HelpItem> entry,
 			string filter)
 		{
@@ -766,17 +1536,7 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 			lblTopicCategory.Text = "SYNIX KNOWLEDGE BASE";
 			lblTopicTitle.Text = "How can we help?";
 			lblArticleBadge.Text = "WELCOME";
-			lblAnswer.Text =
-				"Welcome to the Synix Engine Knowledge Base.\n\n" +
-				"Choose a topic from the navigation panel or search for a game, " +
-				"feature, error, networking rule, or setup step. The search checks " +
-				"both article names and their full contents, so you can describe the " +
-				"problem you are trying to solve.\n\n" +
-				"QUICK START\n" +
-				"• Start with Getting Started & Setup for first-time installation.\n" +
-				"• Open Networking & IP Rules for port and connection guidance.\n" +
-				"• Use Troubleshooting & System when a server will not launch.\n" +
-				"• Press Ctrl+F at any time to jump directly to search.";
+			lblAnswer.Text = WelcomeText;
 			ResetAnswerScroll();
 		}
 
@@ -790,7 +1550,7 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 				? "No help articles are currently available."
 				: $"Synix could not find a topic containing \"{filter}\".\n\n" +
 					"Try a shorter phrase or search for a related term such as " +
-					"ports, backup, watchdog, SteamCMD, RCON, or firewall.";
+					"Satisfactory, token, Minecraft, import, transfer, backup, ports, or SteamCMD.";
 			ResetAnswerScroll();
 		}
 
@@ -818,16 +1578,24 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 				btnDonateAction.BringToFront();
 			}
 
-			btnDonateAction.Visible = isDonationTopic;
-			if (isDonationTopic)
-			{
-				qrCard.BringToFront();
-				btnDonateAction.BringToFront();
-			}
-
 			lblFooterStatus.Text = "VIEWING HELP ARTICLE";
 			ResetAnswerScroll();
+			RevealAnswerText(txtSearch.Text.Trim());
 		}
+
+		private void RevealAnswerText(string text)
+		{
+			if (string.IsNullOrWhiteSpace(text))
+				return;
+
+			int position = lblAnswer.Text.IndexOf(text, StringComparison.OrdinalIgnoreCase);
+			if (position < 0)
+				return;
+
+			lblAnswer.Select(position, text.Length);
+			lblAnswer.ScrollToCaret();
+		}
+
 
 		private void ResetAnswerScroll()
 		{
@@ -1072,8 +1840,9 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 						linkUri.Scheme != Uri.UriSchemeHttps))
 				{
 					throw new InvalidOperationException(
-						"Only secure web links can be opened from the help center.");
+						"Only web links can be opened from the help center.");
 				}
+
 
 				Process.Start(new ProcessStartInfo
 				{

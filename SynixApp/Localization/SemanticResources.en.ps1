@@ -1,7 +1,32 @@
+# ============================================================================
+# PROJECT: Synix Game Server Control Panel
+# AUTHOR: Jason Turner (ubidzz)
+# COPYRIGHT: © 2026 All Rights Reserved.
+#
+# LEGAL NOTICE:
+# This source code is proprietary and confidential.
+# 1. Permission is granted for PERSONAL, NON-COMMERCIAL use only.
+# 2. You may modify this code for your own use, but you may NOT redistribute,
+#    rebrand, or sell this code or derivative works without written consent.
+# 3. The "Synix" brand and logic remain the property of Jason Turner.
+# ============================================================================
+
 # Additional named interface resources introduced by the full UI localization pass.
 # Machine-facing game commands, launch values, configuration keys, and protocol
 # identifiers intentionally do not belong in this catalog.
 [ordered]@{
+    'ServerSetup.World.Seed.Hint' = 'Generate a seed for a new world, or enter your own. For an existing world, keep its original seed.'
+    'ServerSetup.World.Seed.Generate' = 'Generate seed'
+    'GameInput.WorldSeed.RequiredNumber' = 'World Seed is required for {0}: use a whole number from {1} to {2}. Correct it in Server Setup > World Generation.'
+    'ServerSetup.World.Seed.Required' = 'World Seed (required)'
+    'ServerSetup.World.Seed.RangeHint' = 'Whole number from {0} to {1}. For an existing world, keep its original seed.'
+    'Configuration.Editor.Error.YamlUnsupported' = 'YAML line {0} is invalid or uses a feature this editor cannot safely change. Supported: one document with indented mappings/lists and single-line values. Flow collections, multiline values, tags, anchors, and aliases are not supported. Nothing was saved.'
+    'ModManager.Error.LinkedPath' = 'This add-on operation uses a linked file or folder. Choose a normal folder; Synix will not follow that link.'
+    'ModManager.Error.PreviousFileMissing' = 'A previous add-on file needed for restoration is missing. No files were changed. Restore the missing recovery file or use a verified server backup before removing this add-on.'
+    'ModManager.Error.RecoveryRetained' = 'The add-on import failed and some changes could not be rolled back. Recovery files were kept at {0}. Keep the server stopped and restore those files or a verified server backup before starting it.'
+    'LaunchCommand.Error.UnsafeBatchValue' = 'The launch field {0} cannot be passed safely through this Windows batch launcher. Embedded double quotes, line breaks, or variable expressions are not supported here. The value was not changed.'
+    'LaunchCommand.Error.UnsafeBatchArguments' = 'The completed batch command contains unsafe command syntax or variable expansion. Review the launch values and extra arguments; nothing was started.'
+    'ServerStart.Arguments.CustomHidden' = '[Custom arguments supplied; contents omitted from log]'
     'Satisfactory.ConnectHeading' = "Connect this server"
     'Satisfactory.ConnectAutomatically' = "Connect automatically"
     'Satisfactory.ConnectingAutomatically' = "Connecting: sending the command, capturing the token, and verifying the connection…"
@@ -600,7 +625,7 @@
     'GameDefinitions.Builder.Lifecycle.Process' = "Track the launched server process"
     'GameDefinitions.Builder.ProjectNotFound' = "Synix Control Panel.csproj could not be found from this development build."
     'GameDefinitions.Builder.SavedPath' = "Saved: {0}"
-    'GameDefinitions.Builder.TemplatePicker.Filter' = "Configuration files|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|All files|*.*"
+    'GameDefinitions.Builder.TemplatePicker.Filter' = "Configuration files|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|All files|*.*"
     'GameDefinitions.Builder.TemplatePicker.Title' = "Select a complete game configuration template"
     'GameDefinitions.Queue.ArgumentRecorded' = "{0}: argument verification recorded from the real-server test."
     'GameDefinitions.Queue.ClearConfirm' = "Remove the {0} verification from {1}?"
@@ -1650,6 +1675,9 @@ Examples: logs\latest.log, Saved\Logs\*.log, profiles\{Identity}\logs\**\*.log. 
     'FileHandler.Activity.MigrationUpgraded' = "[MIGRATION] Upgraded {0} server record(s) to data schema {1}. The original file was backed up before saving."
     'FileHandler.Activity.MigrationProtected' = "[MIGRATION] Protected saved passwords and Discord webhooks for {0} server(s) with Windows user encryption."
     'FileSystem.Error.FolderMoveFailed' = "The folder could not be moved: {0}"
+    'FileSystem.Error.UnsafeDeletionPath' = "Synix refused to delete '{0}' because it is not a safe server or backup folder. Drive roots, Windows and application folders, user-data roots, and shared Synix folders are protected."
+    'FileSystem.Error.LinkedDeletionPath' = "Synix refused to delete '{0}' because the folder or one of its parent folders is a link. Linked folders cannot be deleted automatically."
+    'FileSystem.Error.DeletionPathUnavailable' = "Synix could not safely verify the deletion folder '{0}'."
     'Configuration.Activity.Error' = "[CONFIG ERROR] {0}"
     'Configuration.Activity.Warning' = "[CONFIG WARNING] {0}"
     'Configuration.Definition.Duplicate' = "Duplicate configuration definition: {0}."

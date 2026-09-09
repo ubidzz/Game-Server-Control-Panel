@@ -13,8 +13,11 @@
 using Synix_Control_Panel.SynixApp.Database;
 using Synix_Control_Panel.SynixApp.FileFolderHandler;
 using Synix_Control_Panel.SynixEngine;
+using Microsoft.Win32.SafeHandles;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using static Synix_Control_Panel.SynixEngine.Core;
 
 namespace Synix_Control_Panel.SynixApp.ServerHandler
@@ -23,6 +26,8 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 	{
 		#region Win32 API for Process Discovery
 		private const uint TH32CS_SNAPPROCESS = 0x00000002;
+		private const uint ProcessQueryLimitedInformation = 0x1000;
+		private const int ErrorInsufficientBuffer = 122;
 		private const int MAX_PATH = 260;
 		private static readonly IntPtr InvalidHandleValue = new IntPtr(-1);
 
@@ -54,6 +59,15 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern bool CloseHandle(IntPtr handle);
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		private static extern SafeProcessHandle OpenProcess(
+			uint desiredAccess, [MarshalAs(UnmanagedType.Bool)] bool inheritHandle, int processId);
+
+		[DllImport("kernel32.dll", EntryPoint = "QueryFullProcessImageNameW", CharSet = CharSet.Unicode, SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool QueryFullProcessImageName(
+			SafeProcessHandle process, uint flags, StringBuilder executableName, ref int size);
 		#endregion
 
 		private static int GetInitialTargetPid(GameServer server)
@@ -89,19 +103,10 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 					return false;
 				}
 
-				GameInfo? game = GameDatabase.GetGame(server.Game);
-				string configuredExe = game?.ExeName ?? string.Empty;
-				string expectedName = Path.GetFileNameWithoutExtension(configuredExe);
-				bool launchesScript = configuredExe.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
-					configuredExe.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase);
-
-				if ((!string.IsNullOrWhiteSpace(expectedName) &&
-					 process.ProcessName.Equals(expectedName, StringComparison.OrdinalIgnoreCase)) ||
-					(launchesScript && process.ProcessName.Equals("cmd", StringComparison.OrdinalIgnoreCase)))
-				{
-					return true;
-				}
-
+				// Windows reuses process IDs. A saved PID or matching EXE name alone
+				// must not authorize console commands or shutdown of another server.
+				// Live launchers created by Synix are handled by RunningProcess above;
+				// recovered PIDs must belong to this installation.
 				string? imagePath = TryGetProcessImagePath(process);
 				return imagePath != null && IsPathInsideDirectory(imagePath, server.InstallPath);
 			}
@@ -191,11 +196,13 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 				{
 					try
 					{
-						if (process.Id == Environment.ProcessId || process.HasExited)
+						if (process.Id <= 0 || process.Id == Environment.ProcessId || trackedProcesses.ContainsKey(process.Id))
 						{
 							continue;
 						}
 
+						// Resolve ownership before requesting exit/start information. Most
+						// Windows processes are unrelated and some deny those stronger rights.
 						string? imagePath = TryGetProcessImagePath(process);
 						if (imagePath != null && IsPathInsideDirectory(imagePath, server.InstallPath))
 						{
@@ -221,13 +228,54 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 		{
 			try
 			{
-				return process.MainModule?.FileName;
+				return TryGetProcessImagePath(process.Id);
 			}
 			catch (Exception exception)
 			{
 				ApplicationLogService.WriteSuppressedException(exception);
 				return null;
 			}
+		}
+
+		internal static string? TryGetProcessImagePath(int processId)
+		{
+			if (processId <= 0)
+				return null;
+
+			// A least-privilege query avoids enumerating another process's modules.
+			// SafeProcessHandle closes the native handle on every return path.
+			using SafeProcessHandle handle = OpenProcess(ProcessQueryLimitedInformation, false, processId);
+			if (handle.IsInvalid)
+			{
+				LogUnexpectedProcessQueryFailure(Marshal.GetLastWin32Error());
+				return null;
+			}
+
+			for (int capacity = 512; capacity <= 32768; capacity *= 2)
+			{
+				StringBuilder path = new(capacity);
+				int length = capacity;
+				if (QueryFullProcessImageName(handle, 0, path, ref length))
+					return path.ToString();
+
+				int error = Marshal.GetLastWin32Error();
+				if (error != ErrorInsufficientBuffer || capacity == 32768)
+				{
+					LogUnexpectedProcessQueryFailure(error);
+					return null;
+				}
+			}
+
+			return null;
+		}
+
+		private static void LogUnexpectedProcessQueryFailure(int error)
+		{
+			// Protected/system processes and processes exiting during a snapshot are
+			// normal discovery misses, not thrown/suppressed exceptions. Keep real
+			// query failures in the file-only debug log.
+			if (error is not (5 or 6 or 87 or 299))
+				ApplicationLogService.WriteSuppressedException(new Win32Exception(error));
 		}
 
 		private static bool IsPathInsideDirectory(string filePath, string directoryPath)

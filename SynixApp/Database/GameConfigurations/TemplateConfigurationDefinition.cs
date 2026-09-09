@@ -12,6 +12,8 @@
 // ============================================================================
 using Synix_Control_Panel.SynixApp.ServerHandler;
 using System.Text.Json;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Synix_Control_Panel.SynixApp.Database.GameConfigurations
 {
@@ -260,13 +262,21 @@ namespace Synix_Control_Panel.SynixApp.Database.GameConfigurations
 		public override ConfigurationApplyResult ResetToTemplate(
 			ConfigurationContext context)
 		{
-			return ReplaceWithTemplates(
-				context,
-				Templates.Select(template => new ResetTemplate(
-					template.RelativePath,
-					ExpandTemplate(template.Content, context),
-					Format))
-					.ToArray());
+			try
+			{
+				// Expand and validate every template before backing up or replacing files.
+				return ReplaceWithTemplates(
+					context,
+					Templates.Select(template => new ResetTemplate(
+						template.RelativePath,
+						ExpandTemplate(template.Content, context),
+						Format))
+						.ToArray());
+			}
+			catch (InvalidDataException exception)
+			{
+				return ConfigurationApplyResult.Failure(exception.Message);
+			}
 		}
 
 		public override bool ConfigurationFileExists(GameServer server)
@@ -310,29 +320,48 @@ namespace Synix_Control_Panel.SynixApp.Database.GameConfigurations
 			string GameModeValue() => GameFix.ResolveGameModeValue(
 				game,
 				RequireSingleLine(server.GameMode, "GameMode"));
+			string WorldSeedValue()
+			{
+				string value = RequireSingleLine(server.WorldSeed, "WorldSeed");
+				if (Format != ConfigFormat.YAML || !template.Contains("{WorldSeed}", StringComparison.Ordinal))
+					return TextValue(value, "world_seed");
+				if (!GameServerInputValidator.TryParseRequiredNumericWorldSeed(
+					GameName, value, out int seed, out string seedError))
+					throw new InvalidDataException(seedError);
+				return ProbeNumber(seed).ToString(CultureInfo.InvariantCulture);
+			}
 
-			return template
-				.Replace("{ServerName}", TextValue(RequireSingleLine(server.ServerName, "ServerName"), "server_name"), StringComparison.Ordinal)
-				.Replace("{Password}", TextValue(RequireSingleLine(context.Passwords.ServerPassword, "Password"), "password"), StringComparison.Ordinal)
-				.Replace("{HasPassword}", BooleanValue(!string.IsNullOrWhiteSpace(context.Passwords.ServerPassword)), StringComparison.Ordinal)
-				.Replace("{AdminPassword}", TextValue(RequireSingleLine(context.Passwords.AdminPassword, "AdminPassword"), "admin_password"), StringComparison.Ordinal)
-				.Replace("{MaxPlayers}", ProbeNumber(server.MaxPlayers).ToString(), StringComparison.Ordinal)
-				.Replace("{Port}", ProbeNumber(server.Port).ToString(), StringComparison.Ordinal)
-				.Replace("{QueryPort}", ProbeNumber(server.QueryPort).ToString(), StringComparison.Ordinal)
-				.Replace("{RCONPort}", ProbeNumber(server.RconPort).ToString(), StringComparison.Ordinal)
-				.Replace("{RCONPassword}", TextValue(RequireSingleLine(context.Passwords.RconPassword, "RCONPassword"), "rcon_password"), StringComparison.Ordinal)
-				.Replace("{EnableRcon}", BooleanValue(server.EnableRcon), StringComparison.Ordinal)
-				.Replace("{Identity}", TextValue(context.Identity, "identity"), StringComparison.Ordinal)
-				.Replace("{WorldName}", TextValue(RequireSingleLine(server.WorldName, "WorldName"), "world_name"), StringComparison.Ordinal)
-				.Replace("{WorldSeed}", TextValue(RequireSingleLine(server.WorldSeed, "WorldSeed"), "world_seed"), StringComparison.Ordinal)
-				.Replace("{WorldSize}", ProbeNumber(server.WorldSize).ToString(), StringComparison.Ordinal)
-				.Replace("{AppPort}", ProbeNumber(server.AppPort ?? 0).ToString(), StringComparison.Ordinal)
-				.Replace("{LocalIP}", TextValue(RequireSingleLine(context.LocalIp, "LocalIP"), "local_ip"), StringComparison.Ordinal)
-				.Replace("{PublicIP}", TextValue(RequireSingleLine(context.PublicIp, "PublicIP"), "public_ip"), StringComparison.Ordinal)
-				.Replace("{IsPvp}", BooleanValue(string.Equals(server.GameMode, "PVP", StringComparison.OrdinalIgnoreCase)), StringComparison.Ordinal)
-				.Replace("{IsPve}", BooleanValue(string.Equals(server.GameMode, "PVE", StringComparison.OrdinalIgnoreCase)), StringComparison.Ordinal)
-				.Replace("{Crossplay}", BooleanValue(server.CrossplayEnabled), StringComparison.Ordinal)
-				.Replace("{GameMode}", TextValue(GameModeValue(), "game_mode"), StringComparison.Ordinal);
+			// Replace only placeholders in the trusted template, never text introduced
+			// by a user's name/password that happens to contain another placeholder.
+			Dictionary<string, string> replacements = new(StringComparer.Ordinal)
+			{
+				["{ServerName}"] = TextValue(RequireSingleLine(server.ServerName, "ServerName"), "server_name"),
+				["{Password}"] = TextValue(RequireSingleLine(context.Passwords.ServerPassword, "Password"), "password"),
+				["{HasPassword}"] = BooleanValue(!string.IsNullOrWhiteSpace(context.Passwords.ServerPassword)),
+				["{AdminPassword}"] = TextValue(RequireSingleLine(context.Passwords.AdminPassword, "AdminPassword"), "admin_password"),
+				["{MaxPlayers}"] = ProbeNumber(server.MaxPlayers).ToString(CultureInfo.InvariantCulture),
+				["{Port}"] = ProbeNumber(server.Port).ToString(CultureInfo.InvariantCulture),
+				["{QueryPort}"] = ProbeNumber(server.QueryPort).ToString(CultureInfo.InvariantCulture),
+				["{RCONPort}"] = ProbeNumber(server.RconPort).ToString(CultureInfo.InvariantCulture),
+				["{RCONPassword}"] = TextValue(RequireSingleLine(context.Passwords.RconPassword, "RCONPassword"), "rcon_password"),
+				["{EnableRcon}"] = BooleanValue(server.EnableRcon),
+				["{Identity}"] = TextValue(context.Identity, "identity"),
+				["{WorldName}"] = TextValue(RequireSingleLine(server.WorldName, "WorldName"), "world_name"),
+				["{WorldSeed}"] = WorldSeedValue(),
+				["{WorldSize}"] = ProbeNumber(server.WorldSize).ToString(CultureInfo.InvariantCulture),
+				["{AppPort}"] = ProbeNumber(server.AppPort ?? 0).ToString(CultureInfo.InvariantCulture),
+				["{LocalIP}"] = TextValue(RequireSingleLine(context.LocalIp, "LocalIP"), "local_ip"),
+				["{PublicIP}"] = TextValue(RequireSingleLine(context.PublicIp, "PublicIP"), "public_ip"),
+				["{IsPvp}"] = BooleanValue(string.Equals(server.GameMode, "PVP", StringComparison.OrdinalIgnoreCase)),
+				["{IsPve}"] = BooleanValue(string.Equals(server.GameMode, "PVE", StringComparison.OrdinalIgnoreCase)),
+				["{Crossplay}"] = BooleanValue(server.CrossplayEnabled),
+				["{GameMode}"] = TextValue(GameModeValue(), "game_mode")
+			};
+			if (Format == ConfigFormat.YAML)
+				return ConfigHandler.ExpandYamlTemplate(template, replacements);
+			return Regex.Replace(template, @"\{[A-Za-z]+\}",
+				match => replacements.GetValueOrDefault(match.Value, match.Value),
+				RegexOptions.CultureInvariant | RegexOptions.NonBacktracking);
 		}
 
 		private (bool Changed, IReadOnlyList<string> Missing) UpdateManagedValues(
@@ -358,6 +387,9 @@ namespace Synix_Control_Panel.SynixApp.Database.GameConfigurations
 			{
 				return (false, []);
 			}
+
+			if (Format == ConfigFormat.YAML)
+				return ConfigHandler.UpdateYamlManagedValues(path, managedValues);
 
 			List<ConfigLine> existingValues = ConfigHandler.LoadConfig(path, Format);
 			Dictionary<string, ConfigLine> existingById = existingValues

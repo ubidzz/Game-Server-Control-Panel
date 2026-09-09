@@ -1,6 +1,31 @@
+# ============================================================================
+# PROJECT: Synix Game Server Control Panel
+# AUTHOR: Jason Turner (ubidzz)
+# COPYRIGHT: © 2026 All Rights Reserved.
+#
+# LEGAL NOTICE:
+# This source code is proprietary and confidential.
+# 1. Permission is granted for PERSONAL, NON-COMMERCIAL use only.
+# 2. You may modify this code for your own use, but you may NOT redistribute,
+#    rebrand, or sell this code or derivative works without written consent.
+# 3. The "Synix" brand and logic remain the property of Jason Turner.
+# ============================================================================
+
 # Additional named French interface resources.
 # The Game Definition Builder guide intentionally remains English like the Help Center.
 [ordered]@{
+    'ServerSetup.World.Seed.Hint' = 'Générez une graine pour un nouveau monde, ou saisissez la vôtre. Pour un monde existant, conservez sa graine d’origine.'
+    'ServerSetup.World.Seed.Generate' = 'Générer une graine'
+    'GameInput.WorldSeed.RequiredNumber' = 'La graine du monde est obligatoire pour {0} : entrez un entier de {1} à {2}. Corrigez-la dans Configuration du serveur > Génération du monde.'
+    'ServerSetup.World.Seed.Required' = 'Graine du monde (obligatoire)'
+    'ServerSetup.World.Seed.RangeHint' = 'Entier de {0} à {1}. Pour un monde existant, conservez sa graine d’origine.'
+    'Configuration.Editor.Error.YamlUnsupported' = 'La ligne YAML {0} est invalide ou utilise une fonction que cet éditeur ne peut pas modifier sans risque. Prise en charge : un document avec des clés/listes indentées et des valeurs sur une seule ligne. Les collections en ligne, les valeurs multilignes, les balises, les ancres et les alias ne sont pas pris en charge. Rien n’a été enregistré.'
+    'ModManager.Error.LinkedPath' = 'Cette opération utilise un fichier ou un dossier lié. Choisissez un dossier normal ; Synix ne suivra pas ce lien.'
+    'ModManager.Error.PreviousFileMissing' = "Un ancien fichier du module nécessaire à la restauration est manquant. Aucun fichier n’a été modifié. Restaurez le fichier de récupération manquant ou utilisez une sauvegarde vérifiée du serveur avant de supprimer ce module."
+    'ModManager.Error.RecoveryRetained' = "L’importation du module a échoué et certaines modifications n’ont pas pu être annulées. Les fichiers de récupération ont été conservés dans {0}. Gardez le serveur arrêté et restaurez ces fichiers ou une sauvegarde vérifiée avant de le démarrer."
+    'LaunchCommand.Error.UnsafeBatchValue' = "Le champ de lancement {0} ne peut pas être transmis en toute sécurité à ce lanceur batch Windows. Les guillemets doubles intégrés, sauts de ligne et expressions de variables ne sont pas pris en charge ici. La valeur n’a pas été modifiée."
+    'LaunchCommand.Error.UnsafeBatchArguments' = "La commande batch complète contient une syntaxe dangereuse ou une expansion de variables. Vérifiez les valeurs de lancement et les arguments supplémentaires ; rien n’a été démarré."
+    'ServerStart.Arguments.CustomHidden' = '[Arguments personnalisés fournis ; contenu masqué dans le journal]'
     'Satisfactory.ConnectHeading' = "Connecter ce serveur"
     'Satisfactory.ConnectAutomatically' = "Connecter automatiquement"
     'Satisfactory.ConnectingAutomatically' = "Connexion : envoi de la commande, récupération du jeton et vérification…"
@@ -779,7 +804,7 @@
     'GameDefinitions.Builder.ProjectNotFound' = "Synix Control Panel.csproj est introuvable dans cette version de développement."
     'GameDefinitions.Builder.Saved.Body' = "Les modèles de définition et de configuration validés ont été enregistrés dans le projet. Reconstruisez Synix et exécutez les tests automatisés avant de l'utiliser.`n`nOuvrir le dossier de définition maintenant ?"
     'GameDefinitions.Builder.SavedPath' = "Enregistré : {0}"
-    'GameDefinitions.Builder.TemplatePicker.Filter' = "Fichiers de configuration|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|Tous les fichiers|*.*"
+    'GameDefinitions.Builder.TemplatePicker.Filter' = "Fichiers de configuration|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|Tous les fichiers|*.*"
     'GameDefinitions.Builder.TemplatePicker.Title' = "Sélectionnez un modèle de configuration de jeu complet"
     'GameDefinitions.Builder.ValidSummary' = "Définition valide • révision {0} • Modèle(s) {1} • Action(s) sûre(s) {2}"
     'GameDefinitions.Queue.ArgumentRecorded' = "{0} : vérification des arguments enregistrée à partir du test du serveur réel."
@@ -1579,6 +1604,9 @@
     'FileHandler.Activity.MigrationUpgraded' = "[MIGRATION] {0} enregistrement(s) de serveur mis à niveau vers le schéma de données {1}. Le fichier d’origine a été sauvegardé avant l’enregistrement."
     'FileHandler.Activity.MigrationProtected' = "[MIGRATION] Mots de passe et webhooks Discord enregistrés protégés pour {0} serveur(s) avec le chiffrement de l’utilisateur Windows."
     'FileSystem.Error.FolderMoveFailed' = "Le dossier n’a pas pu être déplacé : {0}"
+    'FileSystem.Error.UnsafeDeletionPath' = "Synix a refusé de supprimer « {0} », car ce dossier ne peut pas être supprimé en toute sécurité comme dossier de serveur ou de sauvegarde. Les racines des lecteurs, les dossiers Windows et des applications, les racines des données utilisateur et les dossiers partagés de Synix sont protégés."
+    'FileSystem.Error.LinkedDeletionPath' = "Synix a refusé de supprimer « {0} », car ce dossier ou l’un de ses dossiers parents est un lien. Les dossiers liés ne peuvent pas être supprimés automatiquement."
+    'FileSystem.Error.DeletionPathUnavailable' = "Synix n’a pas pu vérifier en toute sécurité le dossier à supprimer « {0} »."
     'Configuration.Activity.Error' = "[ERREUR DE CONFIGURATION] {0}"
     'Configuration.Activity.Warning' = "[AVERTISSEMENT DE CONFIGURATION] {0}"
     'Configuration.Definition.Duplicate' = "Définition de configuration en double : {0}."

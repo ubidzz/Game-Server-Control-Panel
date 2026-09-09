@@ -15,7 +15,7 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/ubidzz/Synix-Control-Panel</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<Version>1.0.24</Version>
+		<Version>1.0.25</Version>
 		<AssemblyVersion>$(Version).0</AssemblyVersion>
 		<FileVersion>$(Version).0</FileVersion>
 		<InformationalVersion>$(Version)</InformationalVersion>
@@ -28,8 +28,8 @@
 		<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 		<PublishSingleFile>true</PublishSingleFile>
 		<PublishReadyToRun>false</PublishReadyToRun>
-		<DebugType>none</DebugType>
-		<DebugSymbols>false</DebugSymbols>
+		<DebugType Condition="'$(Configuration)' != 'Debug'">none</DebugType>
+		<DebugSymbols Condition="'$(Configuration)' != 'Debug'">false</DebugSymbols>
 		<PackageIcon>SyniX logo with glowing accents.png</PackageIcon>
 	</PropertyGroup>
 	<ItemGroup>
@@ -261,11 +261,7 @@
 		<ItemGroup>
 			<_SynixLocalizedCatalog Include="$(MSBuildProjectDirectory)\Localization\Strings.*.resx" />
 		</ItemGroup>
-		<WriteLinesToFile
-			File="$(_SynixSupportedLanguageManifest)"
-			Lines="en-US;@(_SynixLocalizedCatalog->'%(Filename)')"
-			Overwrite="true"
-			Encoding="UTF-8" />
+		<WriteLinesToFile File="$(_SynixSupportedLanguageManifest)" Lines="en-US;@(_SynixLocalizedCatalog->'%(Filename)')" Overwrite="true" Encoding="UTF-8" />
 	</Target>
 
 	<ItemGroup>

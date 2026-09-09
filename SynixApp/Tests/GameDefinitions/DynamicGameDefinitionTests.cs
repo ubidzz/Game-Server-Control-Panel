@@ -15,6 +15,7 @@ using Synix_Control_Panel.SynixApp.Database.GameConfigurations;
 using Synix_Control_Panel.SynixApp.Database.GameDefinitions;
 using Synix_Control_Panel.SynixApp.ServerHandler;
 using Synix_Control_Panel.SynixEngine;
+using System.Text.Json;
 using Xunit;
 
 namespace Synix_Control_Panel.Tests;
@@ -99,6 +100,49 @@ public sealed class DynamicGameDefinitionTests
 		Assert.True(game.IsEmbeddedDefinition);
 		Assert.Equal(executable, game.ExeName);
 		Assert.True(game.DefinitionRevision >= minimumRevision);
+	}
+
+	[Fact]
+	public void DysterraSeparatesItsInstallPackageFromItsRuntimeSteamIdentity()
+	{
+		GameInfo game = GameDatabase.GetGame("Dysterra")!;
+		Assert.Equal("2214780", game.AppID);
+		Assert.Equal("1527890", game.LaunchBehavior.SteamAppId);
+		Assert.True(game.DefinitionRevision >= 3);
+		Assert.Contains("-SteamAppId={steamAppID}", game.RequiredArgs);
+		Assert.False(game.RequiresSteamLogin);
+		Assert.False(game.LaunchBehavior.RunElevated);
+		Assert.True(game.LaunchBehavior.AllowLaunchFileExport);
+	}
+
+	[Theory]
+	[InlineData("0")]
+	[InlineData("-1")]
+	[InlineData("+1527890")]
+	[InlineData(" 1527890")]
+	[InlineData("1527890 ")]
+	[InlineData("1527890\n")]
+	[InlineData("1527890 extra")]
+	[InlineData("4294967296")]
+	[InlineData("١٥٢٧٨٩٠")]
+	public void InvalidRuntimeSteamIdentitiesAreRejected(string steamAppId)
+	{
+		string json = $$"""
+			{
+			  "schemaVersion": 1,
+			  "id": "runtime-id-test",
+			  "game": "Runtime ID Test",
+			  "appId": "2214780",
+			  "executable": "server.exe",
+			  "port": 27015,
+			  "queryPort": 27016,
+			  "launchBehavior": { "steamAppId": {{JsonSerializer.Serialize(steamAppId)}} }
+			}
+			""";
+
+		InvalidDataException exception = Assert.Throws<InvalidDataException>(() =>
+			TrustedGameDefinitionCatalog.ParsePackage(json, "runtime-id-test.game.json"));
+		Assert.Contains("launchBehavior.steamAppId", exception.Message);
 	}
 
 	[Fact]
@@ -979,6 +1023,7 @@ public sealed class DynamicGameDefinitionTests
 				},
 				LaunchBehavior = new GameLaunchBehavior
 				{
+					SteamAppId = "1527890",
 					RunElevated = true,
 					RequiresVisibleWindow = true,
 					LifecycleTracking = GameLifecycleTrackingMode.ExternalDeployment,
@@ -1019,6 +1064,8 @@ public sealed class DynamicGameDefinitionTests
 			Assert.Equal(
 				2,
 				parsed.Definition.RuntimeRequirements.VisualCppRedistributables.Count);
+			Assert.Equal("1527890", parsed.Definition.LaunchBehavior.SteamAppId);
+			Assert.Contains("\"steamAppId\": \"1527890\"", result.Json);
 			Assert.True(parsed.Definition.LaunchBehavior.RunElevated);
 			Assert.True(parsed.Definition.LaunchBehavior.RequiresVisibleWindow);
 			Assert.Equal(

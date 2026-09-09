@@ -3080,7 +3080,7 @@ This does not delete the webhook from Discord.</value>
     <value>Saved: {0}</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Filter" xml:space="preserve">
-    <value>Configuration files|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|All files|*.*</value>
+    <value>Configuration files|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|All files|*.*</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Title" xml:space="preserve">
     <value>Select a complete game configuration template</value>
@@ -6187,6 +6187,15 @@ Examples: logs\latest.log, Saved\Logs\*.log, profiles\{Identity}\logs\**\*.log. 
   </data>
   <data name="FileSystem.Error.FolderMoveFailed" xml:space="preserve">
     <value>The folder could not be moved: {0}</value>
+  </data>
+  <data name="FileSystem.Error.UnsafeDeletionPath" xml:space="preserve">
+    <value>Synix refused to delete '{0}' because it is not a safe server or backup folder. Drive roots, Windows and application folders, user-data roots, and shared Synix folders are protected.</value>
+  </data>
+  <data name="FileSystem.Error.LinkedDeletionPath" xml:space="preserve">
+    <value>Synix refused to delete '{0}' because the folder or one of its parent folders is a link. Linked folders cannot be deleted automatically.</value>
+  </data>
+  <data name="FileSystem.Error.DeletionPathUnavailable" xml:space="preserve">
+    <value>Synix could not safely verify the deletion folder '{0}'.</value>
   </data>
   <data name="Configuration.Activity.Error" xml:space="preserve">
     <value>[CONFIG ERROR] {0}</value>
@@ -10734,5 +10743,41 @@ Any other custom configuration values will be removed.</value>
   </data>
   <data name="MessageText.19580FB3CF2A0F82762D" xml:space="preserve">
     <value>You must stop the server before validating server files.</value>
+  </data>
+  <data name="ModManager.Error.LinkedPath" xml:space="preserve">
+    <value>This add-on operation uses a linked file or folder. Choose a normal folder; Synix will not follow that link.</value>
+  </data>
+  <data name="ModManager.Error.PreviousFileMissing" xml:space="preserve">
+    <value>A previous add-on file needed for restoration is missing. No files were changed. Restore the missing recovery file or use a verified server backup before removing this add-on.</value>
+  </data>
+  <data name="ModManager.Error.RecoveryRetained" xml:space="preserve">
+    <value>The add-on import failed and some changes could not be rolled back. Recovery files were kept at {0}. Keep the server stopped and restore those files or a verified server backup before starting it.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchValue" xml:space="preserve">
+    <value>The launch field {0} cannot be passed safely through this Windows batch launcher. Embedded double quotes, line breaks, or variable expressions are not supported here. The value was not changed.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchArguments" xml:space="preserve">
+    <value>The completed batch command contains unsafe command syntax or variable expansion. Review the launch values and extra arguments; nothing was started.</value>
+  </data>
+  <data name="ServerStart.Arguments.CustomHidden" xml:space="preserve">
+    <value>[Custom arguments supplied; contents omitted from log]</value>
+  </data>
+  <data name="Configuration.Editor.Error.YamlUnsupported" xml:space="preserve">
+    <value>YAML line {0} is invalid or uses a feature this editor cannot safely change. Supported: one document with indented mappings/lists and single-line values. Flow collections, multiline values, tags, anchors, and aliases are not supported. Nothing was saved.</value>
+  </data>
+  <data name="GameInput.WorldSeed.RequiredNumber" xml:space="preserve">
+    <value>World Seed is required for {0}: use a whole number from {1} to {2}. Correct it in Server Setup &gt; World Generation.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Required" xml:space="preserve">
+    <value>World Seed (required)</value>
+  </data>
+  <data name="ServerSetup.World.Seed.RangeHint" xml:space="preserve">
+    <value>Whole number from {0} to {1}. For an existing world, keep its original seed.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Generate" xml:space="preserve">
+    <value>Generate seed</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Hint" xml:space="preserve">
+    <value>Generate a seed for a new world, or enter your own. For an existing world, keep its original seed.</value>
   </data>
 </root>

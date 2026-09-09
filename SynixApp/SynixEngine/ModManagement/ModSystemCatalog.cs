@@ -2,6 +2,13 @@
 // PROJECT: Synix Game Server Control Panel
 // AUTHOR: Jason Turner (ubidzz)
 // COPYRIGHT: © 2026 All Rights Reserved.
+//
+// LEGAL NOTICE:
+// This source code is proprietary and confidential.
+// 1. Permission is granted for PERSONAL, NON-COMMERCIAL use only.
+// 2. You may modify this code for your own use, but you may NOT redistribute,
+//    rebrand, or sell this code or derivative works without written consent.
+// 3. The "Synix" brand and logic remain the property of Jason Turner.
 // ============================================================================
 using Synix_Control_Panel.SynixApp.Database;
 using Synix_Control_Panel.SynixApp.ServerHandler;
@@ -170,6 +177,12 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 		internal static IReadOnlyList<ModSystemProfile> GetProfiles(string gameName) =>
 			Profiles.Where(profile => profile.GameNames.Any(name =>
 				name.Equals(gameName, StringComparison.OrdinalIgnoreCase))).ToArray();
+
+		internal static bool CanManageAddOns(GameServer? server) =>
+			server != null && !MinecraftControlProfile.IsBedrock(server) &&
+			// Folder discovery and catalog links alone are not mod-management support.
+			// Keep supported games available even before their loader is installed.
+			GetProfiles(server.Game).Any(profile => profile.CanManage);
 
 		internal static IReadOnlyList<ModSystemProfile> GetProfiles(GameServer server)
 		{
@@ -459,11 +472,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 
 		internal static bool IsSafeRelativePath(string value)
 		{
-			if (string.IsNullOrWhiteSpace(value) || Path.IsPathRooted(value))
-				return false;
-			string normalized = value.Replace('/', Path.DirectorySeparatorChar);
-			return normalized.Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
-				.All(part => part is not "." and not "..");
+			return ModPathSafety.IsSafeRelativePath(value);
 		}
 
 		private static bool IsSafeCatalogUrl(string value) =>
@@ -504,13 +513,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 				throw new InvalidOperationException(LocalizationManager.Get("ModCatalog.Error.InstallFolderMissing"));
 			if (!IsSafeRelativePath(relativePath))
 				throw new InvalidDataException(LocalizationManager.Get("ModCatalog.Error.UnsafeFolder"));
-			string root = Path.GetFullPath(installPath)
-				.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) +
-				Path.DirectorySeparatorChar;
-			string resolved = Path.GetFullPath(Path.Combine(root, relativePath));
-			if (!resolved.StartsWith(root, StringComparison.OrdinalIgnoreCase))
-				throw new InvalidDataException(LocalizationManager.Get("ModCatalog.Error.FolderOutsideInstall"));
-			return resolved;
+			return ModPathSafety.Resolve(installPath, relativePath);
 		}
 	}
 }

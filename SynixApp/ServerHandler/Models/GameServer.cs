@@ -111,6 +111,8 @@ public sealed class GameRuntimeRequirements
 
 public sealed class GameLaunchBehavior
 {
+	// Some dedicated servers register with the client app ID, not their SteamCMD package ID.
+	public string SteamAppId { get; init; } = string.Empty;
 	public bool RunElevated { get; init; }
 	public bool RequiresVisibleWindow { get; init; }
 	public GameLifecycleTrackingMode LifecycleTracking { get; init; } =

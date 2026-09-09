@@ -14,6 +14,7 @@ using Synix_Control_Panel.SynixApp.Database;
 using Synix_Control_Panel.SynixEngine;
 using System.Diagnostics;
 using System.Net;
+using System.Text;
 
 namespace Synix_Control_Panel.SynixApp.ServerHandler
 {
@@ -41,6 +42,10 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 		{
 			ArgumentNullException.ThrowIfNull(server);
 			ArgumentNullException.ThrowIfNull(definition);
+
+			// A trusted runtime identity takes precedence over installed files and the download ID.
+			if (!string.IsNullOrEmpty(definition.LaunchBehavior.SteamAppId))
+				return definition.LaunchBehavior.SteamAppId;
 
 			string invokedAppId = definition.AppID;
 			string executableDirectory = Path.GetDirectoryName(executablePath) ?? string.Empty;
@@ -88,7 +93,7 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 				string fileContent = File.ReadLines(appIdPath)
 					.FirstOrDefault(line => !string.IsNullOrWhiteSpace(line))
 					?.Trim() ?? string.Empty;
-				if (fileContent.All(char.IsDigit) && fileContent.Length > 0)
+				if (fileContent.All(char.IsAsciiDigit) && fileContent.Length > 0)
 					invokedAppId = fileContent;
 			}
 			catch (Exception exception) when (exception is IOException or
@@ -146,7 +151,8 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 			string invokedAppId,
 			SynixServerPasswords passwords,
 			out string arguments,
-			out string errorMessage)
+			out string errorMessage,
+			bool forBatchFile = false)
 		{
 			return TryBuildArguments(
 				server,
@@ -155,7 +161,8 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 				passwords,
 				string.Empty,
 				out arguments,
-				out errorMessage);
+				out errorMessage,
+				forBatchFile);
 		}
 
 		internal static bool TryBuildArguments(
@@ -165,14 +172,16 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 			SynixServerPasswords passwords,
 			string? publicIp,
 			out string arguments,
-			out string errorMessage)
+			out string errorMessage,
+			bool forBatchFile = false,
+			bool includeExtraArguments = true)
 		{
 			ArgumentNullException.ThrowIfNull(server);
 			ArgumentNullException.ThrowIfNull(definition);
 
 			arguments = string.Empty;
 			errorMessage = string.Empty;
-			if (!Core.TryValidateExtraArguments(server.ExtraArgs, out errorMessage))
+			if (includeExtraArguments && !Core.TryValidateExtraArguments(server.ExtraArgs, out errorMessage))
 				return false;
 
 			bool isMinecraft = GameCapabilityResolver.UsesMinecraftLifecycle(server);
@@ -181,67 +190,156 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 			string targetAppId = definition.AppID ?? string.Empty;
 			string cleanIdentity = Core.Instance.GetSafeName(server.ServerName ?? string.Empty);
 
-			arguments = isBedrock
-				? string.Empty
-				: PreparePublicIpArgument(
-				definition.RequiredArgs ?? string.Empty,
-				publicIp)
-				.Replace("{app_port}", server.AppPort?.ToString() ?? "0")
-				.Replace("{seed}", string.IsNullOrWhiteSpace(server.WorldSeed) ? "12345" : server.WorldSeed)
-				.Replace("{map}", server.WorldName ?? string.Empty)
-				.Replace("{steamAppID}", invokedAppId ?? string.Empty)
-				.Replace("{appid}", targetAppId)
-				.Replace("{port}", server.Port.ToString())
-				.Replace("{query}", server.QueryPort.ToString())
-				.Replace("{MaxPlayers}", server.MaxPlayers.ToString())
-				.Replace("{pass}", passwords.ServerPassword ?? string.Empty)
-				.Replace("{adminpass}", passwords.AdminPassword ?? string.Empty)
-				.Replace("{auth_token}", passwords.AuthenticationToken ?? string.Empty)
-				.Replace("{ServerName}", server.ServerName ?? string.Empty)
-				.Replace("{InstallPath}", server.InstallPath ?? string.Empty)
-				.Replace("{world_size}", server.WorldSize.ToString())
-				.Replace("{Identity}", cleanIdentity)
-				.Replace("{crossplay}", GameFix.ResolveCrossplayValue(definition, server.CrossplayEnabled))
-				.Replace("{crossplay_public_ip}", ResolveCrossplayPublicIp(server.CrossplayEnabled, publicIp))
-				.Replace("{ram}", ramToUse.ToString());
+			bool commandScript = TryGetLauncherKind(ResolveExecutablePath(server, definition), out GameLauncherKind kind) &&
+				kind == GameLauncherKind.WindowsCommandScript;
+			string template = isBedrock ? string.Empty : PreparePublicIpArgument(definition.RequiredArgs ?? string.Empty, publicIp);
+			Dictionary<string, string> values = new(StringComparer.Ordinal)
+			{
+				["{app_port}"] = server.AppPort?.ToString() ?? "0",
+				["{seed}"] = string.IsNullOrWhiteSpace(server.WorldSeed) ? "12345" : server.WorldSeed,
+				["{map}"] = server.WorldName ?? string.Empty,
+				["{steamAppID}"] = invokedAppId ?? string.Empty,
+				["{appid}"] = targetAppId,
+				["{port}"] = server.Port.ToString(),
+				["{query}"] = server.QueryPort.ToString(),
+				["{MaxPlayers}"] = server.MaxPlayers.ToString(),
+				["{pass}"] = passwords.ServerPassword ?? string.Empty,
+				["{adminpass}"] = passwords.AdminPassword ?? string.Empty,
+				["{auth_token}"] = passwords.AuthenticationToken ?? string.Empty,
+				["{ServerName}"] = server.ServerName ?? string.Empty,
+				["{InstallPath}"] = server.InstallPath ?? string.Empty,
+				["{world_size}"] = server.WorldSize.ToString(),
+				["{Identity}"] = cleanIdentity,
+				["{crossplay}"] = GameFix.ResolveCrossplayValue(definition, server.CrossplayEnabled),
+				["{crossplay_public_ip}"] = ResolveCrossplayPublicIp(server.CrossplayEnabled, publicIp),
+				["{ram}"] = ramToUse.ToString(),
+				["{rcon_port}"] = server.RconPort.ToString(),
+				["{rcon_pass}"] = passwords.RconPassword ?? string.Empty,
+				["{rcon_enabled}"] = GameFix.ResolveBooleanValue(definition, true)
+			};
 
 			string minecraftLoader = MinecraftMetadataService.NormalizeLoader(server.MinecraftLoader);
 			if (MinecraftControlProfile.IsJava(server) &&
 				(minecraftLoader.Equals(MinecraftMetadataService.ForgeLoader, StringComparison.OrdinalIgnoreCase) ||
 				 minecraftLoader.Equals(MinecraftMetadataService.NeoForgeLoader, StringComparison.OrdinalIgnoreCase)))
 			{
-				arguments = $"-Xmx{ramToUse}M -Xms{ramToUse}M";
+				template = $"-Xmx{ramToUse}M -Xms{ramToUse}M";
 			}
 
-			if (arguments.Contains("{rcon}", StringComparison.Ordinal))
+			if (template.Contains("{rcon}", StringComparison.Ordinal))
 			{
 				string formattedRcon = string.Empty;
 				if (server.EnableRcon && !string.IsNullOrWhiteSpace(definition.RconSyntax))
 				{
-					formattedRcon = definition.RconSyntax
-						.Replace("{rcon_port}", server.RconPort.ToString())
-						.Replace("{rcon_pass}", passwords.RconPassword ?? string.Empty)
-						.Replace("{rcon_enabled}", GameFix.ResolveBooleanValue(definition, true))
-						.Replace("{adminpass}", passwords.AdminPassword ?? string.Empty)
-						.Replace("{steamAppID}", invokedAppId ?? string.Empty);
+					if (!TryExpandTemplate(definition.RconSyntax, values, commandScript, forBatchFile,
+						out formattedRcon, out errorMessage))
+						return false;
 				}
 
-				arguments = arguments.Replace("{rcon}", formattedRcon);
+				values["{rcon}"] = formattedRcon;
 			}
 
-			if (arguments.Contains("{mode}", StringComparison.Ordinal) &&
-				!string.IsNullOrWhiteSpace(server.GameMode))
+			if (!string.IsNullOrWhiteSpace(server.GameMode))
 			{
-				arguments = arguments.Replace(
-					"{mode}",
-					GameFix.ResolveGameModeValue(definition, server.GameMode));
+				values["{mode}"] = GameFix.ResolveGameModeValue(definition, server.GameMode);
 			}
 
-			if (!string.IsNullOrWhiteSpace(server.ExtraArgs))
+			if (!TryExpandTemplate(template, values, commandScript, forBatchFile, out arguments, out errorMessage))
+				return false;
+			if (includeExtraArguments && !string.IsNullOrWhiteSpace(server.ExtraArgs))
 				arguments = AppendExtraArguments(arguments, server.ExtraArgs);
 
-			arguments = arguments.Replace("  ", " ").Trim();
+			arguments = arguments.Trim();
+			if (commandScript && !TryValidateCommandScriptArguments(arguments, out errorMessage))
+			{
+				arguments = string.Empty;
+				return false;
+			}
 			return true;
+		}
+
+		internal static bool TryBuildLogArguments(GameServer server, GameInfo definition, string invokedAppId,
+			SynixServerPasswords passwords, string? publicIp, out string arguments, out string errorMessage)
+		{
+			if (!TryBuildArguments(server, definition, invokedAppId, CreateRedactedPasswords(passwords), publicIp,
+				out arguments, out errorMessage, includeExtraArguments: false))
+				return false;
+			if (!string.IsNullOrWhiteSpace(server.ExtraArgs))
+				arguments = $"{arguments} {LocalizationManager.Get("ServerStart.Arguments.CustomHidden")}".Trim();
+			return true;
+		}
+
+		private static bool TryExpandTemplate(string template, IReadOnlyDictionary<string, string> values,
+			bool commandScript, bool forBatchFile, out string arguments, out string errorMessage)
+		{
+			StringBuilder result = new(template.Length);
+			bool insideQuotes = false;
+			arguments = string.Empty;
+			errorMessage = string.Empty;
+			// Expand only the trusted template. A value containing another placeholder stays literal.
+			for (int index = 0; index < template.Length; index++)
+			{
+				char character = template[index];
+				if (character == '{' && template.IndexOf('}', index) is int end && end > index)
+				{
+					string key = template[index..(end + 1)];
+					if (values.TryGetValue(key, out string? value))
+					{
+						bool fragment = key is "{rcon}" or "{crossplay_public_ip}";
+						if ((commandScript || forBatchFile) && !fragment)
+						{
+							if (value.IndexOfAny(['\0', '\r', '\n', '"']) >= 0 ||
+								(commandScript && !Core.TryValidateExtraArguments($"\"{value}\"", out _)))
+							{
+								errorMessage = LocalizationManager.Get("LaunchCommand.Error.UnsafeBatchValue", key);
+								return false;
+							}
+							if (!insideQuotes && value.Any(c => char.IsWhiteSpace(c) || "&|<>()^".Contains(c)))
+								value = $"\"{value}\"";
+						}
+						result.Append(value);
+						index = end;
+						continue;
+					}
+				}
+				if (character == '"')
+					insideQuotes = !insideQuotes;
+				result.Append(character);
+			}
+			arguments = result.ToString();
+			return true;
+		}
+
+		private static bool TryValidateCommandScriptArguments(string arguments, out string errorMessage)
+		{
+			// cmd accepts environment-variable names containing spaces and other punctuation.
+			// Check the whole command, since a pair can span two otherwise-safe fields.
+			bool pairedPercent = HasDelimiterPair(arguments, '%');
+			bool pairedExclamation = HasDelimiterPair(arguments, '!');
+			if (pairedPercent || pairedExclamation || arguments.Contains("%~", StringComparison.Ordinal) ||
+				!Core.TryValidateExtraArguments(arguments, out _))
+			{
+				errorMessage = LocalizationManager.Get("LaunchCommand.Error.UnsafeBatchArguments");
+				return false;
+			}
+			bool insideQuotes = false;
+			foreach (char character in arguments)
+			{
+				if (character == '"') insideQuotes = !insideQuotes;
+				if (!insideQuotes && character is '(' or ')')
+				{
+					errorMessage = LocalizationManager.Get("LaunchCommand.Error.UnsafeBatchArguments");
+					return false;
+				}
+			}
+			errorMessage = string.Empty;
+			return true;
+		}
+
+		private static bool HasDelimiterPair(string value, char delimiter)
+		{
+			int opening = value.IndexOf(delimiter);
+			return opening >= 0 && value.IndexOf(delimiter, opening + 1) >= 0;
 		}
 
 		private static string AppendExtraArguments(
@@ -370,16 +468,14 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 			string command = $"\"{scriptPath}\"";
 			if (!string.IsNullOrWhiteSpace(arguments))
 				command = $"{command} {arguments.Trim()}";
+			if (!TryValidateCommandScriptArguments(command, out string errorMessage))
+				throw new ArgumentException(errorMessage, nameof(arguments));
 
 			return $"/d /s /v:off /c \"{command}\"";
 		}
 
 		private static string GetWindowsCommandProcessorPath()
 		{
-			string? commandProcessor = Environment.GetEnvironmentVariable("ComSpec");
-			if (!string.IsNullOrWhiteSpace(commandProcessor))
-				return commandProcessor;
-
 			return string.IsNullOrWhiteSpace(Environment.SystemDirectory)
 				? "cmd.exe"
 				: Path.Combine(Environment.SystemDirectory, "cmd.exe");

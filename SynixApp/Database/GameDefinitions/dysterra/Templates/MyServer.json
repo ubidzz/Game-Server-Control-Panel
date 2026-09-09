@@ -1,0 +1,102 @@
+{
+  "WorldName": "{ServerName}",
+  "WorldInfo": "",
+  "Password": "{Password}",
+  "GameMode": "Default",
+  "AdminUsers": [],
+  "bAllowWorldVoiceChat": true,
+  "MaxPlayers": {MaxPlayers},
+  "bPremiumUsersOnly": false,
+  "ForbiddenLanguages": [],
+  "SpotEvents": "/Game/Blueprints/SpotEvent/SpotEvents_Official",
+  "ValueOverrides": {
+    "GameTimeMultiplier": 24,
+    "PVPDamageMultiplier": 1,
+    "PVEDamageMultiplier": 1,
+    "PlayerHPMultiplier": 1,
+    "VehiclePlayerDamageMultiplier": 1,
+    "ResourceDropMultiplier": 1,
+    "ResourceRegenMultiplier": 1,
+    "BuildPartDamageMultiplier": 1,
+    "BuildPartCostRefundableTime": 600,
+    "DemolishRefundMultiply": 0.8,
+    "NPCHPMultiplier": 1,
+    "NPCCountMultiplier": 1,
+    "Rain_Probability": 0,
+    "World_Lifetime": 14515200,
+    "World_MinLifetime": 10368000,
+    "World_MaxLifetime": 30758400,
+    "World_FinalCountdownTime": 259200,
+    "MaxTeamSize": 4,
+    "NotificationOtherPlayerDead": 0,
+    "CharacterProtectSlotCount": 6,
+    "RootableOtherCharacter": 1,
+    "UseEquipmentProtectMode": 1,
+    "ItemMaxStackMultiplier": 1
+  },
+  "Items": [
+    {
+      "desc": "Initial items to possess when a player joins.",
+      "id": "FirstStart",
+      "InitHealth": 65,
+      "InitEnergy": 0,
+      "InitHunger": 30,
+      "InitItemList": {
+        "ItemList": [
+          {
+            "Item": {
+              "RowName": "140300070"
+            },
+            "Count": 1
+          },
+          {
+            "Item": {
+              "RowName": "140700001"
+            },
+            "Count": 30
+          },
+          {
+            "Item": {
+              "RowName": "120500004"
+            },
+            "Count": 3
+          },
+          {
+            "Item": {
+              "RowName": "120400002"
+            },
+            "Count": 1
+          }
+        ]
+      }
+    },
+    {
+      "desc": "Items to repossess when a player respawns after death.",
+      "id": "Respawn",
+      "InitHealth": 130,
+      "InitEnergy": 100,
+      "InitHunger": 100,
+      "InitItemList": {
+        "ItemList": [
+          {
+            "Item": {
+              "RowName": "140300070"
+            },
+            "Count": 1
+          },
+          {
+            "Item": {
+              "RowName": "140700001"
+            },
+            "Count": 30
+          }
+        ]
+      }
+    },
+    {
+      "desc": "LIGHT AMMO's property modification",
+      "id": "140700001",
+      "MaxStack": 500
+    }
+  ]
+}

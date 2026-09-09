@@ -246,7 +246,7 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 				return false;
 
 			return _logQueue.Writer.TryWrite(
-				(logFileName, content));
+				(logFileName, SecretRedactor.Redact(content)));
 		}
 
 		private static async Task ProcessLogQueueAsync()
@@ -296,6 +296,7 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 			string logFileName,
 			string content)
 		{
+			content = SecretRedactor.Redact(content);
 			lock (_logWriteLock)
 			{
 				try

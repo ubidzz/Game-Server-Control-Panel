@@ -545,13 +545,23 @@ namespace Synix_Control_Panel.SynixEngine
 					continue;
 				}
 
-				if (!insideQuotes && character is '&' or '|' or '<' or '>')
+				if (!insideQuotes && character is '&' or '|' or '<' or '>' or '(' or ')')
 					escaped.Append('^');
 
 				escaped.Append(character);
 			}
 
+			if (insideQuotes)
+				throw new ArgumentException(LocalizationManager.Get("Validation.ExtraArguments.UnclosedQuote"), nameof(commandLine));
 			return escaped.ToString();
+		}
+
+		internal static string EscapeWindowsBatchQuotedValue(string value)
+		{
+			ArgumentNullException.ThrowIfNull(value);
+			if (value.IndexOfAny(['\0', '\r', '\n', '"']) >= 0)
+				throw new ArgumentException(LocalizationManager.Get("LaunchCommand.Error.UnsafeBatchArguments"), nameof(value));
+			return value.Replace("%", "%%", StringComparison.Ordinal);
 		}
 
 		private static bool ContainsBatchVariableExpansion(string value, char delimiter)

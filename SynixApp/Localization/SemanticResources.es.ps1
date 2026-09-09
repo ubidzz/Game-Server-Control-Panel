@@ -1,6 +1,31 @@
+# ============================================================================
+# PROJECT: Synix Game Server Control Panel
+# AUTHOR: Jason Turner (ubidzz)
+# COPYRIGHT: © 2026 All Rights Reserved.
+#
+# LEGAL NOTICE:
+# This source code is proprietary and confidential.
+# 1. Permission is granted for PERSONAL, NON-COMMERCIAL use only.
+# 2. You may modify this code for your own use, but you may NOT redistribute,
+#    rebrand, or sell this code or derivative works without written consent.
+# 3. The "Synix" brand and logic remain the property of Jason Turner.
+# ============================================================================
+
 # Additional named Spanish interface resources.
 # The Game Definition Builder guide intentionally remains English like the Help Center.
 [ordered]@{
+    'ServerSetup.World.Seed.Hint' = 'Genere una semilla para un mundo nuevo o introduzca la suya. Para un mundo existente, conserve su semilla original.'
+    'ServerSetup.World.Seed.Generate' = 'Generar semilla'
+    'GameInput.WorldSeed.RequiredNumber' = 'La semilla del mundo es obligatoria para {0}: use un entero de {1} a {2}. Corríjala en Configuración del servidor > Generación del mundo.'
+    'ServerSetup.World.Seed.Required' = 'Semilla del mundo (obligatoria)'
+    'ServerSetup.World.Seed.RangeHint' = 'Entero de {0} a {1}. Para un mundo existente, conserve su semilla original.'
+    'Configuration.Editor.Error.YamlUnsupported' = 'La línea YAML {0} no es válida o usa una función que este editor no puede modificar de forma segura. Se admite un documento con claves/listas con sangría y valores de una sola línea. No se admiten colecciones en línea, valores multilínea, etiquetas, anclas ni alias. No se guardó nada.'
+    'ModManager.Error.LinkedPath' = 'Esta operación de complementos utiliza un archivo o una carpeta enlazados. Elige una carpeta normal; Synix no seguirá ese enlace.'
+    'ModManager.Error.PreviousFileMissing' = 'Falta un archivo anterior del complemento necesario para restaurarlo. No se ha cambiado ningún archivo. Restaura el archivo de recuperación que falta o utiliza una copia de seguridad verificada del servidor antes de eliminar este complemento.'
+    'ModManager.Error.RecoveryRetained' = 'La importación del complemento ha fallado y no se han podido revertir algunos cambios. Los archivos de recuperación se han conservado en {0}. Mantén el servidor detenido y restaura esos archivos o una copia de seguridad verificada antes de iniciarlo.'
+    'LaunchCommand.Error.UnsafeBatchValue' = 'El campo de inicio {0} no puede pasarse de forma segura a este iniciador por lotes de Windows. Aquí no se admiten comillas dobles internas, saltos de línea ni expresiones de variables. El valor no se ha cambiado.'
+    'LaunchCommand.Error.UnsafeBatchArguments' = 'El comando por lotes completo contiene sintaxis insegura o expansión de variables. Revisa los valores de inicio y los argumentos adicionales; no se ha iniciado nada.'
+    'ServerStart.Arguments.CustomHidden' = '[Argumentos personalizados proporcionados; contenido omitido del registro]'
     'Satisfactory.ConnectHeading' = "Conectar este servidor"
     'Satisfactory.ConnectAutomatically' = "Conectar automáticamente"
     'Satisfactory.ConnectingAutomatically' = "Conectando: enviando el comando, capturando el token y verificando…"
@@ -779,7 +804,7 @@
     'GameDefinitions.Builder.ProjectNotFound' = "Synix Control Panel.csproj no se pudo encontrar en esta compilación de desarrollo."
     'GameDefinitions.Builder.Saved.Body' = "Las plantillas de definición y configuración validadas se guardaron en el proyecto. Reconstruya Synix y ejecute las pruebas automatizadas antes de usarlo.`n`n¿Abrir la carpeta de definiciones ahora?"
     'GameDefinitions.Builder.SavedPath' = "Guardado: {0}"
-    'GameDefinitions.Builder.TemplatePicker.Filter' = "Archivos de configuración|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|Todos los archivos|*.*"
+    'GameDefinitions.Builder.TemplatePicker.Filter' = "Archivos de configuración|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|Todos los archivos|*.*"
     'GameDefinitions.Builder.TemplatePicker.Title' = "Selecciona una plantilla de configuración de juego completa"
     'GameDefinitions.Builder.ValidSummary' = "Definición válida • revisión {0} • plantilla(s) {1} • acciones seguras {2}"
     'GameDefinitions.Queue.ArgumentRecorded' = "{0}: verificación de argumento registrada de la prueba del servidor real."
@@ -1579,6 +1604,9 @@
     'FileHandler.Activity.MigrationUpgraded' = "[MIGRACIÓN] Se actualizaron {0} registro(s) de servidor al esquema de datos {1}. Se creó una copia del archivo original antes de guardar."
     'FileHandler.Activity.MigrationProtected' = "[MIGRACIÓN] Se protegieron las contraseñas y los webhooks de Discord de {0} servidor(es) con el cifrado del usuario de Windows."
     'FileSystem.Error.FolderMoveFailed' = "No se pudo mover la carpeta: {0}"
+    'FileSystem.Error.UnsafeDeletionPath' = "Synix se negó a eliminar «{0}» porque no es una carpeta segura de servidor o de copias de seguridad. Las raíces de las unidades, las carpetas de Windows y de aplicaciones, las raíces de los datos de usuario y las carpetas compartidas de Synix están protegidas."
+    'FileSystem.Error.LinkedDeletionPath' = "Synix se negó a eliminar «{0}» porque la carpeta o una de sus carpetas superiores es un enlace. Las carpetas enlazadas no se pueden eliminar automáticamente."
+    'FileSystem.Error.DeletionPathUnavailable' = "Synix no pudo verificar de forma segura la carpeta que se va a eliminar: «{0}»."
     'Configuration.Activity.Error' = "[ERROR DE CONFIGURACIÓN] {0}"
     'Configuration.Activity.Warning' = "[ADVERTENCIA DE CONFIGURACIÓN] {0}"
     'Configuration.Definition.Duplicate' = "Definición de configuración duplicada: {0}."

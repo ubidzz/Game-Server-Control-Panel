@@ -11,6 +11,7 @@
 // 3. The "Synix" brand and logic remain the property of Jason Turner.
 // ============================================================================
 using Synix_Control_Panel.SynixApp.Design;
+using Synix_Control_Panel.SynixApp.Database;
 using Synix_Control_Panel.SynixApp.Database.GameConfigurations;
 using Synix_Control_Panel.SynixApp.FileFolderHandler;
 using Synix_Control_Panel.SynixApp.ServerHandler;
@@ -318,15 +319,12 @@ namespace Synix_Control_Panel.SynixApp.UI.Configuration
 			Text = LocalizationManager.Get("Configuration.Editor.Title", fileName);
 			lblFileName.Text = fileName;
 			lblFormatBadge.Text = formatName;
-			LocalizationManager.BindText(
-				lblPageSubtitle,
-				_configurationFiles.Count > 1
-					? "Configuration.Editor.Subtitle.Multiple"
-					: "Configuration.Editor.Subtitle.Single",
-				fileName,
-				_selectedFileIndex + 1,
-				_configurationFiles.Count,
-				formatName);
+			if (_configurationFiles.Count > 1)
+				LocalizationManager.BindText(lblPageSubtitle, "Configuration.Editor.Subtitle.Multiple",
+					fileName, _selectedFileIndex + 1, _configurationFiles.Count, formatName);
+			else
+				LocalizationManager.BindText(lblPageSubtitle, "Configuration.Editor.Subtitle.Single",
+					fileName, formatName);
 			LocalizationManager.BindText(
 				lblFormatState,
 				"Configuration.Editor.StructurePreserved",
@@ -921,6 +919,15 @@ namespace Synix_Control_Panel.SynixApp.UI.Configuration
 			}
 
 			bool fileExists = File.Exists(_path);
+			if (!GameServerInputValidator.TryValidateWorldSeed(
+				GameDatabase.GetGame(_server.Game), _server.WorldSeed, out string worldSeedError))
+			{
+				LocalizedMessageBox.Show(this, worldSeedError,
+					LocalizationManager.Get("ServerSetup.Dialog.SettingsAttention.Title"),
+					MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				return;
+			}
+
 			string developmentModeText = GameFix.ManagedConfigurationsEnabled
 				? string.Empty
 				: LocalizationManager.Get("Configuration.Editor.Reset.DevelopmentMode");

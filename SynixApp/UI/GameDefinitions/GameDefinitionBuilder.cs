@@ -55,6 +55,7 @@ namespace Synix_Control_Panel.SynixApp.UI.GameDefinitions
 				new("INI / CFG / properties", ConfigFormat.StandardINI),
 				new("XML", ConfigFormat.XML),
 				new("JSON", ConfigFormat.JSON),
+				new("YAML / YML", ConfigFormat.YAML),
 				new(LocalizationManager.Get(
 					"GameDefinitions.Builder.Format.SpaceSeparated"),
 					ConfigFormat.Space),

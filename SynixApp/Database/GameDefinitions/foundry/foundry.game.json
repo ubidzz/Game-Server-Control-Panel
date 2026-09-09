@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "definitionRevision": 1,
+  "definitionRevision": 2,
   "id": "foundry",
   "catalogOrder": 91,
   "game": "Foundry",
@@ -34,8 +34,18 @@
   "probeProtocol": "Auto",
   "supportsManualConnectionTesting": true,
   "probePath": "",
-  "eosDeploymentId": ""
-,
+  "eosDeploymentId": "",
+  "configuration": {
+    "schemaVersion": 1,
+    "revision": 3,
+    "templates": [
+      {
+        "revision": 3,
+        "relativePath": "app.cfg",
+        "templateFile": "app.cfg"
+      }
+    ]
+  },
   "postInstallActions": [
     {
       "type": "CopySteamRuntimeFiles",

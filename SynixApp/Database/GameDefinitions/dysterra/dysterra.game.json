@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "definitionRevision": 1,
+  "definitionRevision": 3,
   "id": "dysterra",
   "catalogOrder": 151,
   "game": "Dysterra",
@@ -34,8 +34,26 @@
   "probeProtocol": "Auto",
   "supportsManualConnectionTesting": true,
   "probePath": "",
-  "eosDeploymentId": ""
-,
+  "eosDeploymentId": "",
+  "configuration": {
+    "schemaVersion": 1,
+    "revision": 3,
+    "managedInputs": [
+      "ServerName",
+      "ServerPassword",
+      "MaxPlayers"
+    ],
+    "templates": [
+      {
+        "revision": 3,
+        "relativePath": "Dysterra\\WorldSettings\\MyServer.json",
+        "templateFile": "MyServer.json"
+      }
+    ]
+  },
+  "launchBehavior": {
+    "steamAppId": "1527890"
+  },
   "postInstallActions": [
     {
       "type": "CopySteamRuntimeFiles",

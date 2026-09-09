@@ -3568,7 +3568,7 @@ Después, vuelva a compilar Synix, ejecute las pruebas y compruebe manualmente l
     <value>Guardado: {0}</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Filter" xml:space="preserve">
-    <value>Archivos de configuración|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|Todos los archivos|*.*</value>
+    <value>Archivos de configuración|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|Todos los archivos|*.*</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Title" xml:space="preserve">
     <value>Selecciona una plantilla de configuración de juego completa</value>
@@ -6047,6 +6047,15 @@ Libere espacio o elija otra ubicación y vuelva a intentarlo.</value>
   </data>
   <data name="FileSystem.Error.FolderMoveFailed" xml:space="preserve">
     <value>No se pudo mover la carpeta: {0}</value>
+  </data>
+  <data name="FileSystem.Error.UnsafeDeletionPath" xml:space="preserve">
+    <value>Synix se negó a eliminar «{0}» porque no es una carpeta segura de servidor o de copias de seguridad. Las raíces de las unidades, las carpetas de Windows y de aplicaciones, las raíces de los datos de usuario y las carpetas compartidas de Synix están protegidas.</value>
+  </data>
+  <data name="FileSystem.Error.LinkedDeletionPath" xml:space="preserve">
+    <value>Synix se negó a eliminar «{0}» porque la carpeta o una de sus carpetas superiores es un enlace. Las carpetas enlazadas no se pueden eliminar automáticamente.</value>
+  </data>
+  <data name="FileSystem.Error.DeletionPathUnavailable" xml:space="preserve">
+    <value>Synix no pudo verificar de forma segura la carpeta que se va a eliminar: «{0}».</value>
   </data>
   <data name="Configuration.Activity.Error" xml:space="preserve">
     <value>[ERROR DE CONFIGURACIÓN] {0}</value>
@@ -10696,5 +10705,41 @@ Se eliminarán los demás valores de configuración personalizados.</value>
   </data>
   <data name="MessageText.19580FB3CF2A0F82762D" xml:space="preserve">
     <value>Debes detener el servidor antes de validar sus archivos.</value>
+  </data>
+  <data name="ModManager.Error.LinkedPath" xml:space="preserve">
+    <value>Esta operación de complementos utiliza un archivo o una carpeta enlazados. Elige una carpeta normal; Synix no seguirá ese enlace.</value>
+  </data>
+  <data name="ModManager.Error.PreviousFileMissing" xml:space="preserve">
+    <value>Falta un archivo anterior del complemento necesario para restaurarlo. No se ha cambiado ningún archivo. Restaura el archivo de recuperación que falta o utiliza una copia de seguridad verificada del servidor antes de eliminar este complemento.</value>
+  </data>
+  <data name="ModManager.Error.RecoveryRetained" xml:space="preserve">
+    <value>La importación del complemento ha fallado y no se han podido revertir algunos cambios. Los archivos de recuperación se han conservado en {0}. Mantén el servidor detenido y restaura esos archivos o una copia de seguridad verificada antes de iniciarlo.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchValue" xml:space="preserve">
+    <value>El campo de inicio {0} no puede pasarse de forma segura a este iniciador por lotes de Windows. Aquí no se admiten comillas dobles internas, saltos de línea ni expresiones de variables. El valor no se ha cambiado.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchArguments" xml:space="preserve">
+    <value>El comando por lotes completo contiene sintaxis insegura o expansión de variables. Revisa los valores de inicio y los argumentos adicionales; no se ha iniciado nada.</value>
+  </data>
+  <data name="ServerStart.Arguments.CustomHidden" xml:space="preserve">
+    <value>[Argumentos personalizados proporcionados; contenido omitido del registro]</value>
+  </data>
+  <data name="Configuration.Editor.Error.YamlUnsupported" xml:space="preserve">
+    <value>La línea YAML {0} no es válida o usa una función que este editor no puede modificar de forma segura. Se admite un documento con claves/listas con sangría y valores de una sola línea. No se admiten colecciones en línea, valores multilínea, etiquetas, anclas ni alias. No se guardó nada.</value>
+  </data>
+  <data name="GameInput.WorldSeed.RequiredNumber" xml:space="preserve">
+    <value>La semilla del mundo es obligatoria para {0}: use un entero de {1} a {2}. Corríjala en Configuración del servidor &gt; Generación del mundo.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Required" xml:space="preserve">
+    <value>Semilla del mundo (obligatoria)</value>
+  </data>
+  <data name="ServerSetup.World.Seed.RangeHint" xml:space="preserve">
+    <value>Entero de {0} a {1}. Para un mundo existente, conserve su semilla original.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Generate" xml:space="preserve">
+    <value>Generar semilla</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Hint" xml:space="preserve">
+    <value>Genere una semilla para un mundo nuevo o introduzca la suya. Para un mundo existente, conserve su semilla original.</value>
   </data>
 </root>

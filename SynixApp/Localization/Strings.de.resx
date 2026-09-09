@@ -3568,7 +3568,7 @@ Jetzt den Definitionsordner öffnen?</value>
     <value>Gespeichert: {0}</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Filter" xml:space="preserve">
-    <value>Konfigurationsdateien|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|Alle Dateien|*.*</value>
+    <value>Konfigurationsdateien|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|Alle Dateien|*.*</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Title" xml:space="preserve">
     <value>Wählen Sie eine vollständige Spielkonfigurationsvorlage aus</value>
@@ -6047,6 +6047,15 @@ Geben Sie Speicherplatz frei oder wählen Sie einen anderen Speicherort und vers
   </data>
   <data name="FileSystem.Error.FolderMoveFailed" xml:space="preserve">
     <value>Der Ordner konnte nicht verschoben werden: {0}</value>
+  </data>
+  <data name="FileSystem.Error.UnsafeDeletionPath" xml:space="preserve">
+    <value>Synix hat das Löschen von „{0}“ verweigert, da dieser Ordner nicht sicher als Server- oder Sicherungsordner gelöscht werden kann. Laufwerkswurzeln, Windows- und Anwendungsordner, Stammordner für Benutzerdaten und gemeinsam genutzte Synix-Ordner sind geschützt.</value>
+  </data>
+  <data name="FileSystem.Error.LinkedDeletionPath" xml:space="preserve">
+    <value>Synix hat das Löschen von „{0}“ verweigert, da der Ordner oder einer seiner übergeordneten Ordner eine Verknüpfung ist. Verknüpfte Ordner können nicht automatisch gelöscht werden.</value>
+  </data>
+  <data name="FileSystem.Error.DeletionPathUnavailable" xml:space="preserve">
+    <value>Synix konnte den zu löschenden Ordner „{0}“ nicht sicher überprüfen.</value>
   </data>
   <data name="Configuration.Activity.Error" xml:space="preserve">
     <value>[KONFIGURATIONSFEHLER] {0}</value>
@@ -10696,5 +10705,41 @@ Alle anderen benutzerdefinierten Konfigurationswerte werden entfernt.</value>
   </data>
   <data name="MessageText.19580FB3CF2A0F82762D" xml:space="preserve">
     <value>Sie müssen den Server stoppen, bevor Sie die Serverdateien validieren.</value>
+  </data>
+  <data name="ModManager.Error.LinkedPath" xml:space="preserve">
+    <value>Dieser Add-on-Vorgang verwendet eine verknüpfte Datei oder einen verknüpften Ordner. Wähle einen normalen Ordner; Synix folgt dieser Verknüpfung nicht.</value>
+  </data>
+  <data name="ModManager.Error.PreviousFileMissing" xml:space="preserve">
+    <value>Eine zur Wiederherstellung benötigte frühere Add-on-Datei fehlt. Es wurden keine Dateien geändert. Stelle die fehlende Wiederherstellungsdatei wieder her oder verwende eine geprüfte Serversicherung, bevor du dieses Add-on entfernst.</value>
+  </data>
+  <data name="ModManager.Error.RecoveryRetained" xml:space="preserve">
+    <value>Der Add-on-Import ist fehlgeschlagen und einige Änderungen konnten nicht rückgängig gemacht werden. Wiederherstellungsdateien wurden unter {0} aufbewahrt. Lass den Server gestoppt und stelle diese Dateien oder eine geprüfte Serversicherung wieder her, bevor du ihn startest.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchValue" xml:space="preserve">
+    <value>Das Startfeld {0} kann diesem Windows-Batch-Starter nicht sicher übergeben werden. Eingebettete doppelte Anführungszeichen, Zeilenumbrüche oder Variablenausdrücke werden hier nicht unterstützt. Der Wert wurde nicht geändert.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchArguments" xml:space="preserve">
+    <value>Der vollständige Batch-Befehl enthält unsichere Befehlssyntax oder Variablenersetzung. Prüfe die Startwerte und zusätzlichen Argumente; es wurde nichts gestartet.</value>
+  </data>
+  <data name="ServerStart.Arguments.CustomHidden" xml:space="preserve">
+    <value>[Benutzerdefinierte Argumente vorhanden; Inhalt im Protokoll ausgeblendet]</value>
+  </data>
+  <data name="Configuration.Editor.Error.YamlUnsupported" xml:space="preserve">
+    <value>YAML-Zeile {0} ist ungültig oder verwendet eine Funktion, die dieser Editor nicht sicher ändern kann. Unterstützt: ein Dokument mit eingerückten Zuordnungen/Listen und einzeiligen Werten. Inline-Sammlungen, mehrzeilige Werte, Tags, Anker und Aliase werden nicht unterstützt. Nichts wurde gespeichert.</value>
+  </data>
+  <data name="GameInput.WorldSeed.RequiredNumber" xml:space="preserve">
+    <value>Für {0} ist ein Welt-Seed als ganze Zahl von {1} bis {2} erforderlich. Korrigieren Sie ihn unter Servereinrichtung &gt; Weltgenerierung.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Required" xml:space="preserve">
+    <value>Welt-Seed (erforderlich)</value>
+  </data>
+  <data name="ServerSetup.World.Seed.RangeHint" xml:space="preserve">
+    <value>Ganze Zahl von {0} bis {1}. Behalten Sie bei einer bestehenden Welt den ursprünglichen Seed.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Generate" xml:space="preserve">
+    <value>Seed erzeugen</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Hint" xml:space="preserve">
+    <value>Erzeugen Sie einen Seed für eine neue Welt oder geben Sie einen eigenen ein. Behalten Sie bei bestehenden Welten den ursprünglichen Seed.</value>
   </data>
 </root>

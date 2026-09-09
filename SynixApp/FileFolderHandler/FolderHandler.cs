@@ -42,15 +42,36 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 				GameServer server,
 				bool deleteBackups)
 			{
+				// Prepare both targets first. An invalid backup target must not be
+				// discovered after the installation has already been removed.
+				(string installationPath, string? backupRoot) = ValidateDeletionTargets(server, deleteBackups);
 				bool installationDeleted = false;
-				if (Directory.Exists(server.InstallPath))
+				if (Directory.Exists(installationPath))
 				{
-					Directory.Delete(server.InstallPath, true);
+					Directory.Delete(installationPath, true);
 					installationDeleted = true;
 				}
 
-				string? backupRoot = null;
 				bool backupsDeleted = false;
+				if (backupRoot != null && Directory.Exists(backupRoot))
+				{
+					Directory.Delete(backupRoot, true);
+					backupsDeleted = true;
+				}
+
+				return new ServerFolderDeletionResult(
+					installationPath,
+					installationDeleted,
+					backupRoot,
+					backupsDeleted);
+			}
+
+			internal static (string InstallationPath, string? BackupPath) ValidateDeletionTargets(
+				GameServer server, bool deleteBackups)
+			{
+				ArgumentNullException.ThrowIfNull(server);
+				string installationPath = ServerDeletionSafety.ValidatePath(server.InstallPath);
+				string? backupRoot = null;
 				if (deleteBackups)
 				{
 					string cleanGame = SynixEngine.Core.Instance.GetSafeName(server.Game);
@@ -64,19 +85,14 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 						baseBackupFolder = Properties.Settings.Default.CustomBackupPath;
 					}
 
-					backupRoot = Path.Combine(baseBackupFolder, cleanGame, cleanServer);
-					if (Directory.Exists(backupRoot))
-					{
-						Directory.Delete(backupRoot, true);
-						backupsDeleted = true;
-					}
+					if (string.IsNullOrWhiteSpace(server.Game) || string.IsNullOrWhiteSpace(server.ServerName) ||
+						string.IsNullOrWhiteSpace(cleanGame) || string.IsNullOrWhiteSpace(cleanServer))
+						throw new InvalidOperationException(LocalizationManager.Get(
+							"FileSystem.Error.UnsafeDeletionPath", baseBackupFolder));
+					backupRoot = ServerDeletionSafety.ValidatePath(
+						Path.Combine(baseBackupFolder, cleanGame, cleanServer), baseBackupFolder);
 				}
-
-				return new ServerFolderDeletionResult(
-					server.InstallPath,
-					installationDeleted,
-					backupRoot,
-					backupsDeleted);
+				return (installationPath, backupRoot);
 			}
 
 			public static bool Rename(GameServer oldServer, GameServer newServer)

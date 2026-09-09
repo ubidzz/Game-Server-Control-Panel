@@ -87,10 +87,6 @@ namespace Synix_Control_Panel.SynixEngine
 			PropertyNameCaseInsensitive = true,
 			WriteIndented = true
 		};
-		private static readonly Regex DiscordWebhookPattern = new(
-			@"https://(?:canary\.|ptb\.)?discord(?:app)?\.com/api/webhooks/\S+",
-			RegexOptions.IgnoreCase | RegexOptions.Compiled,
-			TimeSpan.FromSeconds(1));
 		private static readonly Regex WindowsUserPathPattern = new(
 			@"(?i)\b[A-Z]:\\Users\\[^\\\r\n]+",
 			RegexOptions.Compiled,
@@ -101,14 +97,6 @@ namespace Synix_Control_Panel.SynixEngine
 			TimeSpan.FromSeconds(1));
 		private static readonly Regex Ipv6Pattern = new(
 			@"(?i)(?<![0-9a-f:])(?:[0-9a-f]{1,4}:){2,7}[0-9a-f]{0,4}(?![0-9a-f:])",
-			RegexOptions.Compiled,
-			TimeSpan.FromSeconds(1));
-		private static readonly Regex CommandSecretPattern = new(
-			@"(?i)(?<key>(?:--?|\+)(?:admin-?password|rcon-?password|server-?password|password|passwd|token|secret|api-?key))\s+(?<value>""[^""]*""|'[^']*'|\S+)",
-			RegexOptions.Compiled,
-			TimeSpan.FromSeconds(1));
-		private static readonly Regex AssignedSecretPattern = new(
-			@"(?i)(?<key>\b(?:admin-?password|rcon-?password|server-?password|password|passwd|access_?token|refresh_?token|secret|api_?key|webhook)\b\s*[:=]\s*)(?<value>[^\s,;&\r\n]+)",
 			RegexOptions.Compiled,
 			TimeSpan.FromSeconds(1));
 
@@ -225,18 +213,10 @@ namespace Synix_Control_Panel.SynixEngine
 			if (string.IsNullOrWhiteSpace(value))
 				return string.Empty;
 
-			string sanitized = value.Replace("\0", string.Empty, StringComparison.Ordinal);
-			sanitized = SynixApp.ServerHandler.Satisfactory.SatisfactoryTokenParser.Redact(sanitized);
-			sanitized = DiscordWebhookPattern.Replace(sanitized, "[Discord webhook removed]");
+			string sanitized = SecretRedactor.Redact(value.Replace("\0", string.Empty, StringComparison.Ordinal));
 			sanitized = WindowsUserPathPattern.Replace(sanitized, @"C:\Users\[user]");
 			sanitized = Ipv4Pattern.Replace(sanitized, "[IP address removed]");
 			sanitized = Ipv6Pattern.Replace(sanitized, "[IP address removed]");
-			sanitized = CommandSecretPattern.Replace(
-				sanitized,
-				match => $"{match.Groups["key"].Value} [secret removed]");
-			sanitized = AssignedSecretPattern.Replace(
-				sanitized,
-				match => $"{match.Groups["key"].Value}[secret removed]");
 			sanitized = sanitized.Trim();
 
 			return sanitized.Length <= MaximumReportTextLength

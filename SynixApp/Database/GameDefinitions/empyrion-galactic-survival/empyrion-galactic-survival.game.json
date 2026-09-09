@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "definitionRevision": 1,
+  "definitionRevision": 2,
   "id": "empyrion-galactic-survival",
   "catalogOrder": 16,
   "game": "Empyrion - Galactic Survival",
   "aliases": [],
   "appId": "530870",
   "requiresSteamLogin": false,
-  "executable": "EmpyrionDedicated.cmd",
+  "executable": "EmpyrionLauncher.exe",
   "downloadUrl": "",
-  "arguments": "-batchmode -nographics -logFile \"Logs\\current.log\" -SteamAppId={steamAppID}",
+  "arguments": "-startDedi",
   "rconSyntax": "",
   "port": 30000,
   "queryPort": 30001,
@@ -20,19 +20,38 @@
     "Default Multiplayer"
   ],
   "gameModes": [],
-  "configFileCreation": "Unknown",
-  "relativeConfigPath": "",
-  "format": "StandardINI",
+  "configFileCreation": "SynixTemplate",
+  "relativeConfigPath": "dedicated.yaml",
+  "format": "YAML",
   "externalDataFolderName": "",
   "requiredLaunchFiles": [],
   "optionalLaunchFiles": [],
   "launchFileSetupInstructions": "",
-  "needsConfigWarning": false,
+  "needsConfigWarning": true,
   "warningMessage": "This game requires configuration before it can boot properly.",
   "iconUrl": "",
   "isQueryable": true,
   "probeProtocol": "Auto",
   "supportsManualConnectionTesting": true,
   "probePath": "",
-  "eosDeploymentId": ""
+  "eosDeploymentId": "",
+  "configuration": {
+    "schemaVersion": 1,
+    "revision": 1,
+    "managedInputs": [
+      "ServerName",
+      "ServerPassword",
+      "Port",
+      "MaxPlayers",
+      "WorldName",
+      "WorldSeed"
+    ],
+    "templates": [
+      {
+        "revision": 1,
+        "relativePath": "dedicated.yaml",
+        "templateFile": "dedicated.yaml"
+      }
+    ]
+  }
 }

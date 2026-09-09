@@ -646,6 +646,22 @@ namespace Synix_Control_Panel.SynixApp.Database.GameDefinitions
 					"GameDefinition.Error.NullField",
 					resourceName,
 					"launchBehavior"));
+			ValidateText(
+				behavior.SteamAppId,
+				"launchBehavior.steamAppId",
+				resourceName,
+				10,
+				required: false);
+			if (!string.IsNullOrEmpty(behavior.SteamAppId) &&
+				(!behavior.SteamAppId.All(char.IsAsciiDigit) ||
+				 !uint.TryParse(behavior.SteamAppId, out uint steamAppId) ||
+				 steamAppId == 0))
+			{
+				throw new InvalidDataException(LocalizationManager.Get(
+					"GameDefinition.Error.InvalidFieldValue",
+					resourceName,
+					"launchBehavior.steamAppId"));
+			}
 			if (!GameLaunchCommandBuilder.TryGetLauncherKind(
 				manifest.Executable,
 				out _))
