@@ -27,7 +27,15 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 	internal enum ModContentKind
 	{
 		Plugin,
-		Mod
+		Mod,
+		Scenario
+	}
+
+	internal enum ModPackageLayout
+	{
+		Default,
+		EmpyrionMod,
+		EmpyrionScenario
 	}
 
 	internal enum ModTargetMode
@@ -89,12 +97,14 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 		public string DisplayName { get; init; } = string.Empty;
 		public ModContentKind Kind { get; init; }
 		public ModTargetMode Mode { get; init; }
+		public ModPackageLayout PackageLayout { get; init; }
 		public string ProviderName { get; init; } = string.Empty;
 		public string RelativePath { get; init; } = string.Empty;
 		public List<string> AllowedExtensions { get; init; } = [];
 		public List<string> MarkerPaths { get; init; } = [];
 		public List<string> FrameworkNames { get; init; } = [];
 		public bool AllowArchives { get; init; }
+		public bool AllowFolderImport { get; init; }
 		public bool ArchiveOnly { get; init; }
 		public bool PreserveArchiveContents { get; init; }
 		public string RequiredArchiveFileName { get; init; } = string.Empty;
@@ -394,6 +404,8 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 				HashSet<string> targetIds = new(StringComparer.OrdinalIgnoreCase);
 				foreach (ModInstallTarget target in profile.Targets)
 				{
+					if (!ModPackageHandlers.For(target).AcceptsProfile(profile, target))
+						throw new InvalidDataException(LocalizationManager.Get("EmpyrionMods.Error.Profile"));
 					if (string.IsNullOrWhiteSpace(target.Id) ||
 						string.IsNullOrWhiteSpace(target.DisplayName) ||
 						(!target.CanManageIds &&
@@ -410,12 +422,15 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 					{
 						throw new InvalidDataException(LocalizationManager.Get("ModCatalog.Error.DangerousType", sourceName));
 					}
-					if ((target.ArchiveOnly || target.PreserveArchiveContents ||
+					if ((target.ArchiveOnly || target.AllowFolderImport || target.PreserveArchiveContents ||
 						!string.IsNullOrWhiteSpace(target.RequiredArchiveFileName) ||
 						target.WrapRootArchiveFiles) && !target.AllowArchives)
 					{
 						throw new InvalidDataException(LocalizationManager.Get("ModCatalog.Error.ArchiveRules", sourceName));
 					}
+					if (target.AllowFolderImport && (!target.CanImport || !target.ArchiveOnly ||
+						(target.PackageLayout == ModPackageLayout.Default && string.IsNullOrWhiteSpace(target.RequiredArchiveFileName))))
+						throw new InvalidDataException(LocalizationManager.Get("ModCatalog.Error.ArchiveMarkerRequired", sourceName));
 					if (!string.IsNullOrWhiteSpace(target.RequiredArchiveFileName) &&
 						(target.RequiredArchiveFileName.Length > 128 ||
 						target.RequiredArchiveFileName != Path.GetFileName(target.RequiredArchiveFileName) ||

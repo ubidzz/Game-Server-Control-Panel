@@ -140,9 +140,6 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 	internal static class ModPackageManager
 	{
 		private const int CurrentLedgerSchemaVersion = 1;
-		private const int MaximumArchiveEntries = 2048;
-		private const long MaximumSingleFileBytes = 256L * 1024 * 1024;
-		private const long MaximumArchiveBytes = 512L * 1024 * 1024;
 		private static readonly JsonSerializerOptions LedgerJsonOptions = new()
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
@@ -198,6 +195,11 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 					target.RelativePath);
 				if (!Directory.Exists(targetRoot))
 					continue;
+				if (ModPackageHandlers.For(target).GroupInventoryByFolder)
+				{
+					results.AddRange(ScanPackageFolders(server, profile, target, targetRoot, ledger));
+					continue;
+				}
 
 				EnumerationOptions scanOptions = new()
 				{
@@ -286,6 +288,34 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 			return results.ToArray();
 		}
 
+		private static IEnumerable<ModInventoryItem> ScanPackageFolders(GameServer server, ModSystemProfile profile,
+			ModInstallTarget target, string root, ModInstallationLedger ledger)
+		{
+			foreach (string folder in Directory.EnumerateDirectories(root).Order(StringComparer.OrdinalIgnoreCase))
+			{
+				if ((File.GetAttributes(folder) & FileAttributes.ReparsePoint) != 0) continue;
+				ModPathSafety.EnsureNoLinks(folder);
+				if (!ModPackageHandlers.For(target).IsInstalledFolder(folder)) continue;
+				string relative = NormalizeRelativePath(Path.GetRelativePath(server.InstallPath, folder));
+				ModInstallationRecord? record = ledger.Installations.LastOrDefault(r => r.ProfileId == profile.Id &&
+					r.TargetId == target.Id && r.Files.Any(f => NormalizeRelativePath(f.RelativePath)
+						.StartsWith(relative + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)));
+				// Do not claim a fresh integrity check without hashing the entire asset tree.
+				bool protectedScenario = EmpyrionAddOns.IsScenario(target) &&
+					!(record == null ? EmpyrionAddOns.CanRemoveScenario(server, [relative + "/gameoptions.yaml"]) :
+						EmpyrionAddOns.CanRollBackScenarioImport(server, record));
+				yield return new ModInventoryItem(Path.GetFileName(folder),
+					LocalizationManager.Get($"ModManager.Known.{target.Kind}"),
+					LocalizationManager.Get("ModManager.Known.NotReported"),
+					LocalizationManager.Get(protectedScenario ? "EmpyrionMods.Status.Protected" :
+						record == null ? "ModManager.Known.Detected" : "EmpyrionMods.Status.Installed"),
+					LocalizationManager.Get(record == null ? "ModManager.Known.NotReviewed" :
+						record.SecurityReview == "Structural checks completed" ? "ModManager.Known.StructuralOnly" : "ModManager.Known.ReviewRecorded"),
+					LocalizationManager.Get(record == null ? "ModManager.Known.External" : "ModManager.Known.SynixImport"),
+					relative, folder, record?.Id, record != null && !protectedScenario);
+			}
+		}
+
 		internal static ModImportResult Import(
 			GameServer server,
 			ModSystemProfile profile,
@@ -293,12 +323,15 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 			string packagePath,
 			string? expectedPackageSha256 = null,
 			string? securityReviewSummary = null,
-			ModImportSecurityContext? securityContext = null)
+			ModImportSecurityContext? securityContext = null,
+			string? installationFolderName = null)
 		{
 			ArgumentNullException.ThrowIfNull(server);
 			ArgumentNullException.ThrowIfNull(profile);
 			ArgumentNullException.ThrowIfNull(target);
 			EnsureStopped(server);
+			if (target.PackageLayout != ModPackageLayout.Default && !EmpyrionAddOns.IsEmpyrion(server))
+				throw EmpyrionAddOns.Error("Profile");
 			securityContext ??= ModImportSecurityContext.CaptureCurrent();
 			if (securityContext.IsCurrentProcessElevated)
 			{
@@ -314,7 +347,8 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 					packagePath);
 
 			FileInfo package = new(packagePath);
-			if (package.Length is <= 0 or > MaximumArchiveBytes)
+			ModPackageLimits limits = ModPackageLimits.For(target);
+			if (package.Length <= 0 || package.Length > limits.TotalBytes)
 				throw new InvalidDataException(LocalizationManager.Get(
 					"ModManager.Error.PackageSize"));
 
@@ -364,7 +398,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 						packageSnapshot,
 						extractionRoot,
 						target,
-						Path.GetFileNameWithoutExtension(packagePath)));
+						Path.GetFileNameWithoutExtension(packagePath), installationFolderName));
 				}
 				else
 				{
@@ -373,7 +407,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 							"ModManager.Error.ZipOnly"));
 					if (!IsAllowedFile(packageSnapshot, target))
 						throw new InvalidDataException(BuildAllowedExtensionMessage(target));
-					if (package.Length > MaximumSingleFileBytes)
+					if (package.Length > limits.FileBytes)
 						throw new InvalidDataException(LocalizationManager.Get(
 							"ModManager.Error.FileTooLarge"));
 					sources.Add(new InstallSource(packageSnapshot, Path.GetFileName(packagePath)));
@@ -390,6 +424,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 					ResolveInsideRoot(backupRoot, source.RelativePath);
 				}
 				ModPathSafety.EnsureNoLinks(targetRoot);
+				EnsureStopped(server);
 				Directory.CreateDirectory(targetRoot);
 				List<AppliedFile> applied = [];
 				try
@@ -495,6 +530,8 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 					"ModManager.Error.RecordMissing"));
 
 			string serverData = GetServerDataFolder(server);
+			if (!EmpyrionAddOns.CanRollBackScenarioImport(server, record))
+				throw EmpyrionAddOns.Error("ProtectedScenario");
 			string transactionRoot = ResolveInsideRoot(serverData, record.TransactionFolder);
 			// Check every rollback path as well as every destination before the first mutation.
 			foreach (ModInstalledFile file in record.Files)
@@ -935,7 +972,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 				if (record == null || !Guid.TryParseExact(record.Id, "N", out _) || !ids.Add(record.Id) ||
 					!ModPathSafety.IsSafeRelativePath(record.TransactionFolder) ||
 					!record.TransactionFolder.Replace('/', '\\').Equals($"Transactions\\{record.Id}", StringComparison.OrdinalIgnoreCase) ||
-					record.Files == null || record.Files.Count > MaximumArchiveEntries)
+					record.Files == null || record.Files.Count > ModPackageHandlers.MaximumHistoryEntries)
 					throw new InvalidDataException(LocalizationManager.Get("ModManager.Error.HistoryFormat"));
 				HashSet<string> destinations = new(StringComparer.OrdinalIgnoreCase);
 				HashSet<string> backups = new(StringComparer.OrdinalIgnoreCase);
@@ -967,7 +1004,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 			string archivePath,
 			string extractionRoot,
 			ModInstallTarget target,
-			string packageName)
+			string packageName, string? installationFolderName)
 		{
 			ModPathSafety.EnsureNoLinks(extractionRoot);
 			Directory.CreateDirectory(extractionRoot);
@@ -976,7 +1013,10 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 				Path.DirectorySeparatorChar;
 			List<InstallSource> sources = [];
 			using ZipArchive archive = ZipFile.OpenRead(archivePath);
-			if (archive.Entries.Count > MaximumArchiveEntries)
+			ModPackageLimits limits = ModPackageLimits.For(target);
+			IReadOnlyDictionary<string, string>? mappedPaths = ModPackageHandlers.For(target)
+				.MapArchive(archive, target, packageName, installationFolderName);
+			if (archive.Entries.Count > limits.Entries)
 				throw new InvalidDataException(LocalizationManager.Get(
 					"ModManager.Error.TooManyFiles"));
 			bool wrapRootFiles = target.WrapRootArchiveFiles && archive.Entries.Any(entry =>
@@ -990,13 +1030,14 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 				if (string.IsNullOrWhiteSpace(entry.Name))
 					continue;
 				extractedBytes = checked(extractedBytes + entry.Length);
-				if (entry.Length > MaximumSingleFileBytes || extractedBytes > MaximumArchiveBytes)
+				if (entry.Length > limits.FileBytes || extractedBytes > limits.TotalBytes)
 					throw new InvalidDataException(LocalizationManager.Get(
 						"ModManager.Error.ExtractionLimit"));
 
 				if (!ModPathSafety.IsSafeRelativePath(entry.FullName))
 					throw new InvalidDataException(LocalizationManager.Get("ModManager.Error.UnsafePath"));
-				string relative = NormalizeRelativePath(entry.FullName);
+				string relative = NormalizeRelativePath(mappedPaths == null ? entry.FullName :
+					mappedPaths[entry.FullName.Replace('\\', '/')]);
 				if (wrapRootFiles)
 					relative = NormalizeRelativePath(Path.Combine(packageFolder, relative));
 				string destination = ResolveInsideRoot(root, relative);
@@ -1005,7 +1046,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 				Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
 				using Stream source = entry.Open();
 				using FileStream output = new(destination, FileMode.CreateNew, FileAccess.Write, FileShare.None);
-				source.CopyTo(output);
+				ModPackageFiles.CopyExactBounded(source, output, entry.Length);
 				sources.Add(new InstallSource(destination, relative));
 			}
 			return sources;
@@ -1133,7 +1174,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 			value.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)
 				.TrimStart(Path.DirectorySeparatorChar);
 
-		private static void EnsureStopped(GameServer server)
+		internal static void EnsureStopped(GameServer server)
 		{
 			bool processIsRunning = false;
 			try

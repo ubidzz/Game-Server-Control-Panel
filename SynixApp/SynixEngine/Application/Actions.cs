@@ -483,6 +483,8 @@ namespace Synix_Control_Panel.SynixEngine
 				}
 				if (deletion.BackupsDeleted)
 					LogLocalized("ServerActions.Activity.BackupsDeleted", Color.LimeGreen, false, deletion.BackupPath);
+				if (deletion.AddOnDataDeleted)
+					LogLocalized("ServerActions.Activity.AddOnDataDeleted", Color.LimeGreen, false, deletion.AddOnDataPath);
 
 				if (ServerRegistry.Servers.Contains(server))
 					ServerRegistry.Servers.Remove(server);

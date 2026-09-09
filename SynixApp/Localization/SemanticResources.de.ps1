@@ -992,7 +992,7 @@
     'Schedule.Smart.WaitForPlayers' = "Warten Sie auf die Spieler"
     'Schedule.Smart.WaitToggle.AccessibleName' = "Warten Sie auf verbundene Spieler"
     'ServerActions.ConfigurationApplyFailed.Title' = "Die Konfiguration konnte nicht angewendet werden"
-    'ServerActions.Delete.ConfirmBody' = "Dadurch wird die Installation gelöscht unter:`n{0}"
+    'ServerActions.Delete.ConfirmBody' = "Dadurch wird die Installation an folgendem Ort endgültig gelöscht:`n{0}`n`nDer von Synix gespeicherte Add-on-Importverlauf und die Wiederherstellungskopien dieses Servers werden ebenfalls gelöscht.`n`nVollständige Serversicherungsarchive bleiben erhalten, sofern Sie die folgende Option nicht auswählen."
     'ServerActions.Delete.ConfirmHeading' = "Sind Sie sicher, dass Sie `„{0}`“ DAUERHAFT löschen möchten?"
     'ServerActions.Delete.ConfirmTitle' = "Bestätigen Sie die vollständige Löschung"
     'ServerActions.Delete.Error.Body' = "Dateien wurden teilweise gelöscht, es ist jedoch ein Fehler aufgetreten:`n{0}"
@@ -2009,6 +2009,7 @@
     'GameDefinition.Tag.SharedAdminPassword.Description' = "Das gespeicherte Administratorpasswort für Spiele, die es gemeinsam mit RCON verwenden."
     'ServerActions.Activity.AnalyzingFiles' = "[PRÜFUNG] Installierte Serverdateien werden analysiert..."
     'ServerActions.Activity.BackupsDeleted' = "[LÖSCHEN] Serversicherungen aus {0} entfernt."
+    'ServerActions.Activity.AddOnDataDeleted' = "[LÖSCHEN] Add-on-Verlauf und Wiederherstellungskopien dieses Servers aus {0} entfernt."
     'ServerActions.Activity.ConfigCaptureCopied' = "[KONFIGURATIONSERFASSUNG] {0} Datei(en) für {1} nach {2} kopiert."
     'ServerActions.Activity.ConfigCaptureFailed' = "[ERFASSUNGSFEHLER] Erzeugte Dateien für {0} konnten nicht erfasst werden: {1}"
     'ServerActions.Activity.ConfigCaptureWarning' = "[ERFASSUNGSWARNUNG] {0}"
@@ -2129,4 +2130,54 @@
     'Eco.Configuration.DirectoryUnavailable' = "Der Eco-Konfigurationsordner ist nicht verfügbar."
     'Dashboard.Restore.Activity' = "[WIEDERHERSTELLUNG] {0}"
     'Dashboard.Uptime.Days' = "{0} T {1:D2} Std {2:D2} Min"
+    'ModManager.Known.Scenario' = 'Szenario'
+    'EmpyrionMods.Error.Profile' = 'Diese Paketstruktur wird nur für die dokumentierten Content-Ordner von Empyrion unterstützt.'
+    'EmpyrionMods.Error.FolderName' = 'Verwenden Sie einen Ordnernamen mit 1–80 Zeichen, ohne Schrägstriche, reservierte Windows-Namen oder Leerzeichen am Anfang oder Ende. Ein Szenarioname darf nicht nur aus einer Workshop-Nummer bestehen.'
+    'EmpyrionMods.Error.Layout' = 'Wählen Sie ein vollständig heruntergeladenes Szenario oder ein vollständiges kompiliertes Server-Mod-Paket, nicht die Spielinstallation, eine Workshop-Sammlung, einen Bauplan oder ein Quellcode-Archiv.'
+    'EmpyrionMods.Error.ScenarioLayout' = 'Ein Szenario muss gameoptions.yaml und seine Content-, Playfields-, Sectors- oder Prefabs-Dateien gemeinsam enthalten: im ZIP-Hauptverzeichnis oder in einem einzelnen Szenarioordner.'
+    'EmpyrionMods.Error.ScenarioCode' = 'Dieses Szenariopaket enthält DLL-, C#- oder JAR-Code. Importieren Sie Servercode separat über Empyrion-Server-Mods, nachdem Sie die Anleitung des Autors gelesen haben.'
+    'EmpyrionMods.Error.ModLayout' = 'Wählen Sie ein vollständiges kompiliertes Mod-Paket: DLLs und Zusatzdateien müssen im Paket-Hauptverzeichnis oder in einzelnen Mod-Ordnern liegen. Zusätzliche umschließende Ordner und vollständige Serverarchive werden nicht akzeptiert.'
+    'EmpyrionMods.Error.MissingScenario' = 'Dieses Szenario ist nicht installiert. Importieren Sie zuerst das vollständige Szenario und wählen Sie es dann aus der Liste.'
+    'EmpyrionMods.Error.ConfigurationChanged' = 'Die Szenario- oder Spielstandeinstellungen wurden geändert, während dieses Fenster geöffnet war. Schließen Sie es und wählen Sie das Szenario erneut.'
+    'EmpyrionMods.Error.ExistingSave' = 'Dieser Spielstand existiert bereits. Ein anderes Szenario benötigt einen neuen, unbenutzten Spielstandnamen. Synix hat die vorhandene Welt weder ersetzt noch gelöscht.'
+    'EmpyrionMods.Error.Configuration' = 'dedicated.yaml fehlt, ist zu groß oder enthält nicht genau eine Einstellung GameConfig.CustomScenario und GameConfig.GameName. Konfigurieren Sie zuerst den Server.'
+    'EmpyrionMods.Error.SaveFailed' = 'Synix konnte den Servereintrag nicht speichern. Die vorherige Szenariokonfiguration wurde wiederhergestellt; die Sicherung bleibt erhalten.'
+    'EmpyrionMods.Error.ProtectedScenario' = 'Synix entfernt das ausgewählte Szenario oder Szenariodateien nicht, solange gespeicherte Welten existieren. Diese Welten können weiterhin von den Dateien abhängen. Es wurden keine Szenariodateien entfernt.'
+    'EmpyrionMods.Status.Protected' = 'Für gespeicherte Welten geschützt'
+    'EmpyrionMods.Status.Installed' = 'Installiert (nicht erneut geprüft)'
+    'EmpyrionMods.Button.Import' = 'Paket importieren'
+    'EmpyrionMods.Button.ChooseScenario' = 'Szenario wählen'
+    'EmpyrionMods.ImportedScenario' = 'Die Szenariodateien wurden importiert. Die aktuelle Welt und Szenarioauswahl wurden nicht geändert. Wählen Sie über Szenario wählen das Szenario und einen Spielstandnamen. Behalten Sie bei Updates denselben Szenarioordnernamen.'
+    'EmpyrionMods.Picker.ScenarioTitle' = 'Empyrion-Szenario importieren'
+    'EmpyrionMods.Picker.ModTitle' = 'Empyrion-Server-Mods importieren'
+    'EmpyrionMods.Picker.ScenarioHelp' = 'Abonnieren Sie das Szenario in Steam und warten Sie auf den Download. Wählen Sie dann seinen Ordner unter steamapps\workshop\content\383120 oder eine vollständige Szenario-ZIP. Diese lokale Serverkopie wird von Steam nicht automatisch aktualisiert.'
+    'EmpyrionMods.Picker.ModHelp' = 'Wählen Sie eine vollständige ZIP oder einen Ordner mit kompilierten Server-Mods eines vertrauenswürdigen Autors. DLLs, _Info.yaml (falls vorhanden), Abhängigkeiten und Ressourcen gehören zusammen. Synix lädt keine Abhängigkeiten herunter und führt Mod-Code nicht selbst aus.'
+    'EmpyrionMods.Picker.FolderName' = 'Szenarioordner auf dem Server (diesen Namen für Updates beibehalten)'
+    'EmpyrionMods.Picker.Zip' = 'ZIP wählen'
+    'EmpyrionMods.Picker.Folder' = 'Ordner wählen'
+    'EmpyrionMods.Picker.Review' = 'Paket prüfen'
+    'EmpyrionMods.Selection.Confirm' = 'Szenario: {0}
+Spielstandname: {1}
+
+Synix sichert dedicated.yaml, ändert nur die Szenario-/Spielstandauswahl und speichert den zugehörigen Servereintrag. Vorhandene Weltordner werden nicht geändert. Diese Einstellungen beim nächsten Start verwenden?'
+    'EmpyrionMods.Selection.Saved' = 'Die Szenario- und Spielstandauswahl wurde gespeichert. Starten Sie den Server, wenn Sie bereit sind, prüfen Sie das Spielprotokoll und verbinden Sie einen Client. Vorhandene Weltordner wurden beibehalten.'
+    'EmpyrionMods.Selection.Help' = 'Aktuelles Szenario: {0}
+Aktueller Spielstand: {1}
+Wählen Sie unten installierte Inhalte. Der Dateiimport allein aktiviert kein Szenario.'
+    'EmpyrionMods.Selection.Scenario' = 'Installiertes Szenario'
+    'EmpyrionMods.Selection.SaveName' = 'Spielstandname (GameConfig.GameName — nicht der Anzeigename des Servers)'
+    'EmpyrionMods.Selection.NewSaveNotice' = 'Ein anderes Szenario benötigt einen neuen Spielstand. Synix schlägt einen neuen Namen vor und löscht oder überschreibt keine vorhandene Welt.'
+    'EmpyrionMods.Selection.Use' = 'Szenario verwenden'
+    'EmpyrionMods.Support.Scenarios' = 'Importieren Sie einen heruntergeladenen Ordner oder eine ZIP. Danach Szenario wählen; vorhandene Spielstände bleiben geschützt.'
+    'EmpyrionMods.Support.Mods' = 'Importieren Sie vollständige kompilierte Mod-Ordner oder ZIPs. Prüfen Sie die Abhängigkeiten des Autors; der Code läuft in Empyrion.'
+    'EmpyrionMods.Button.RollBack' = 'Import rückgängig'
+    'EmpyrionMods.Remove.Confirm' = 'Den Import mit {0} rückgängig machen? Alle Dateien desselben Pakets werden entfernt oder auf ihre vorherigen Kopien zurückgesetzt, auch andere Mods im Paket. Außerhalb von Synix geänderte Dateien blockieren dies. Erstellen Sie vorher eine vollständige Serversicherung.'
+    'ModPackages.Error.FolderUnsupported' = 'Dieses Add-on-System unterstützt keinen Ordnerimport. Wählen Sie eine unterstützte Paketdatei.'
+    'ModPackages.Error.Layout' = 'Wählen Sie einen vollständigen Mod- oder Szenarioordner mit den erforderlichen Dateien, nicht die Spielinstallation oder eine Sammlung unabhängiger Downloads.'
+    'ModPackages.Error.Size' = 'Das Paket überschreitet die Importgrenzen dieses Add-on-Systems oder wurde während des Kopierens verändert. Es wurde nichts installiert.'
+    'ModPackages.Picker.Title' = 'Mod-Paket importieren'
+    'ModPackages.Picker.Help' = 'Wählen Sie eine vollständige Mod-ZIP oder einen Ordner für das gewählte Spiel und Framework. Erforderliches Manifest, Abhängigkeiten und Ressourcen müssen zusammenbleiben. Prüfen Sie Ziel und Scanergebnis vor der Installation.'
+    'ModPackages.Picker.Destination' = 'Installationsordner auf dem Server'
+    'ModPackages.Picker.SelectFolder' = 'Wählen Sie den vollständigen Mod- oder Szenarioordner, nicht die Spielinstallation'
+    'EmpyrionMods.Import.ExistingScenario' = 'Dieser Szenarioordner existiert bereits. Gleichnamige Dateien werden ersetzt; dies kann Welten mit diesem Szenario beeinflussen. Erstellen Sie eine vollständige Serversicherung und verwenden Sie für ein anderes Szenario einen anderen Ordnernamen. Die gespeicherten Weltdateien selbst werden nicht geändert.'
 }

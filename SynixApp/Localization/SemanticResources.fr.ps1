@@ -14,12 +14,12 @@
 # Additional named French interface resources.
 # The Game Definition Builder guide intentionally remains English like the Help Center.
 [ordered]@{
-    'ServerSetup.World.Seed.Hint' = 'Générez une graine pour un nouveau monde, ou saisissez la vôtre. Pour un monde existant, conservez sa graine d’origine.'
+    'ServerSetup.World.Seed.Hint' = "Générez une graine pour un nouveau monde, ou saisissez la vôtre. Pour un monde existant, conservez sa graine d’origine."
     'ServerSetup.World.Seed.Generate' = 'Générer une graine'
     'GameInput.WorldSeed.RequiredNumber' = 'La graine du monde est obligatoire pour {0} : entrez un entier de {1} à {2}. Corrigez-la dans Configuration du serveur > Génération du monde.'
     'ServerSetup.World.Seed.Required' = 'Graine du monde (obligatoire)'
-    'ServerSetup.World.Seed.RangeHint' = 'Entier de {0} à {1}. Pour un monde existant, conservez sa graine d’origine.'
-    'Configuration.Editor.Error.YamlUnsupported' = 'La ligne YAML {0} est invalide ou utilise une fonction que cet éditeur ne peut pas modifier sans risque. Prise en charge : un document avec des clés/listes indentées et des valeurs sur une seule ligne. Les collections en ligne, les valeurs multilignes, les balises, les ancres et les alias ne sont pas pris en charge. Rien n’a été enregistré.'
+    'ServerSetup.World.Seed.RangeHint' = "Entier de {0} à {1}. Pour un monde existant, conservez sa graine d’origine."
+    'Configuration.Editor.Error.YamlUnsupported' = "La ligne YAML {0} est invalide ou utilise une fonction que cet éditeur ne peut pas modifier sans risque. Prise en charge : un document avec des clés/listes indentées et des valeurs sur une seule ligne. Les collections en ligne, les valeurs multilignes, les balises, les ancres et les alias ne sont pas pris en charge. Rien n’a été enregistré."
     'ModManager.Error.LinkedPath' = 'Cette opération utilise un fichier ou un dossier lié. Choisissez un dossier normal ; Synix ne suivra pas ce lien.'
     'ModManager.Error.PreviousFileMissing' = "Un ancien fichier du module nécessaire à la restauration est manquant. Aucun fichier n’a été modifié. Restaurez le fichier de récupération manquant ou utilisez une sauvegarde vérifiée du serveur avant de supprimer ce module."
     'ModManager.Error.RecoveryRetained' = "L’importation du module a échoué et certaines modifications n’ont pas pu être annulées. Les fichiers de récupération ont été conservés dans {0}. Gardez le serveur arrêté et restaurez ces fichiers ou une sauvegarde vérifiée avant de le démarrer."
@@ -992,7 +992,7 @@
     'Schedule.Smart.WaitForPlayers' = "Attendez les joueurs"
     'Schedule.Smart.WaitToggle.AccessibleName' = "Attendez les joueurs connectés"
     'ServerActions.ConfigurationApplyFailed.Title' = "La configuration n'a pas pu être appliquée"
-    'ServerActions.Delete.ConfirmBody' = "Cela effacera l'installation à :`n{0}"
+    'ServerActions.Delete.ConfirmBody' = "Cela supprimera définitivement l'installation à :`n{0}`n`nL'historique d'importation des extensions de ce serveur et les copies de récupération conservés par Synix seront également supprimés.`n`nLes archives de sauvegarde complètes du serveur seront conservées, sauf si vous cochez l'option ci-dessous."
     'ServerActions.Delete.ConfirmHeading' = "Êtes-vous sûr de vouloir supprimer définitivement « {0} » ?"
     'ServerActions.Delete.ConfirmTitle' = "Confirmer la suppression totale"
     'ServerActions.Delete.Error.Body' = "Les fichiers ont été partiellement supprimés, mais une erreur s'est produite :`n{0}"
@@ -2009,6 +2009,7 @@
     'GameDefinition.Tag.SharedAdminPassword.Description' = "Mot de passe administrateur enregistré utilisé par les jeux qui le partagent avec RCON."
     'ServerActions.Activity.AnalyzingFiles' = "[VALIDATION] Analyse des fichiers serveur installés..."
     'ServerActions.Activity.BackupsDeleted' = "[SUPPRESSION] Sauvegardes du serveur supprimées de {0}."
+    'ServerActions.Activity.AddOnDataDeleted' = "[SUPPRESSION] Historique des extensions et copies de récupération de ce serveur supprimés de {0}."
     'ServerActions.Activity.ConfigCaptureCopied' = "[COLLECTE DE CONFIGURATION] {0} fichier(s) copié(s) pour {1} vers {2}."
     'ServerActions.Activity.ConfigCaptureFailed' = "[ERREUR DE COLLECTE] Impossible de collecter les fichiers générés pour {0} : {1}"
     'ServerActions.Activity.ConfigCaptureWarning' = "[AVERTISSEMENT DE COLLECTE] {0}"
@@ -2129,4 +2130,54 @@
     'Eco.Configuration.DirectoryUnavailable' = "Le dossier de configuration d’Eco n’est pas disponible."
     'Dashboard.Restore.Activity' = "[RESTAURATION] {0}"
     'Dashboard.Uptime.Days' = "{0} j {1:D2} h {2:D2} min"
+    'ModManager.Known.Scenario' = 'Scénario'
+    'EmpyrionMods.Error.Profile' = 'Cette structure de paquet est réservée aux dossiers Content documentés d''Empyrion.'
+    'EmpyrionMods.Error.FolderName' = 'Utilisez un nom de dossier de 1 à 80 caractères, sans barres obliques, noms Windows réservés ni espaces au début ou à la fin. Un scénario ne peut pas porter uniquement un numéro Workshop.'
+    'EmpyrionMods.Error.Layout' = 'Sélectionnez un scénario téléchargé complet ou un mod serveur compilé complet, et non le jeu, une collection Workshop, un plan ou une archive de code source.'
+    'EmpyrionMods.Error.ScenarioLayout' = 'Un scénario doit regrouper gameoptions.yaml et ses ressources Content, Playfields, Sectors ou Prefabs, à la racine du ZIP ou dans un unique dossier de scénario.'
+    'EmpyrionMods.Error.ScenarioCode' = 'Ce scénario contient du code DLL, C# ou JAR. Importez le code serveur séparément via les mods serveur Empyrion, après avoir lu les instructions de l''auteur.'
+    'EmpyrionMods.Error.ModLayout' = 'Sélectionnez un mod compilé complet : les DLL et leurs fichiers associés doivent être à la racine du paquet ou dans les dossiers des mods. Les dossiers d''enveloppe supplémentaires et les archives de serveur complet ne sont pas acceptés.'
+    'EmpyrionMods.Error.MissingScenario' = 'Ce scénario n''est pas installé. Importez d''abord le scénario complet, puis choisissez-le dans la liste.'
+    'EmpyrionMods.Error.ConfigurationChanged' = 'Le scénario ou les paramètres de sauvegarde ont changé pendant l''ouverture de cette fenêtre. Fermez-la et choisissez à nouveau le scénario.'
+    'EmpyrionMods.Error.ExistingSave' = 'Cette sauvegarde existe déjà. Un autre scénario nécessite un nouveau nom de sauvegarde inutilisé. Synix n''a ni remplacé ni supprimé le monde existant.'
+    'EmpyrionMods.Error.Configuration' = 'dedicated.yaml est absent, trop volumineux ou ne contient pas exactement un paramètre GameConfig.CustomScenario et un paramètre GameConfig.GameName. Configurez d''abord le serveur.'
+    'EmpyrionMods.Error.SaveFailed' = 'Synix n''a pas pu enregistrer l''entrée du serveur. La configuration précédente du scénario a été restaurée ; la copie de sauvegarde est conservée.'
+    'EmpyrionMods.Error.ProtectedScenario' = 'Synix ne supprimera pas le scénario sélectionné ni ses ressources tant que des mondes sauvegardés existent. Ces mondes peuvent encore dépendre de ces fichiers. Aucun fichier de scénario n''a été supprimé.'
+    'EmpyrionMods.Status.Protected' = 'Protégé pour les mondes sauvegardés'
+    'EmpyrionMods.Status.Installed' = 'Installé (non revérifié)'
+    'EmpyrionMods.Button.Import' = 'Importer un paquet'
+    'EmpyrionMods.Button.ChooseScenario' = 'Choisir un scénario'
+    'EmpyrionMods.ImportedScenario' = 'Les fichiers du scénario ont été importés. Le monde actuel et le scénario sélectionné n''ont pas changé. Utilisez Choisir un scénario pour choisir le scénario et le nom de sauvegarde. Conservez le même nom de dossier pour les mises à jour.'
+    'EmpyrionMods.Picker.ScenarioTitle' = 'Importer un scénario Empyrion'
+    'EmpyrionMods.Picker.ModTitle' = 'Importer des mods serveur Empyrion'
+    'EmpyrionMods.Picker.ScenarioHelp' = 'Abonnez-vous dans Steam et attendez la fin du téléchargement, puis sélectionnez le dossier du scénario sous steamapps\workshop\content\383120 ou un ZIP de scénario complet. Cette copie locale du serveur ne sera pas mise à jour automatiquement par Steam.'
+    'EmpyrionMods.Picker.ModHelp' = 'Choisissez un ZIP ou dossier de mod serveur compilé complet provenant d''un auteur de confiance. Conservez ensemble DLL, _Info.yaml (si fourni), dépendances et ressources. Synix ne télécharge pas les dépendances et n''exécute pas lui-même le code des mods.'
+    'EmpyrionMods.Picker.FolderName' = 'Nom du dossier du scénario sur le serveur (à conserver pour les mises à jour)'
+    'EmpyrionMods.Picker.Zip' = 'Choisir un ZIP'
+    'EmpyrionMods.Picker.Folder' = 'Choisir un dossier'
+    'EmpyrionMods.Picker.Review' = 'Vérifier le paquet'
+    'EmpyrionMods.Selection.Confirm' = 'Scénario : {0}
+Nom de sauvegarde : {1}
+
+Synix sauvegardera dedicated.yaml, modifiera uniquement la sélection du scénario et de la sauvegarde, puis enregistrera l''entrée du serveur correspondante. Les dossiers des mondes existants restent inchangés. Appliquer ces paramètres au prochain démarrage ?'
+    'EmpyrionMods.Selection.Saved' = 'La sélection du scénario et de la sauvegarde a été enregistrée. Démarrez le serveur lorsque vous êtes prêt, puis vérifiez le journal du jeu et connectez un client. Les dossiers des mondes existants ont été conservés.'
+    'EmpyrionMods.Selection.Help' = 'Scénario actuel : {0}
+Sauvegarde actuelle : {1}
+Choisissez ci-dessous le contenu installé. Importer les fichiers n''active pas le scénario.'
+    'EmpyrionMods.Selection.Scenario' = 'Scénario installé'
+    'EmpyrionMods.Selection.SaveName' = 'Nom de sauvegarde (GameConfig.GameName — pas le nom affiché du serveur)'
+    'EmpyrionMods.Selection.NewSaveNotice' = 'Un autre scénario nécessite une nouvelle sauvegarde. Synix suggère un nouveau nom et ne supprime ni ne remplace jamais un monde existant.'
+    'EmpyrionMods.Selection.Use' = 'Utiliser ce scénario'
+    'EmpyrionMods.Support.Scenarios' = 'Importez un dossier téléchargé ou un ZIP, puis utilisez Choisir un scénario. Les sauvegardes existantes sont protégées.'
+    'EmpyrionMods.Support.Mods' = 'Importez des dossiers ou ZIP de mods compilés complets. Vérifiez les dépendances de l''auteur ; le code s''exécute dans Empyrion.'
+    'EmpyrionMods.Button.RollBack' = 'Annuler l''import'
+    'EmpyrionMods.Remove.Confirm' = 'Annuler l''importation contenant {0} ? Tous les fichiers installés par ce paquet seront supprimés ou restaurés à leur état précédent, y compris les autres mods du paquet. Les fichiers modifiés hors de Synix bloquent l''annulation. Conservez une sauvegarde complète du serveur avant de continuer.'
+    'ModPackages.Error.FolderUnsupported' = 'Ce système de modules ne permet pas l''importation de dossiers. Choisissez un fichier de paquet pris en charge.'
+    'ModPackages.Error.Layout' = 'Sélectionnez un dossier de mod ou scénario complet avec ses fichiers requis, et non le jeu ou un ensemble de téléchargements sans rapport.'
+    'ModPackages.Error.Size' = 'Le paquet dépasse les limites d''importation de ce système, ou son contenu a changé pendant la copie. Rien n''a été installé.'
+    'ModPackages.Picker.Title' = 'Importer un paquet de mod'
+    'ModPackages.Picker.Help' = 'Choisissez un ZIP ou dossier de mod complet pour le jeu et le framework sélectionnés. Conservez ensemble le manifeste requis, les dépendances et les ressources. Vérifiez la destination et les résultats de l''analyse avant l''installation.'
+    'ModPackages.Picker.Destination' = 'Dossier d''installation sur le serveur'
+    'ModPackages.Picker.SelectFolder' = 'Sélectionnez le dossier complet du mod ou scénario, et non le jeu'
+    'EmpyrionMods.Import.ExistingScenario' = 'Ce dossier de scénario existe déjà. Les fichiers correspondants seront remplacés, ce qui peut affecter les mondes utilisant ce scénario. Conservez une sauvegarde complète du serveur et utilisez un autre nom de dossier pour un autre scénario. Les fichiers des mondes sauvegardés ne seront pas modifiés.'
 }

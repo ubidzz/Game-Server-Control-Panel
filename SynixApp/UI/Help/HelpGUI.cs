@@ -1030,7 +1030,7 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 					1. Back up the world, existing add-ons, and affected configuration.
 					2. Stop the server through Synix and wait for its process group to exit.
 					3. Check the detected add-on system, install area, and safety checklist.
-					4. Choose Install From File for a supported package.
+					4. Choose Install From File or Import Package for a supported file, ZIP, or complete mod folder. The available choices depend on the game's add-on system.
 					5. Review the destination, scan result, warnings, and confirmation.
 					6. Let staging, backup, and installation finish.
 					7. Refresh the list, restart if required, and check the game log and a client connection.
@@ -1038,7 +1038,7 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 					Simplified view hides some technical detail without bypassing the checks.
 
 					WORKFLOW TYPES
-					Supported workflows include Minecraft JAR packages, Rust Oxide/uMod plugins, local 7 Days to Die packages, ARK: Survival Evolved Workshop IDs, and ARK: Survival Ascended provider IDs. Some systems are detection-only or require their framework first.
+					Supported workflows include Minecraft JAR packages, Rust Oxide/uMod plugins, local 7 Days to Die packages, Empyrion scenarios and server mods, ARK: Survival Evolved Workshop IDs, and ARK: Survival Ascended provider IDs. Some systems are detection-only or require their framework first.
 
 					For provider IDs, Synix manages supported configuration while the game/provider delivers content. Content not yet downloaded cannot be pre-scanned locally.
 
@@ -1053,6 +1053,32 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 					Stop before Remove Selected and review its target and rollback information. Synix records changes it performs, not every manual edit. Keep independent backups: removing a mod can make a world unloadable or remove mod-owned content.
 
 					An empty table means no supported add-ons were found in the active locations. Check the profile, folder, and framework before assuming all files on disk were searched.
+					"""),
+
+				["Empyrion: Scenarios and Server Mods"] = CreateArticle(
+					"Games",
+					"""
+					Empyrion scenarios and server-code mods are different. In Server Options → Mod & Plugin Manager, select Empyrion scenarios or Empyrion server mods. Stop the server and keep a full server backup before making changes.
+
+					INSTALL A SCENARIO
+					1. Browse Catalog opens Steam Workshop. Subscribe to the scenario and wait for Steam to finish downloading it. Workshop blueprints and collections are not server scenarios.
+					2. Choose Import Package, then Choose Folder. Select the individual scenario folder inside your Steam library's steamapps\workshop\content\383120 folder. You can also choose a complete scenario ZIP.
+					3. Enter a recognizable scenario folder name. Do not use only the numeric Workshop ID. Keep that same folder name for later updates.
+					4. Review the package checks and destination, then confirm the import. Synix copies the complete scenario into Content\Scenarios without activating it or changing any world.
+					5. Choose Scenario lists installed scenarios. Select one and review the separate save name. Changing to a different scenario requires a new, unused save name; Synix suggests one and leaves existing saves untouched.
+					6. Apply the selection, start the server, and check its log and a client connection. Some scenarios have additional settings or requirements documented by their author.
+
+					The scenario name is GameConfig.CustomScenario; the saved-world name is GameConfig.GameName. Synix backs up dedicated.yaml before changing these fields and keeps the server entry in sync. It does not reset the seed, passwords, or unrelated settings.
+
+					INSTALL SERVER MODS
+					Use the Empyrion server mods profile and Import Package to select a compiled mod ZIP or complete mod folder. Include its DLLs, supporting assets, dependencies, and _Info.yaml when supplied. Synix installs these under Content\Mods; the game loads the code when started. Source-code downloads and standalone installers are not supported packages.
+
+					Synix does not install a mod loader or enable a disabled mod automatically. Follow the author's requirements, including any additional loader, configuration, and client setup. A successful import does not prove that a mod is compatible with the current game or other installed mods.
+
+					UPDATES AND RECOVERY
+					Steam updates its Workshop copy, not the server copy imported by Synix. To update, stop the server and import the updated package using the same scenario folder name. Check whether the author requires a fresh save. Replaced files receive rollback copies; importing an update is not a clean reinstall and does not delete files missing from the new package.
+
+					Refresh lists complete packages rather than every individual asset. Installed (not re-verified) means the import was recorded, not that every installed file has just been checked again. Roll Back Import reverses the entire selected import, including other mods in the same package, and refuses to replace files changed outside Synix. The selected scenario and scenario assets needed by saved worlds are protected from removal; a recorded scenario update can still be rolled back to its previous files.
 					"""),
 
 				["Satisfactory: Connect Automatically"] = CreateArticle(

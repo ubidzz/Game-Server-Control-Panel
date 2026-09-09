@@ -34,7 +34,7 @@ public sealed class ModPluginManagerTests
 			HashSet<string> supportedGames = new(StringComparer.OrdinalIgnoreCase)
 			{
 				"Minecraft", "Rust", "7 Days to Die",
-				"ARK: Survival Evolved", "ARK: Survival Ascended"
+				"ARK: Survival Evolved", "ARK: Survival Ascended", "Empyrion - Galactic Survival"
 			};
 			Assert.True(GameDatabase.GetGames.Count > supportedGames.Count);
 			Exception? failure = null;

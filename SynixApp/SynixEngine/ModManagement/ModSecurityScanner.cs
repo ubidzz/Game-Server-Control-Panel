@@ -75,9 +75,6 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 
 	internal static class ModSecurityScanner
 	{
-		private const int MaximumArchiveEntries = 2048;
-		private const long MaximumSingleFileBytes = 256L * 1024 * 1024;
-		private const long MaximumArchiveBytes = 512L * 1024 * 1024;
 		private const int MaximumSourceInspectionBytes = 2 * 1024 * 1024;
 		private static readonly HashSet<string> DangerousArchiveExtensions = new(
 			[
@@ -196,7 +193,8 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 			List<ModSecurityFinding> findings)
 		{
 			FileInfo package = new(packagePath);
-			if (package.Length is <= 0 or > MaximumArchiveBytes)
+			ModPackageLimits limits = ModPackageLimits.For(target);
+			if (package.Length <= 0 || package.Length > limits.TotalBytes)
 				throw new InvalidDataException(LocalizationManager.Get(
 					"ModSecurity.Error.UnsafeSize"));
 
@@ -218,7 +216,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 				throw new InvalidDataException(LocalizationManager.Get(
 					"ModSecurity.Error.FileTypeNotAllowed"));
 			}
-			if (package.Length > MaximumSingleFileBytes)
+			if (package.Length > limits.FileBytes)
 				throw new InvalidDataException(LocalizationManager.Get(
 					"ModSecurity.Error.FileTooLarge"));
 
@@ -244,7 +242,8 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 			List<ModSecurityFinding> findings)
 		{
 			using ZipArchive archive = ZipFile.OpenRead(packagePath);
-			if (archive.Entries.Count > MaximumArchiveEntries)
+			ModPackageLimits limits = ModPackageLimits.For(target);
+			if (archive.Entries.Count > limits.Entries)
 				throw new InvalidDataException(LocalizationManager.Get(
 					"ModSecurity.Error.TooManyFiles"));
 
@@ -254,16 +253,17 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 			HashSet<string> destinations = new(StringComparer.OrdinalIgnoreCase);
 			foreach (ZipArchiveEntry entry in archive.Entries)
 			{
+				if (IsSymbolicLink(entry))
+					throw new InvalidDataException(LocalizationManager.Get("ModSecurity.Error.SymbolicLink"));
 				if (string.IsNullOrWhiteSpace(entry.Name))
+				{
+					ValidateArchivePath(entry.FullName.TrimEnd('/', '\\'));
 					continue;
+				}
 				totalBytes = checked(totalBytes + entry.Length);
-				if (entry.Length > MaximumSingleFileBytes || totalBytes > MaximumArchiveBytes)
+				if (entry.Length > limits.FileBytes || totalBytes > limits.TotalBytes)
 					throw new InvalidDataException(LocalizationManager.Get(
 						"ModSecurity.Error.ExpandedTooLarge"));
-				if (IsSymbolicLink(entry))
-					throw new InvalidDataException(LocalizationManager.Get(
-						"ModSecurity.Error.SymbolicLink"));
-
 				string relative = entry.FullName.Replace('/', Path.DirectorySeparatorChar);
 				ValidateArchivePath(relative);
 				if (!destinations.Add(relative))
@@ -311,6 +311,7 @@ namespace Synix_Control_Panel.SynixEngine.ModManagement
 			if (supportedFiles == 0)
 				throw new InvalidDataException(LocalizationManager.Get(
 					"ModSecurity.Error.NoSupportedFile"));
+			_ = ModPackageHandlers.For(target).MapArchive(archive, target, "Package", null);
 		}
 
 		private static void ValidateArchivePath(string relativePath)

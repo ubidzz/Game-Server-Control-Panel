@@ -4158,8 +4158,12 @@ Bitte stoppen Sie einen Server, bevor Sie einen anderen starten.</value>
     <value>Die Konfiguration konnte nicht angewendet werden</value>
   </data>
   <data name="ServerActions.Delete.ConfirmBody" xml:space="preserve">
-    <value>Dadurch wird die Installation gelöscht unter:
-{0}</value>
+    <value>Dadurch wird die Installation an folgendem Ort endgültig gelöscht:
+{0}
+
+Der von Synix gespeicherte Add-on-Importverlauf und die Wiederherstellungskopien dieses Servers werden ebenfalls gelöscht.
+
+Vollständige Serversicherungsarchive bleiben erhalten, sofern Sie die folgende Option nicht auswählen.</value>
   </data>
   <data name="ServerActions.Delete.ConfirmHeading" xml:space="preserve">
     <value>Sind Sie sicher, dass Sie „{0}“ DAUERHAFT löschen möchten?</value>
@@ -7269,6 +7273,9 @@ Erforderliche Ziele:
   </data>
   <data name="ServerActions.Activity.BackupsDeleted" xml:space="preserve">
     <value>[LÖSCHEN] Serversicherungen aus {0} entfernt.</value>
+  </data>
+  <data name="ServerActions.Activity.AddOnDataDeleted" xml:space="preserve">
+    <value>[LÖSCHEN] Add-on-Verlauf und Wiederherstellungskopien dieses Servers aus {0} entfernt.</value>
   </data>
   <data name="ServerActions.Activity.ConfigCaptureCopied" xml:space="preserve">
     <value>[KONFIGURATIONSERFASSUNG] {0} Datei(en) für {1} nach {2} kopiert.</value>
@@ -10747,5 +10754,140 @@ Alle anderen benutzerdefinierten Konfigurationswerte werden entfernt.</value>
   </data>
   <data name="ServerSetup.World.Seed.Hint" xml:space="preserve">
     <value>Erzeugen Sie einen Seed für eine neue Welt oder geben Sie einen eigenen ein. Behalten Sie bei bestehenden Welten den ursprünglichen Seed.</value>
+  </data>
+  <data name="ModManager.Known.Scenario" xml:space="preserve">
+    <value>Szenario</value>
+  </data>
+  <data name="EmpyrionMods.Error.Profile" xml:space="preserve">
+    <value>Diese Paketstruktur wird nur für die dokumentierten Content-Ordner von Empyrion unterstützt.</value>
+  </data>
+  <data name="EmpyrionMods.Error.FolderName" xml:space="preserve">
+    <value>Verwenden Sie einen Ordnernamen mit 1–80 Zeichen, ohne Schrägstriche, reservierte Windows-Namen oder Leerzeichen am Anfang oder Ende. Ein Szenarioname darf nicht nur aus einer Workshop-Nummer bestehen.</value>
+  </data>
+  <data name="EmpyrionMods.Error.Layout" xml:space="preserve">
+    <value>Wählen Sie ein vollständig heruntergeladenes Szenario oder ein vollständiges kompiliertes Server-Mod-Paket, nicht die Spielinstallation, eine Workshop-Sammlung, einen Bauplan oder ein Quellcode-Archiv.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ScenarioLayout" xml:space="preserve">
+    <value>Ein Szenario muss gameoptions.yaml und seine Content-, Playfields-, Sectors- oder Prefabs-Dateien gemeinsam enthalten: im ZIP-Hauptverzeichnis oder in einem einzelnen Szenarioordner.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ScenarioCode" xml:space="preserve">
+    <value>Dieses Szenariopaket enthält DLL-, C#- oder JAR-Code. Importieren Sie Servercode separat über Empyrion-Server-Mods, nachdem Sie die Anleitung des Autors gelesen haben.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ModLayout" xml:space="preserve">
+    <value>Wählen Sie ein vollständiges kompiliertes Mod-Paket: DLLs und Zusatzdateien müssen im Paket-Hauptverzeichnis oder in einzelnen Mod-Ordnern liegen. Zusätzliche umschließende Ordner und vollständige Serverarchive werden nicht akzeptiert.</value>
+  </data>
+  <data name="EmpyrionMods.Error.MissingScenario" xml:space="preserve">
+    <value>Dieses Szenario ist nicht installiert. Importieren Sie zuerst das vollständige Szenario und wählen Sie es dann aus der Liste.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ConfigurationChanged" xml:space="preserve">
+    <value>Die Szenario- oder Spielstandeinstellungen wurden geändert, während dieses Fenster geöffnet war. Schließen Sie es und wählen Sie das Szenario erneut.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ExistingSave" xml:space="preserve">
+    <value>Dieser Spielstand existiert bereits. Ein anderes Szenario benötigt einen neuen, unbenutzten Spielstandnamen. Synix hat die vorhandene Welt weder ersetzt noch gelöscht.</value>
+  </data>
+  <data name="EmpyrionMods.Error.Configuration" xml:space="preserve">
+    <value>dedicated.yaml fehlt, ist zu groß oder enthält nicht genau eine Einstellung GameConfig.CustomScenario und GameConfig.GameName. Konfigurieren Sie zuerst den Server.</value>
+  </data>
+  <data name="EmpyrionMods.Error.SaveFailed" xml:space="preserve">
+    <value>Synix konnte den Servereintrag nicht speichern. Die vorherige Szenariokonfiguration wurde wiederhergestellt; die Sicherung bleibt erhalten.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ProtectedScenario" xml:space="preserve">
+    <value>Synix entfernt das ausgewählte Szenario oder Szenariodateien nicht, solange gespeicherte Welten existieren. Diese Welten können weiterhin von den Dateien abhängen. Es wurden keine Szenariodateien entfernt.</value>
+  </data>
+  <data name="EmpyrionMods.Status.Protected" xml:space="preserve">
+    <value>Für gespeicherte Welten geschützt</value>
+  </data>
+  <data name="EmpyrionMods.Status.Installed" xml:space="preserve">
+    <value>Installiert (nicht erneut geprüft)</value>
+  </data>
+  <data name="EmpyrionMods.Button.Import" xml:space="preserve">
+    <value>Paket importieren</value>
+  </data>
+  <data name="EmpyrionMods.Button.ChooseScenario" xml:space="preserve">
+    <value>Szenario wählen</value>
+  </data>
+  <data name="EmpyrionMods.ImportedScenario" xml:space="preserve">
+    <value>Die Szenariodateien wurden importiert. Die aktuelle Welt und Szenarioauswahl wurden nicht geändert. Wählen Sie über Szenario wählen das Szenario und einen Spielstandnamen. Behalten Sie bei Updates denselben Szenarioordnernamen.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ScenarioTitle" xml:space="preserve">
+    <value>Empyrion-Szenario importieren</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ModTitle" xml:space="preserve">
+    <value>Empyrion-Server-Mods importieren</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ScenarioHelp" xml:space="preserve">
+    <value>Abonnieren Sie das Szenario in Steam und warten Sie auf den Download. Wählen Sie dann seinen Ordner unter steamapps\workshop\content\383120 oder eine vollständige Szenario-ZIP. Diese lokale Serverkopie wird von Steam nicht automatisch aktualisiert.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ModHelp" xml:space="preserve">
+    <value>Wählen Sie eine vollständige ZIP oder einen Ordner mit kompilierten Server-Mods eines vertrauenswürdigen Autors. DLLs, _Info.yaml (falls vorhanden), Abhängigkeiten und Ressourcen gehören zusammen. Synix lädt keine Abhängigkeiten herunter und führt Mod-Code nicht selbst aus.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.FolderName" xml:space="preserve">
+    <value>Szenarioordner auf dem Server (diesen Namen für Updates beibehalten)</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Zip" xml:space="preserve">
+    <value>ZIP wählen</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Folder" xml:space="preserve">
+    <value>Ordner wählen</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Review" xml:space="preserve">
+    <value>Paket prüfen</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Confirm" xml:space="preserve">
+    <value>Szenario: {0}&#10;Spielstandname: {1}&#10;&#10;Synix sichert dedicated.yaml, ändert nur die Szenario-/Spielstandauswahl und speichert den zugehörigen Servereintrag. Vorhandene Weltordner werden nicht geändert. Diese Einstellungen beim nächsten Start verwenden?</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Saved" xml:space="preserve">
+    <value>Die Szenario- und Spielstandauswahl wurde gespeichert. Starten Sie den Server, wenn Sie bereit sind, prüfen Sie das Spielprotokoll und verbinden Sie einen Client. Vorhandene Weltordner wurden beibehalten.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Help" xml:space="preserve">
+    <value>Aktuelles Szenario: {0}&#10;Aktueller Spielstand: {1}&#10;Wählen Sie unten installierte Inhalte. Der Dateiimport allein aktiviert kein Szenario.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Scenario" xml:space="preserve">
+    <value>Installiertes Szenario</value>
+  </data>
+  <data name="EmpyrionMods.Selection.SaveName" xml:space="preserve">
+    <value>Spielstandname (GameConfig.GameName — nicht der Anzeigename des Servers)</value>
+  </data>
+  <data name="EmpyrionMods.Selection.NewSaveNotice" xml:space="preserve">
+    <value>Ein anderes Szenario benötigt einen neuen Spielstand. Synix schlägt einen neuen Namen vor und löscht oder überschreibt keine vorhandene Welt.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Use" xml:space="preserve">
+    <value>Szenario verwenden</value>
+  </data>
+  <data name="EmpyrionMods.Support.Scenarios" xml:space="preserve">
+    <value>Importieren Sie einen heruntergeladenen Ordner oder eine ZIP. Danach Szenario wählen; vorhandene Spielstände bleiben geschützt.</value>
+  </data>
+  <data name="EmpyrionMods.Support.Mods" xml:space="preserve">
+    <value>Importieren Sie vollständige kompilierte Mod-Ordner oder ZIPs. Prüfen Sie die Abhängigkeiten des Autors; der Code läuft in Empyrion.</value>
+  </data>
+  <data name="EmpyrionMods.Button.RollBack" xml:space="preserve">
+    <value>Import rückgängig</value>
+  </data>
+  <data name="EmpyrionMods.Remove.Confirm" xml:space="preserve">
+    <value>Den Import mit {0} rückgängig machen? Alle Dateien desselben Pakets werden entfernt oder auf ihre vorherigen Kopien zurückgesetzt, auch andere Mods im Paket. Außerhalb von Synix geänderte Dateien blockieren dies. Erstellen Sie vorher eine vollständige Serversicherung.</value>
+  </data>
+  <data name="ModPackages.Error.FolderUnsupported" xml:space="preserve">
+    <value>Dieses Add-on-System unterstützt keinen Ordnerimport. Wählen Sie eine unterstützte Paketdatei.</value>
+  </data>
+  <data name="ModPackages.Error.Layout" xml:space="preserve">
+    <value>Wählen Sie einen vollständigen Mod- oder Szenarioordner mit den erforderlichen Dateien, nicht die Spielinstallation oder eine Sammlung unabhängiger Downloads.</value>
+  </data>
+  <data name="ModPackages.Error.Size" xml:space="preserve">
+    <value>Das Paket überschreitet die Importgrenzen dieses Add-on-Systems oder wurde während des Kopierens verändert. Es wurde nichts installiert.</value>
+  </data>
+  <data name="ModPackages.Picker.Title" xml:space="preserve">
+    <value>Mod-Paket importieren</value>
+  </data>
+  <data name="ModPackages.Picker.Help" xml:space="preserve">
+    <value>Wählen Sie eine vollständige Mod-ZIP oder einen Ordner für das gewählte Spiel und Framework. Erforderliches Manifest, Abhängigkeiten und Ressourcen müssen zusammenbleiben. Prüfen Sie Ziel und Scanergebnis vor der Installation.</value>
+  </data>
+  <data name="ModPackages.Picker.Destination" xml:space="preserve">
+    <value>Installationsordner auf dem Server</value>
+  </data>
+  <data name="ModPackages.Picker.SelectFolder" xml:space="preserve">
+    <value>Wählen Sie den vollständigen Mod- oder Szenarioordner, nicht die Spielinstallation</value>
+  </data>
+  <data name="EmpyrionMods.Import.ExistingScenario" xml:space="preserve">
+    <value>Dieser Szenarioordner existiert bereits. Gleichnamige Dateien werden ersetzt; dies kann Welten mit diesem Szenario beeinflussen. Erstellen Sie eine vollständige Serversicherung und verwenden Sie für ein anderes Szenario einen anderen Ordnernamen. Die gespeicherten Weltdateien selbst werden nicht geändert.</value>
   </data>
 </root>

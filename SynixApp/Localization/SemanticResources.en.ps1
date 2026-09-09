@@ -770,7 +770,7 @@
     'Schedule.Smart.WaitForPlayers' = "Wait for players"
     'Schedule.Smart.WaitToggle.AccessibleName' = "Wait for connected players"
     'ServerActions.ConfigurationApplyFailed.Title' = "Configuration Could Not Be Applied"
-    'ServerActions.Delete.ConfirmBody' = "This will wipe the installation at:`n{0}"
+    'ServerActions.Delete.ConfirmBody' = "This will permanently delete the installation at:`n{0}`n`nThis server's add-on import history and recovery copies stored by Synix will also be deleted.`n`nFull server backup archives are kept unless you select the option below."
     'ServerActions.Delete.ConfirmHeading' = "Are you sure you want to PERMANENTLY delete '{0}'?"
     'ServerActions.Delete.ConfirmTitle' = "Confirm Total Deletion"
     'ServerActions.Delete.Error.Body' = "Files were partially deleted, but an error occurred:`n{0}"
@@ -2080,6 +2080,7 @@ Examples: logs\latest.log, Saved\Logs\*.log, profiles\{Identity}\logs\**\*.log. 
     'GameDefinition.Tag.SharedAdminPassword.Description' = "The saved administrator password used by games that share it with RCON."
     'ServerActions.Activity.AnalyzingFiles' = "[VALIDATE] Analyzing installed server files..."
     'ServerActions.Activity.BackupsDeleted' = "[DELETE] Removed server backups from {0}."
+    'ServerActions.Activity.AddOnDataDeleted' = "[DELETE] Removed this server's add-on history and recovery copies from {0}."
     'ServerActions.Activity.ConfigCaptureCopied' = "[CONFIG CAPTURE] Copied {0} file(s) for {1} to {2}."
     'ServerActions.Activity.ConfigCaptureFailed' = "[CONFIG CAPTURE ERROR] Could not collect generated files for {0}: {1}"
     'ServerActions.Activity.ConfigCaptureWarning' = "[CONFIG CAPTURE WARNING] {0}"
@@ -2200,4 +2201,54 @@ Examples: logs\latest.log, Saved\Logs\*.log, profiles\{Identity}\logs\**\*.log. 
     'Eco.Configuration.DirectoryUnavailable' = "The Eco configuration directory is unavailable."
     'Dashboard.Restore.Activity' = "[RESTORE] {0}"
     'Dashboard.Uptime.Days' = "{0}d {1:D2}h {2:D2}m"
+    'ModManager.Known.Scenario' = 'Scenario'
+    'EmpyrionMods.Error.Profile' = 'This package layout is only supported for Empyrion''s documented Content folders.'
+    'EmpyrionMods.Error.FolderName' = 'Use a folder name of 1–80 characters, without slashes, reserved Windows names, or leading/trailing spaces. A scenario name cannot be only a Workshop number.'
+    'EmpyrionMods.Error.Layout' = 'Select a complete downloaded scenario or compiled server mod package, not the game installation, a Workshop collection, a blueprint, or a source-code archive.'
+    'EmpyrionMods.Error.ScenarioLayout' = 'A scenario must have gameoptions.yaml and its Content, Playfields, Sectors, or Prefabs assets together, either at the ZIP root or inside one scenario folder.'
+    'EmpyrionMods.Error.ScenarioCode' = 'This scenario package contains DLL, C#, or JAR code. Import server code separately through Empyrion server mods after reviewing the author''s instructions.'
+    'EmpyrionMods.Error.ModLayout' = 'Select a complete compiled mod package: DLL files and their support files must be at the package root or inside individual mod folders. Extra wrapper folders and full server archives are not accepted.'
+    'EmpyrionMods.Error.MissingScenario' = 'That scenario is not installed. Import the complete scenario first, then choose it from the installed list.'
+    'EmpyrionMods.Error.ConfigurationChanged' = 'The scenario or save settings changed while this window was open. Close it and choose the scenario again.'
+    'EmpyrionMods.Error.ExistingSave' = 'That save already exists. A different scenario needs a new, unused save name. Synix has not replaced or deleted the existing world.'
+    'EmpyrionMods.Error.Configuration' = 'dedicated.yaml is missing, too large, or does not contain one GameConfig.CustomScenario and GameConfig.GameName setting. Configure the server first.'
+    'EmpyrionMods.Error.SaveFailed' = 'Synix could not save the server entry. The previous scenario configuration has been restored; the backup is retained.'
+    'EmpyrionMods.Error.ProtectedScenario' = 'Synix will not remove the selected scenario or scenario assets while saved worlds exist. Those worlds may still depend on the files. No scenario files were removed.'
+    'EmpyrionMods.Status.Protected' = 'Protected for saved worlds'
+    'EmpyrionMods.Status.Installed' = 'Installed (not re-verified)'
+    'EmpyrionMods.Button.Import' = 'Import Package'
+    'EmpyrionMods.Button.ChooseScenario' = 'Choose Scenario'
+    'EmpyrionMods.ImportedScenario' = 'Scenario files were imported. The current world and scenario selection were not changed. Use Choose Scenario to select the scenario and a save name. Keep the same scenario folder name when importing an update.'
+    'EmpyrionMods.Picker.ScenarioTitle' = 'Import an Empyrion scenario'
+    'EmpyrionMods.Picker.ModTitle' = 'Import Empyrion server mods'
+    'EmpyrionMods.Picker.ScenarioHelp' = 'Subscribe in Steam and let the download finish, then select the scenario folder under steamapps\workshop\content\383120, or choose a complete scenario ZIP. This imports a local copy; Steam will not update that server copy automatically.'
+    'EmpyrionMods.Picker.ModHelp' = 'Choose a complete compiled server mod ZIP or folder from an author you trust. Keep DLLs, _Info.yaml (when supplied), dependencies and assets together. Synix does not download dependencies or run mod code itself.'
+    'EmpyrionMods.Picker.FolderName' = 'Scenario folder name on the server (reuse this name for updates)'
+    'EmpyrionMods.Picker.Zip' = 'Choose ZIP'
+    'EmpyrionMods.Picker.Folder' = 'Choose Folder'
+    'EmpyrionMods.Picker.Review' = 'Review Package'
+    'EmpyrionMods.Selection.Confirm' = 'Scenario: {0}
+Save name: {1}
+
+Synix will back up dedicated.yaml, update only the scenario/save selection, and save the matching server entry. Existing world folders are not changed. Apply these settings for the next start?'
+    'EmpyrionMods.Selection.Saved' = 'The scenario and save selection were saved. Start the server when ready, then check its game log and connect with a client. Existing world folders were preserved.'
+    'EmpyrionMods.Selection.Help' = 'Current scenario: {0}
+Current save: {1}
+Choose installed content below. Importing files alone does not activate a scenario.'
+    'EmpyrionMods.Selection.Scenario' = 'Installed scenario'
+    'EmpyrionMods.Selection.SaveName' = 'Save name (GameConfig.GameName — not the server''s display name)'
+    'EmpyrionMods.Selection.NewSaveNotice' = 'A different scenario needs a new save. Synix suggests a new name and never deletes or overwrites an existing world.'
+    'EmpyrionMods.Selection.Use' = 'Use Scenario'
+    'EmpyrionMods.Support.Scenarios' = 'Import a downloaded folder or ZIP. Use Choose Scenario afterwards; existing saves are protected.'
+    'EmpyrionMods.Support.Mods' = 'Import complete compiled mod folders or ZIPs. Check the author''s dependencies; code runs in Empyrion.'
+    'EmpyrionMods.Button.RollBack' = 'Roll Back Import'
+    'EmpyrionMods.Remove.Confirm' = 'Roll back the import containing {0}? All files installed by that same package will be removed or restored to their previous copies, including other mods in the package. Files changed outside Synix will block rollback. Keep a full server backup before continuing.'
+    'ModPackages.Error.FolderUnsupported' = 'This add-on system does not support folder imports. Choose one of its supported package files.'
+    'ModPackages.Error.Layout' = 'Select a complete mod or scenario folder containing the required package files, not the game installation or a collection of unrelated downloads.'
+    'ModPackages.Error.Size' = 'The package exceeds this add-on system''s import limits, or its contents changed while being copied. Nothing was installed.'
+    'ModPackages.Picker.Title' = 'Import a mod package'
+    'ModPackages.Picker.Help' = 'Choose a complete mod ZIP or folder for the selected game and framework. Keep its required manifest, dependencies and assets together. Review the destination and scan results before installing.'
+    'ModPackages.Picker.Destination' = 'Installation folder on the server'
+    'ModPackages.Picker.SelectFolder' = 'Select the complete mod or scenario folder, not the game installation'
+    'EmpyrionMods.Import.ExistingScenario' = 'This scenario folder already exists. Matching files will be replaced, which can affect worlds using this scenario. Keep a full server backup and use a different folder name for a different scenario. Saved-world files themselves will not be changed.'
 }

@@ -10,13 +10,17 @@
 //    rebrand, or sell this code or derivative works without written consent.
 // 3. The "Synix" brand and logic remain the property of Jason Turner.
 // ============================================================================
+using Synix_Control_Panel.SynixEngine.ModManagement;
+
 namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 {
 	public sealed record ServerFolderDeletionResult(
 		string InstallationPath,
 		bool InstallationDeleted,
 		string? BackupPath,
-		bool BackupsDeleted);
+		bool BackupsDeleted,
+		string AddOnDataPath,
+		bool AddOnDataDeleted);
 
 	public static class FolderHandler
 	{
@@ -42,9 +46,10 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 				GameServer server,
 				bool deleteBackups)
 			{
-				// Prepare both targets first. An invalid backup target must not be
-				// discovered after the installation has already been removed.
-				(string installationPath, string? backupRoot) = ValidateDeletionTargets(server, deleteBackups);
+				// Validate every target before deleting anything, including add-on
+				// recovery files stored separately from the game's installation.
+				(string installationPath, string? backupRoot, string addOnDataPath) =
+					ValidateDeletionTargets(server, deleteBackups);
 				bool installationDeleted = false;
 				if (Directory.Exists(installationPath))
 				{
@@ -59,14 +64,26 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 					backupsDeleted = true;
 				}
 
+				// Retain add-on recovery copies until the requested game-file deletions
+				// succeed. Recheck links immediately before removing this exact folder.
+				ModPathSafety.EnsureTreeHasNoLinks(addOnDataPath);
+				bool addOnDataDeleted = false;
+				if (Directory.Exists(addOnDataPath))
+				{
+					Directory.Delete(addOnDataPath, recursive: true);
+					addOnDataDeleted = true;
+				}
+
 				return new ServerFolderDeletionResult(
 					installationPath,
 					installationDeleted,
 					backupRoot,
-					backupsDeleted);
+					backupsDeleted,
+					addOnDataPath,
+					addOnDataDeleted);
 			}
 
-			internal static (string InstallationPath, string? BackupPath) ValidateDeletionTargets(
+			internal static (string InstallationPath, string? BackupPath, string AddOnDataPath) ValidateDeletionTargets(
 				GameServer server, bool deleteBackups)
 			{
 				ArgumentNullException.ThrowIfNull(server);
@@ -92,7 +109,14 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 					backupRoot = ServerDeletionSafety.ValidatePath(
 						Path.Combine(baseBackupFolder, cleanGame, cleanServer), baseBackupFolder);
 				}
-				return (installationPath, backupRoot);
+				// Use the same identity as imports, not a name wildcard or a sweep of
+				// AddOns. This also protects other servers that happen to share a name.
+				string addOnDataPath = ModPackageManager.GetServerDataFolder(server);
+				ModPathSafety.EnsureTreeHasNoLinks(addOnDataPath);
+				if (File.Exists(addOnDataPath))
+					throw new IOException(LocalizationManager.Get(
+						"FileSystem.Error.DeletionPathUnavailable", addOnDataPath));
+				return (installationPath, backupRoot, addOnDataPath);
 			}
 
 			public static bool Rename(GameServer oldServer, GameServer newServer)

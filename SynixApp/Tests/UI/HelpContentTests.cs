@@ -30,10 +30,10 @@ public sealed class HelpContentTests
 		(string Category, int Count)[] categories =
 		[
 			("Start", 6), ("Dash", 8), ("Config", 4), ("Net", 4), ("Maint", 6),
-			("Watch", 3), ("Trouble", 4), ("Games", 8), ("Support", 4)
+			("Watch", 3), ("Trouble", 4), ("Games", 9), ("Support", 4)
 		];
 
-		Assert.Equal(47, articles.Count);
+		Assert.Equal(48, articles.Count);
 		foreach ((string category, int count) in categories)
 			Assert.Equal(count, articles.Values.Count(article => article.Category == category));
 

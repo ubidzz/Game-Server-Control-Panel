@@ -4158,8 +4158,12 @@ Detenga un servidor antes de iniciar otro.</value>
     <value>No se pudo aplicar la configuración</value>
   </data>
   <data name="ServerActions.Delete.ConfirmBody" xml:space="preserve">
-    <value>Esto borrará la instalación en:
-{0}</value>
+    <value>Esto eliminará permanentemente la instalación en:
+{0}
+
+También se eliminarán el historial de importación de complementos y las copias de recuperación de este servidor guardados por Synix.
+
+Las copias de seguridad completas del servidor se conservarán, salvo que marques la opción de abajo.</value>
   </data>
   <data name="ServerActions.Delete.ConfirmHeading" xml:space="preserve">
     <value>¿Está seguro de que desea eliminar PERMANENTEMENTE '{0}'?</value>
@@ -7269,6 +7273,9 @@ Destinos necesarios:
   </data>
   <data name="ServerActions.Activity.BackupsDeleted" xml:space="preserve">
     <value>[ELIMINACIÓN] Se quitaron las copias del servidor de {0}.</value>
+  </data>
+  <data name="ServerActions.Activity.AddOnDataDeleted" xml:space="preserve">
+    <value>[ELIMINACIÓN] Se eliminaron el historial de complementos y las copias de recuperación de este servidor de {0}.</value>
   </data>
   <data name="ServerActions.Activity.ConfigCaptureCopied" xml:space="preserve">
     <value>[CAPTURA DE CONFIGURACIÓN] Se copiaron {0} archivo(s) de {1} en {2}.</value>
@@ -10747,5 +10754,140 @@ Se eliminarán los demás valores de configuración personalizados.</value>
   </data>
   <data name="ServerSetup.World.Seed.Hint" xml:space="preserve">
     <value>Genere una semilla para un mundo nuevo o introduzca la suya. Para un mundo existente, conserve su semilla original.</value>
+  </data>
+  <data name="ModManager.Known.Scenario" xml:space="preserve">
+    <value>Escenario</value>
+  </data>
+  <data name="EmpyrionMods.Error.Profile" xml:space="preserve">
+    <value>Esta estructura de paquete solo se admite en las carpetas Content documentadas de Empyrion.</value>
+  </data>
+  <data name="EmpyrionMods.Error.FolderName" xml:space="preserve">
+    <value>Use un nombre de carpeta de 1 a 80 caracteres, sin barras, nombres reservados de Windows ni espacios al principio o al final. El nombre de un escenario no puede ser solo un número de Workshop.</value>
+  </data>
+  <data name="EmpyrionMods.Error.Layout" xml:space="preserve">
+    <value>Seleccione un escenario descargado completo o un paquete completo de mod compilado para servidor, no el juego, una colección de Workshop, un plano ni un archivo de código fuente.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ScenarioLayout" xml:space="preserve">
+    <value>Un escenario debe incluir gameoptions.yaml junto con sus recursos Content, Playfields, Sectors o Prefabs, en la raíz del ZIP o en una única carpeta de escenario.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ScenarioCode" xml:space="preserve">
+    <value>Este escenario contiene código DLL, C# o JAR. Importe el código del servidor por separado mediante los mods de servidor de Empyrion, después de consultar las instrucciones del autor.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ModLayout" xml:space="preserve">
+    <value>Seleccione un paquete completo de mod compilado: las DLL y sus archivos auxiliares deben estar en la raíz del paquete o en carpetas individuales de mods. No se aceptan carpetas contenedoras adicionales ni archivos de un servidor completo.</value>
+  </data>
+  <data name="EmpyrionMods.Error.MissingScenario" xml:space="preserve">
+    <value>Ese escenario no está instalado. Importe primero el escenario completo y después selecciónelo en la lista.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ConfigurationChanged" xml:space="preserve">
+    <value>La configuración del escenario o de la partida cambió mientras esta ventana estaba abierta. Ciérrela y seleccione el escenario de nuevo.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ExistingSave" xml:space="preserve">
+    <value>Esa partida ya existe. Otro escenario necesita un nombre de partida nuevo y sin usar. Synix no ha reemplazado ni eliminado el mundo existente.</value>
+  </data>
+  <data name="EmpyrionMods.Error.Configuration" xml:space="preserve">
+    <value>dedicated.yaml falta, es demasiado grande o no contiene exactamente una opción GameConfig.CustomScenario y una GameConfig.GameName. Configure primero el servidor.</value>
+  </data>
+  <data name="EmpyrionMods.Error.SaveFailed" xml:space="preserve">
+    <value>Synix no pudo guardar la entrada del servidor. Se restauró la configuración anterior del escenario; se conserva la copia de seguridad.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ProtectedScenario" xml:space="preserve">
+    <value>Synix no eliminará el escenario seleccionado ni sus recursos mientras existan mundos guardados. Esos mundos aún pueden depender de los archivos. No se eliminó ningún archivo de escenario.</value>
+  </data>
+  <data name="EmpyrionMods.Status.Protected" xml:space="preserve">
+    <value>Protegido para mundos guardados</value>
+  </data>
+  <data name="EmpyrionMods.Status.Installed" xml:space="preserve">
+    <value>Instalado (sin volver a verificar)</value>
+  </data>
+  <data name="EmpyrionMods.Button.Import" xml:space="preserve">
+    <value>Importar paquete</value>
+  </data>
+  <data name="EmpyrionMods.Button.ChooseScenario" xml:space="preserve">
+    <value>Elegir escenario</value>
+  </data>
+  <data name="EmpyrionMods.ImportedScenario" xml:space="preserve">
+    <value>Se importaron los archivos del escenario. No se cambiaron el mundo actual ni el escenario seleccionado. Use Elegir escenario para seleccionar el escenario y el nombre de partida. Conserve el mismo nombre de carpeta al importar una actualización.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ScenarioTitle" xml:space="preserve">
+    <value>Importar escenario de Empyrion</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ModTitle" xml:space="preserve">
+    <value>Importar mods de servidor de Empyrion</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ScenarioHelp" xml:space="preserve">
+    <value>Suscríbase en Steam y espere a que termine la descarga. Después seleccione la carpeta del escenario en steamapps\workshop\content\383120 o un ZIP de escenario completo. Se importa una copia local; Steam no actualizará automáticamente esa copia del servidor.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ModHelp" xml:space="preserve">
+    <value>Elija un ZIP o carpeta de mod compilado para servidor completo de un autor de confianza. Mantenga juntos las DLL, _Info.yaml (si se incluye), las dependencias y los recursos. Synix no descarga dependencias ni ejecuta por sí mismo el código del mod.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.FolderName" xml:space="preserve">
+    <value>Carpeta del escenario en el servidor (conserve el nombre para actualizar)</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Zip" xml:space="preserve">
+    <value>Elegir ZIP</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Folder" xml:space="preserve">
+    <value>Elegir carpeta</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Review" xml:space="preserve">
+    <value>Revisar paquete</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Confirm" xml:space="preserve">
+    <value>Escenario: {0}&#10;Nombre de partida: {1}&#10;&#10;Synix hará una copia de dedicated.yaml, cambiará solo la selección del escenario y la partida, y guardará la entrada correspondiente del servidor. No se modificarán las carpetas de mundos existentes. ¿Aplicar estos ajustes en el próximo inicio?</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Saved" xml:space="preserve">
+    <value>Se guardó la selección del escenario y la partida. Inicie el servidor cuando esté listo, revise el registro del juego y conecte un cliente. Se conservaron las carpetas de mundos existentes.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Help" xml:space="preserve">
+    <value>Escenario actual: {0}&#10;Partida actual: {1}&#10;Seleccione abajo el contenido instalado. Importar los archivos no activa el escenario.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Scenario" xml:space="preserve">
+    <value>Escenario instalado</value>
+  </data>
+  <data name="EmpyrionMods.Selection.SaveName" xml:space="preserve">
+    <value>Nombre de partida (GameConfig.GameName — no el nombre visible del servidor)</value>
+  </data>
+  <data name="EmpyrionMods.Selection.NewSaveNotice" xml:space="preserve">
+    <value>Otro escenario necesita una partida nueva. Synix sugiere un nombre nuevo y nunca elimina ni sobrescribe un mundo existente.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Use" xml:space="preserve">
+    <value>Usar escenario</value>
+  </data>
+  <data name="EmpyrionMods.Support.Scenarios" xml:space="preserve">
+    <value>Importe una carpeta descargada o un ZIP y después use Elegir escenario. Las partidas existentes están protegidas.</value>
+  </data>
+  <data name="EmpyrionMods.Support.Mods" xml:space="preserve">
+    <value>Importe carpetas o ZIP de mods compilados completos. Revise las dependencias del autor; el código se ejecuta en Empyrion.</value>
+  </data>
+  <data name="EmpyrionMods.Button.RollBack" xml:space="preserve">
+    <value>Deshacer import.</value>
+  </data>
+  <data name="EmpyrionMods.Remove.Confirm" xml:space="preserve">
+    <value>¿Deshacer la importación que contiene {0}? Todos los archivos instalados por ese paquete se eliminarán o restaurarán a sus copias anteriores, incluidos otros mods del paquete. Los archivos modificados fuera de Synix impedirán la reversión. Conserve una copia completa del servidor antes de continuar.</value>
+  </data>
+  <data name="ModPackages.Error.FolderUnsupported" xml:space="preserve">
+    <value>Este sistema de complementos no admite importar carpetas. Elija un archivo de paquete compatible.</value>
+  </data>
+  <data name="ModPackages.Error.Layout" xml:space="preserve">
+    <value>Seleccione una carpeta completa de mod o escenario con sus archivos necesarios, no la instalación del juego ni una colección de descargas sin relación.</value>
+  </data>
+  <data name="ModPackages.Error.Size" xml:space="preserve">
+    <value>El paquete supera los límites de importación de este sistema o su contenido cambió durante la copia. No se instaló nada.</value>
+  </data>
+  <data name="ModPackages.Picker.Title" xml:space="preserve">
+    <value>Importar un paquete de mod</value>
+  </data>
+  <data name="ModPackages.Picker.Help" xml:space="preserve">
+    <value>Elija un ZIP o carpeta de mod completo para el juego y el framework seleccionados. Mantenga juntos el manifiesto necesario, las dependencias y los recursos. Revise el destino y el análisis antes de instalar.</value>
+  </data>
+  <data name="ModPackages.Picker.Destination" xml:space="preserve">
+    <value>Carpeta de instalación en el servidor</value>
+  </data>
+  <data name="ModPackages.Picker.SelectFolder" xml:space="preserve">
+    <value>Seleccione la carpeta completa del mod o escenario, no la instalación del juego</value>
+  </data>
+  <data name="EmpyrionMods.Import.ExistingScenario" xml:space="preserve">
+    <value>Esta carpeta de escenario ya existe. Los archivos coincidentes se reemplazarán, lo que puede afectar a mundos que usen este escenario. Conserve una copia completa del servidor y use otro nombre de carpeta para un escenario diferente. Los archivos de mundos guardados no se modificarán.</value>
   </data>
 </root>

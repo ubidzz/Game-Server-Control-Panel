@@ -15,6 +15,7 @@ using Synix_Control_Panel.SynixApp.Design;
 using Synix_Control_Panel.SynixApp.FileFolderHandler;
 using Synix_Control_Panel.SynixApp.ServerHandler;
 using Synix_Control_Panel.SynixEngine;
+using Synix_Control_Panel.SynixEngine.ModManagement;
 using System.Diagnostics;
 using System.Drawing;
 using Xunit;
@@ -778,6 +779,7 @@ public sealed class ServerManagementEngineTests
 	[Trait("Category", "Regression")]
 	public async Task ServerFolderDeletion_RemovesFilesThroughAsyncBoundary()
 	{
+		string? previousAddOnRoot = ModPackageManager.DataRootOverride;
 		string testRoot = Path.Combine(
 			Path.GetTempPath(),
 			"SynixAsyncDeletionTests",
@@ -797,16 +799,19 @@ public sealed class ServerManagementEngineTests
 
 		try
 		{
+			ModPackageManager.DataRootOverride = Path.Combine(testRoot, "unused-add-on-fixture");
 			ServerFolderDeletionResult result =
 				await FolderHandler.ServerFolder.DeleteFilesAsync(server, deleteBackups: false);
 
 			Assert.True(result.InstallationDeleted);
 			Assert.Equal(testRoot, result.InstallationPath);
 			Assert.False(result.BackupsDeleted);
+			Assert.False(result.AddOnDataDeleted);
 			Assert.False(Directory.Exists(testRoot));
 		}
 		finally
 		{
+			ModPackageManager.DataRootOverride = previousAddOnRoot;
 			if (Directory.Exists(testRoot))
 				Directory.Delete(testRoot, true);
 		}
