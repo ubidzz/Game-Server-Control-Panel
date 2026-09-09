@@ -3151,6 +3151,12 @@ Erstellen Sie Synix danach neu, führen Sie die Tests aus und prüfen Sie Instal
   <data name="Configuration.Report.State.Warning" xml:space="preserve">
     <value>WARNUNG</value>
   </data>
+  <data name="Configuration.Report.State.Information" xml:space="preserve">
+    <value>HINWEIS</value>
+  </data>
+  <data name="Diagnostics.Health.Summary.Review" xml:space="preserve">
+    <value>ZU PRÜFEN  •  {0} Warnungen  •  {1} bestanden</value>
+  </data>
   <data name="Configuration.Report.State.Fail" xml:space="preserve">
     <value>FEHLER</value>
   </data>

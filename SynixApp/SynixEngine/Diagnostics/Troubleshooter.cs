@@ -411,7 +411,7 @@ namespace Synix_Control_Panel.SynixEngine
 			}
 		}
 
-		private static async Task CheckConfigurationAsync(
+		internal static async Task CheckConfigurationAsync(
 			GameServer server,
 			ICollection<SynixHealthItem> items)
 		{
@@ -442,7 +442,8 @@ namespace Synix_Control_Panel.SynixEngine
 				: string.Join(
 					" ",
 					report.Items
-						.Where(item => item.State != ConfigurationValidationState.Passed)
+						.Where(item => item.State is ConfigurationValidationState.Warning or ConfigurationValidationState.Failed)
+						.OrderByDescending(item => item.State)
 						.Take(3)
 						.Select(item => item.Message));
 			items.Add(new SynixHealthItem(

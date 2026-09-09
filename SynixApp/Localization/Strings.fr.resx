@@ -3151,6 +3151,12 @@ Après l’ajout, reconstruisez Synix, exécutez les tests, puis vérifiez manue
   <data name="Configuration.Report.State.Warning" xml:space="preserve">
     <value>AVERTISSEMENT</value>
   </data>
+  <data name="Configuration.Report.State.Information" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="Diagnostics.Health.Summary.Review" xml:space="preserve">
+    <value>ÉLÉMENTS À VÉRIFIER  •  {0} avertissements  •  {1} contrôles réussis</value>
+  </data>
   <data name="Configuration.Report.State.Fail" xml:space="preserve">
     <value>ÉCHEC</value>
   </data>

@@ -18,7 +18,8 @@ namespace Synix_Control_Panel.SynixApp.Database.GameConfigurations
 	{
 		Passed,
 		Warning,
-		Failed
+		Failed,
+		Information
 	}
 
 	internal readonly record struct ConfigurationValidationItem(
@@ -93,6 +94,8 @@ namespace Synix_Control_Panel.SynixApp.Database.GameConfigurations
 						"Configuration.Report.State.Pass",
 					ConfigurationValidationState.Warning =>
 						"Configuration.Report.State.Warning",
+					ConfigurationValidationState.Information =>
+						"Configuration.Report.State.Information",
 					_ => "Configuration.Report.State.Fail"
 				});
 				report.AppendLine(LocalizationManager.Get(

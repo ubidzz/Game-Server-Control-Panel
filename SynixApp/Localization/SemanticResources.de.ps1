@@ -666,6 +666,8 @@
     'Configuration.Report.FixConfig.Unavailable' = "Für dieses Spiel nicht verfügbar"
     'Configuration.Report.State.Pass' = "BESTANDEN"
     'Configuration.Report.State.Warning' = "WARNUNG"
+    'Configuration.Report.State.Information' = "HINWEIS"
+    'Diagnostics.Health.Summary.Review' = "ZU PRÜFEN  •  {0} Warnungen  •  {1} bestanden"
     'Configuration.Report.State.Fail' = "FEHLER"
     'Configuration.Report.Item' = "[{0}] {1}"
     'Configuration.Report.FixConfig.Footer' = "Konfiguration reparieren erstellt die vollständige Datei aus der vertrauenswürdigen Synix-Vorlage neu, wendet die gespeicherten Serverwerte erneut an und bewahrt eine Sicherung auf. Andere benutzerdefinierte Werte können bei einer vollständigen Zurücksetzung entfernt werden."

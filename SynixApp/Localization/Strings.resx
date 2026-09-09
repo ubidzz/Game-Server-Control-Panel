@@ -2668,6 +2668,12 @@ This does not delete the webhook from Discord.</value>
   <data name="Configuration.Report.State.Warning" xml:space="preserve">
     <value>WARNING</value>
   </data>
+  <data name="Configuration.Report.State.Information" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="Diagnostics.Health.Summary.Review" xml:space="preserve">
+    <value>ITEMS TO REVIEW  •  {0} warnings  •  {1} passed</value>
+  </data>
   <data name="Configuration.Report.State.Fail" xml:space="preserve">
     <value>FAIL</value>
   </data>

@@ -488,6 +488,8 @@
     'Configuration.Report.FixConfig.Unavailable' = "Not available for this game"
     'Configuration.Report.State.Pass' = "PASS"
     'Configuration.Report.State.Warning' = "WARNING"
+    'Configuration.Report.State.Information' = "NOTE"
+    'Diagnostics.Health.Summary.Review' = "ITEMS TO REVIEW  •  {0} warnings  •  {1} passed"
     'Configuration.Report.State.Fail' = "FAIL"
     'Configuration.Report.Item' = "[{0}] {1}"
     'Configuration.Report.FixConfig.Footer' = "Fix Config rebuilds the complete file from the trusted Synix template, reapplies the saved server values, and preserves a backup. Other custom values can be removed by a full reset."

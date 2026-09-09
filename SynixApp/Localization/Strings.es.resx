@@ -3151,6 +3151,12 @@ Después, vuelva a compilar Synix, ejecute las pruebas y compruebe manualmente l
   <data name="Configuration.Report.State.Warning" xml:space="preserve">
     <value>ADVERTENCIA</value>
   </data>
+  <data name="Configuration.Report.State.Information" xml:space="preserve">
+    <value>NOTA</value>
+  </data>
+  <data name="Diagnostics.Health.Summary.Review" xml:space="preserve">
+    <value>ELEMENTOS PARA REVISAR  •  {0} advertencias  •  {1} superadas</value>
+  </data>
   <data name="Configuration.Report.State.Fail" xml:space="preserve">
     <value>ERROR</value>
   </data>

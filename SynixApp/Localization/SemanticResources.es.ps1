@@ -666,6 +666,8 @@
     'Configuration.Report.FixConfig.Unavailable' = "No disponible para este juego"
     'Configuration.Report.State.Pass' = "CORRECTO"
     'Configuration.Report.State.Warning' = "ADVERTENCIA"
+    'Configuration.Report.State.Information' = "NOTA"
+    'Diagnostics.Health.Summary.Review' = "ELEMENTOS PARA REVISAR  •  {0} advertencias  •  {1} superadas"
     'Configuration.Report.State.Fail' = "ERROR"
     'Configuration.Report.Item' = "[{0}] {1}"
     'Configuration.Report.FixConfig.Footer' = "Reparar configuración reconstruye el archivo completo a partir de la plantilla de Synix de confianza, vuelve a aplicar los valores guardados del servidor y conserva una copia de seguridad. Un restablecimiento completo puede eliminar otros valores personalizados."
