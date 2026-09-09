@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "exportedBySynixVersion": "1.0.25",
-  "exportedAtUtc": "2026-09-09T13:30:58.9315615+00:00",
+  "exportedAtUtc": "2026-09-09T14:00:22.8587693+00:00",
   "games": [
     {
       "game": "7 Days to Die",
@@ -456,7 +456,10 @@
         "synixVersion": "1.0.25",
         "verifiedAtUtc": "2026-09-09T11:40:41.3199065+00:00"
       },
-      "arguments": null,
+      "arguments": {
+        "synixVersion": "1.0.25",
+        "verifiedAtUtc": "2026-09-09T14:00:11.5087697+00:00"
+      },
       "configuration": {
         "synixVersion": "1.0.25",
         "verifiedAtUtc": "2026-09-09T13:30:21.1155524+00:00"
