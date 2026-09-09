@@ -155,6 +155,7 @@ namespace Synix_Control_Panel.SynixApp.Database.GameDefinitions
 				},
 				["launchBehavior"] = new JsonObject
 				{
+					["steamAppId"] = draft.LaunchBehavior.SteamAppId,
 					["runElevated"] = draft.LaunchBehavior.RunElevated,
 					["requiresVisibleWindow"] =
 						draft.LaunchBehavior.RequiresVisibleWindow,

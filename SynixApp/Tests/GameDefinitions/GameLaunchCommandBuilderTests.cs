@@ -436,6 +436,137 @@ public sealed class GameLaunchCommandBuilderTests
 	}
 
 	[Fact]
+	public void DysterraLaunchAndPreviewUseTheClientAppIdWithoutAnInstalledAppIdFile()
+	{
+		string directory = Path.Combine(Path.GetTempPath(), "Synix.Tests", Guid.NewGuid().ToString("N"));
+		GameInfo definition = GameDatabase.GetGame("Dysterra")!;
+		GameServer server = CreateServer(definition.Game);
+		server.InstallPath = directory;
+		server.WorldName = "MyServer";
+		server.QueryPort = 27016;
+		string executablePath = GameLaunchCommandBuilder.ResolveExecutablePath(server, definition);
+		Directory.CreateDirectory(Path.GetDirectoryName(executablePath)!);
+		File.WriteAllBytes(executablePath, []);
+		try
+		{
+			string appId = GameLaunchCommandBuilder.ResolveInvokedAppId(server, definition, executablePath);
+			Assert.Equal("1527890", appId);
+			Assert.Equal("2214780", definition.AppID);
+			Assert.Empty(Directory.GetFiles(directory, "steam_appid.txt", SearchOption.AllDirectories));
+			SynixServerPasswords passwords = new("test-join-password", "test-admin-password", string.Empty);
+			Assert.True(GameLaunchCommandBuilder.TryBuildArguments(
+				server, definition, appId, passwords, out string arguments, out string error), error);
+			Assert.Contains("-SteamAppId=1527890", arguments);
+			Assert.DoesNotContain("-SteamAppId=2214780", arguments);
+			Assert.Contains("-QueryPort=27016", arguments);
+			Assert.Contains("-worldsettings=\"MyServer.json\"", arguments);
+
+			Core.SetServerPasswords(server, passwords);
+			GameArgumentTestPreview preview = Core.BuildGameArgumentTestPreview(server);
+			Assert.True(preview.IsValid, string.Join("; ", preview.Checks.Where(check => !check.Passed).Select(check => check.Details)));
+			Assert.Equal("1527890", preview.InvokedAppId);
+			Assert.Contains("-SteamAppId=1527890", preview.SanitizedArguments);
+			Assert.DoesNotContain("test-admin-password", preview.SanitizedCommand);
+			Assert.DoesNotContain("test-join-password", preview.SanitizedCommand);
+			Assert.True(GameLaunchCommandBuilder.TryBuildLogArguments(
+				server, definition, appId, passwords, string.Empty, out string logArguments, out string logError), logError);
+			Assert.Contains("-SteamAppId=1527890", logArguments);
+			Assert.DoesNotContain("test-admin-password", logArguments);
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[Theory]
+	[InlineData("steam_appid.txt", "2214780")]
+	[InlineData("Dysterra/Binaries/Win64/steam_appid.txt", "480")]
+	[InlineData("steam_appid.txt", "invalid-id")]
+	public void DysterraRuntimeIdentityTakesPrecedenceWithoutChangingInstalledFiles(string relativePath, string fileContent)
+	{
+		string directory = Path.Combine(Path.GetTempPath(), "Synix.Tests", Guid.NewGuid().ToString("N"));
+		GameInfo definition = GameDatabase.GetGame("Dysterra")!;
+		GameServer server = CreateServer(definition.Game);
+		server.InstallPath = directory;
+		string appIdPath = Path.Combine(directory, relativePath);
+		Directory.CreateDirectory(Path.GetDirectoryName(appIdPath)!);
+		File.WriteAllText(appIdPath, fileContent);
+		try
+		{
+			Assert.Equal("1527890", GameLaunchCommandBuilder.ResolveInvokedAppId(
+				server, definition, GameLaunchCommandBuilder.ResolveExecutablePath(server, definition)));
+			Assert.Equal("2214780", definition.AppID);
+			Assert.Equal(fileContent, File.ReadAllText(appIdPath));
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[Theory]
+	[InlineData("Dysterra", "2214780", "1527890")]
+	[InlineData("Rust", "123456", "123456")]
+	public void BatchExportUsesTheSameSteamIdentityAsNormalLaunch(string gameName, string installedAppId, string expectedAppId)
+	{
+		string directory = Path.Combine(Path.GetTempPath(), "Synix.Tests", Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(directory);
+		EventHandler<ApplicationLogEventArgs> captureLog = (_, _) => { };
+		ApplicationUiService.LogRequested += captureLog;
+		try
+		{
+			GameInfo definition = GameDatabase.GetGame(gameName)!;
+			GameServer server = CreateServer(gameName);
+			server.InstallPath = directory;
+			server.WorldName = "MyServer";
+			File.WriteAllText(Path.Combine(directory, "steam_appid.txt"), installedAppId);
+			Core.SetServerPasswords(server, new SynixServerPasswords(
+				"test-join-password", "test-admin-password", "test-rcon-password"));
+
+			Assert.True(Core.Instance.ExportServerToBatch(server));
+
+			string batch = File.ReadAllText(Assert.Single(Directory.GetFiles(directory, "Run_*_Server.bat")));
+			Assert.Contains($"set \"SteamAppId={expectedAppId}\"", batch);
+			Assert.Contains($"set \"SteamGameId={expectedAppId}\"", batch);
+			Assert.Contains($"-SteamAppId={expectedAppId}", batch);
+			Assert.Equal(expectedAppId, GameLaunchCommandBuilder.ResolveInvokedAppId(
+				server, definition, GameLaunchCommandBuilder.ResolveExecutablePath(server, definition)));
+			Assert.Equal(installedAppId, File.ReadAllText(Path.Combine(directory, "steam_appid.txt")));
+		}
+		finally
+		{
+			ApplicationUiService.LogRequested -= captureLog;
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[Theory]
+	[InlineData(null)]
+	[InlineData("not-an-app-id")]
+	[InlineData("١٥٢٧٨٩٠")]
+	public void GamesWithoutRuntimeOverrideKeepTheInstallIdFallback(string? fileContent)
+	{
+		string directory = Path.Combine(Path.GetTempPath(), "Synix.Tests", Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(directory);
+		try
+		{
+			GameInfo definition = GameDatabase.GetGame("Rust")!;
+			GameServer server = CreateServer(definition.Game);
+			server.InstallPath = directory;
+			if (fileContent != null)
+				File.WriteAllText(Path.Combine(directory, "steam_appid.txt"), fileContent);
+			Assert.Equal(string.Empty, definition.LaunchBehavior.SteamAppId);
+			Assert.Equal(definition.AppID, GameLaunchCommandBuilder.ResolveInvokedAppId(
+				server, definition, GameLaunchCommandBuilder.ResolveExecutablePath(server, definition)));
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[Fact]
 	public void InvokedAppIdIgnoresDamagedSteamAppIdFiles()
 	{
 		string directory = Path.Combine(

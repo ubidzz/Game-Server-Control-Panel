@@ -455,6 +455,8 @@ namespace Synix_Control_Panel.SynixEngine
 
 			try
 			{
+				// Validate before any firewall cleanup or other deletion side effects.
+				FolderHandler.ServerFolder.ValidateDeletionTargets(server, deleteBackups);
 				if (Properties.Settings.Default.enableRunAsAdmin)
 				{
 					GameInfo? definition = GameDatabase.GetGame(server.Game);
@@ -481,6 +483,8 @@ namespace Synix_Control_Panel.SynixEngine
 				}
 				if (deletion.BackupsDeleted)
 					LogLocalized("ServerActions.Activity.BackupsDeleted", Color.LimeGreen, false, deletion.BackupPath);
+				if (deletion.AddOnDataDeleted)
+					LogLocalized("ServerActions.Activity.AddOnDataDeleted", Color.LimeGreen, false, deletion.AddOnDataPath);
 
 				if (ServerRegistry.Servers.Contains(server))
 					ServerRegistry.Servers.Remove(server);
@@ -1457,48 +1461,11 @@ namespace Synix_Control_Panel.SynixEngine
 
 			try
 			{
-				string targetId = dbEntry.AppID ?? "";
-				string invokedId = targetId;
-				string appidPath = "";
-
-				try
-				{
-					var scanner = Directory.EnumerateFiles(server.InstallPath, "steam_appid.txt", new EnumerationOptions
-					{
-						RecurseSubdirectories = true,
-						IgnoreInaccessible = true,
-						MaxRecursionDepth = int.MaxValue,
-						AttributesToSkip = FileAttributes.ReparsePoint
-					});
-
-					appidPath = scanner.FirstOrDefault() ?? "";
-				}
-				catch (Exception exception)
-				{
-					ApplicationLogService.WriteSuppressedException(exception);
-					appidPath = Path.Combine(server.InstallPath, "steam_appid.txt");
-				}
-
-				if (string.IsNullOrEmpty(appidPath))
-				{
-					appidPath = Path.Combine(server.InstallPath, "steam_appid.txt");
-				}
-
-				if (File.Exists(appidPath))
-				{
-					try
-					{
-						string fileContent = File.ReadAllText(appidPath).Trim();
-						if (!string.IsNullOrWhiteSpace(fileContent))
-						{
-							invokedId = fileContent;
-						}
-					}
-					catch (Exception suppressedException)
-					{
-						Synix_Control_Panel.SynixEngine.ApplicationLogService.WriteSuppressedException(suppressedException);
-					}
-				}
+				string fullExePath = GameLaunchCommandBuilder.ResolveExecutablePath(server, dbEntry);
+				string invokedId = GameLaunchCommandBuilder.ResolveInvokedAppId(
+					server,
+					dbEntry,
+					fullExePath);
 
 				string cleanIdentity = GetSafeName(server.ServerName ?? "Server");
 				if (!GameLaunchCommandBuilder.TryBuildArguments(
@@ -1507,7 +1474,8 @@ namespace Synix_Control_Panel.SynixEngine
 					invokedId,
 					batchPasswords,
 					out string args,
-					out string argumentError))
+					out string argumentError,
+					forBatchFile: true))
 				{
 					LogLocalized("ServerActions.Activity.ExportArgumentBlocked", Color.Red, true, argumentError);
 					return false;
@@ -1515,13 +1483,12 @@ namespace Synix_Control_Panel.SynixEngine
 
 				string safeArgs = EscapeWindowsBatchCommandLine(args);
 
-				string fullExePath = GameLaunchCommandBuilder.ResolveExecutablePath(server, dbEntry);
 				string binDir = Path.GetDirectoryName(fullExePath) ?? server.InstallPath;
 				string exeNameOnly = Path.GetFileName(fullExePath);
 				string safeIdentity = EscapeWindowsBatchCommandLine(cleanIdentity);
-				string safeBinDir = EscapeWindowsBatchCommandLine(binDir);
-				string safeExeName = EscapeWindowsBatchCommandLine(exeNameOnly);
-				string safeInvokedId = EscapeWindowsBatchCommandLine(invokedId);
+				string safeBinDir = EscapeWindowsBatchQuotedValue(binDir);
+				string safeExeName = EscapeWindowsBatchQuotedValue(exeNameOnly);
+				string safeInvokedId = EscapeWindowsBatchQuotedValue(invokedId);
 
 				StringBuilder batchContent = new StringBuilder();
 				batchContent.AppendLine("@echo off");

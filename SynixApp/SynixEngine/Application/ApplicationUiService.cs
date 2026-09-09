@@ -20,8 +20,8 @@ namespace Synix_Control_Panel.SynixEngine
 			Color color,
 			bool bold)
 		{
-			TechnicalMessage = technicalMessage;
-			LocalizedMessage = localizedMessage;
+			TechnicalMessage = SecretRedactor.Redact(technicalMessage);
+			LocalizedMessage = localizedMessage == null ? null : SecretRedactor.Redact(localizedMessage);
 			Color = color;
 			Bold = bold;
 		}

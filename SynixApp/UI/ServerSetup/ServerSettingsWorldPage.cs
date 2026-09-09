@@ -2,6 +2,13 @@
 // PROJECT: Synix Game Server Control Panel
 // AUTHOR: Jason Turner (ubidzz)
 // COPYRIGHT: © 2026 All Rights Reserved.
+//
+// LEGAL NOTICE:
+// This source code is proprietary and confidential.
+// 1. Permission is granted for PERSONAL, NON-COMMERCIAL use only.
+// 2. You may modify this code for your own use, but you may NOT redistribute,
+//    rebrand, or sell this code or derivative works without written consent.
+// 3. The "Synix" brand and logic remain the property of Jason Turner.
 // ============================================================================
 using Synix_Control_Panel.SynixApp.Database;
 using Synix_Control_Panel.SynixApp.Database.GameConfigurations;
@@ -14,12 +21,15 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 	{
 		private bool _isLoading;
 		private bool _digitsOnlySeed;
+		private GameInfo? _gameDefinition;
+		private bool _seedSupported;
 
 		public event EventHandler? SettingsChanged;
 
 		public ServerSettingsWorldPage()
 		{
 			InitializeComponent();
+			btnGenerateSeed.Click += GenerateSeedClicked;
 			txtWorldSeed.KeyPress += WorldSeedKeyPress;
 			txtWorldSeed.TextChanged += SettingsControlChanged;
 			numWorldSize.ValueChanged += SettingsControlChanged;
@@ -27,6 +37,20 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 
 		public string WorldSeed => ReadManagedValue(txtWorldSeed).Trim();
 		public int WorldSize => (int)numWorldSize.Value;
+		public bool TryValidate(out string error) =>
+			GameServerInputValidator.TryValidateWorldSeed(_gameDefinition, WorldSeed, out error);
+
+		public void FocusWorldSeed()
+		{
+			txtWorldSeed.Focus();
+			txtWorldSeed.SelectAll();
+		}
+
+		public void EnsureRandomSeedForNewServer()
+		{
+			if (_seedSupported && string.IsNullOrWhiteSpace(WorldSeed))
+				txtWorldSeed.Text = GameServerInputValidator.GenerateWorldSeed();
+		}
 
 		public void LoadServer(GameServer server, GameInfo? gameData)
 		{
@@ -35,7 +59,7 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 			try
 			{
 				ConfigureForGame(gameData, isMinecraftBedrock: false);
-				txtWorldSeed.Text = server.WorldSeed ?? "12345";
+				txtWorldSeed.Text = server.WorldSeed ?? string.Empty;
 				int worldSize = IsSevenDaysToDie(gameData)
 					? SevenDaysToDieConfiguration.NormalizeWorldSize(server.WorldSize)
 					: server.WorldSize;
@@ -55,6 +79,7 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 			_isLoading = true;
 			try
 			{
+				_gameDefinition = gameData;
 				ConfigureWorldSizeInput(gameData);
 				_digitsOnlySeed = gameData?.Game.Equals(
 					"Rust",
@@ -70,8 +95,26 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 
 				bool seedSupported =
 					(capabilities & GameManagementCapability.WorldSeed) != 0;
+				_seedSupported = seedSupported;
 				bool sizeSupported =
 					(capabilities & GameManagementCapability.WorldSize) != 0;
+				bool numericSeedRequired = GameServerInputValidator.RequiresNumericWorldSeed(gameData);
+				bool canGenerateSeed = seedSupported;
+				btnGenerateSeed.Visible = canGenerateSeed;
+				txtWorldSeed.Width = canGenerateSeed
+					? btnGenerateSeed.Left - txtWorldSeed.Left - LogicalToDeviceUnits(12)
+					: lblWorldSize.Left - txtWorldSeed.Left - LogicalToDeviceUnits(24);
+				_digitsOnlySeed |= numericSeedRequired &&
+					GameServerInputValidator.GetNumericWorldSeedMinimum(gameData?.Game) >= 0;
+				LocalizationManager.BindText(lblWorldSeed, numericSeedRequired
+					? "ServerSetup.World.Seed.Required" : "Text.33DED6ECB268AFB09FD2");
+				lblWorldSeedHint.Visible = seedSupported;
+				if (numericSeedRequired)
+					LocalizationManager.BindText(lblWorldSeedHint, "ServerSetup.World.Seed.RangeHint",
+						GameServerInputValidator.GetNumericWorldSeedMinimum(gameData?.Game).ToString(System.Globalization.CultureInfo.InvariantCulture),
+						GameServerInputValidator.NumericWorldSeedMaximum.ToString(System.Globalization.CultureInfo.InvariantCulture));
+				else
+					LocalizationManager.BindText(lblWorldSeedHint, "ServerSetup.World.Seed.Hint");
 				ConfigureManagedTextBox(
 					txtWorldSeed,
 					seedSupported,
@@ -105,7 +148,18 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 		public void ApplyAvailability(bool hasGame)
 		{
 			txtWorldSeed.Enabled = hasGame && IsRequired(txtWorldSeed);
+			btnGenerateSeed.Enabled = hasGame && _seedSupported;
 			numWorldSize.Enabled = hasGame && numWorldSize.Tag is true;
+		}
+
+		private void GenerateSeedClicked(object? sender, EventArgs eventArgs)
+		{
+			if (!_seedSupported)
+				return;
+
+			// Only fills the editable setting. Saving and any world changes stay explicit.
+			txtWorldSeed.Text = GameServerInputValidator.GenerateWorldSeed();
+			FocusWorldSeed();
 		}
 
 		public static bool IsSevenDaysToDie(GameInfo? gameData) =>

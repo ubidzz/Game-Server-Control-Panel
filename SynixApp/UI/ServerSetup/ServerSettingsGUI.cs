@@ -400,6 +400,8 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 
 		private void NavigateSetupStep(int step)
 		{
+			if (!_isEditMode)
+				pnlPageWorld.EnsureRandomSeedForNewServer();
 			// Recheck pending edits before navigating; the strip shares the Save gate.
 			debounceTimer?.Stop();
 			SyncGatekeeper();
@@ -431,6 +433,8 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 			target.PerformClick();
 			if (ReferenceEquals(target, btnNavSecurity))
 				pnlPageSecurity.FocusFirstRequiredInput();
+			else if (ReferenceEquals(target, btnNavWorld))
+				pnlPageWorld.FocusWorldSeed();
 			else
 				target.Select();
 		}
@@ -752,6 +756,7 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 					!pnlPageAutomation.HasValidSchedule;
 				bool extraArgumentsValid =
 					pnlPageInstall.TryValidateExtraArguments(out string extraArgumentsError);
+				bool worldSettingsValid = pnlPageWorld.TryValidate(out string worldSettingsError);
 				string discordSettingsError = string.Empty;
 				bool discordSettingsValid = !isBaseReady ||
 					discordSettingsPage.TryGetSettings(
@@ -770,7 +775,7 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 						(pnlPageSecurity.RequiredAdminPasswordMissing ||
 						 pnlPageSecurity.RequiredAuthenticationTokenMissing ||
 						 !string.IsNullOrWhiteSpace(serverInputError)),
-					world: false,
+					world: isBaseReady && !worldSettingsValid,
 					network: isBaseReady && portValidation.HasConflict,
 					automation: scheduleNeedsAttention,
 					discord: isBaseReady && !discordSettingsValid,
@@ -830,6 +835,12 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 					_validationMessage = LocalizationManager.Get(
 						"ServerSetup.Validation.RequiredDetail",
 						LocalizationManager.TranslateRuntimeText(serverInputError));
+					btnSave.Enabled = false;
+				}
+				else if (!worldSettingsValid)
+				{
+					_validationMessage = LocalizationManager.Get(
+						"ServerSetup.Validation.RequiredDetail", worldSettingsError);
 					btnSave.Enabled = false;
 				}
 				else if (minecraftLoaderNeedsAttention)
@@ -1000,6 +1011,8 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 
 		private void btnSave_Click(object sender, EventArgs e)
 		{
+			if (!_isEditMode)
+				pnlPageWorld.EnsureRandomSeedForNewServer();
 			// Enter/click can arrive before the edit debounce finishes.
 			debounceTimer?.Stop();
 			SyncGatekeeper();
@@ -1299,6 +1312,8 @@ namespace Synix_Control_Panel.SynixApp.UI.ServerSetup
 				if (gameData != null)
 				{
 					ToggleGameSpecificFields(gameData);
+					if (!_isEditMode)
+						pnlPageWorld.EnsureRandomSeedForNewServer();
 					pnlPageWorld.ApplyDefaultWorldSize(gameData);
 					pnlPageNetwork.ApplyDefaultPorts(gameData);
 					pnlPageGeneral.PopulateMaps(

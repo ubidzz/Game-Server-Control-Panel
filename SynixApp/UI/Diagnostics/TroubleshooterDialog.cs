@@ -121,13 +121,7 @@ namespace Synix_Control_Panel.SynixApp.UI.Diagnostics
 				PopulateReport(_report);
 				statusLabel.Text = IsReadinessMode
 					? GetReadinessSummary(_report)
-					: LocalizationManager.Get(
-						_report.FailedCount > 0
-							? "Diagnostics.Health.Summary.Attention"
-							: "Diagnostics.Health.Summary.Healthy",
-						_report.FailedCount,
-						_report.WarningCount,
-						_report.PassedCount);
+					: GetHealthSummary(_report);
 				statusLabel.ForeColor = _report.FailedCount > 0
 					? SettingsPalette.Danger
 					: _report.WarningCount > 0
@@ -151,22 +145,30 @@ namespace Synix_Control_Panel.SynixApp.UI.Diagnostics
 			}
 		}
 
-		private static string GetReadinessSummary(SynixHealthReport report)
+		internal static string GetHealthSummary(SynixHealthReport report)
+		{
+			if (report.FailedCount > 0)
+				return LocalizationManager.Get("Diagnostics.Health.Summary.Attention",
+					report.FailedCount, report.WarningCount, report.PassedCount);
+			return LocalizationManager.Get(report.WarningCount > 0
+				? "Diagnostics.Health.Summary.Review"
+				: "Diagnostics.Health.Summary.Healthy",
+				report.WarningCount, report.PassedCount);
+		}
+
+		internal static string GetReadinessSummary(SynixHealthReport report)
 		{
 			int total = report.Items.Count;
 			int readyPercent = total == 0
 				? 0
 				: (int)Math.Round(report.PassedCount * 100d / total);
-			return LocalizationManager.Get(
-				report.FailedCount > 0
-					? "Diagnostics.Readiness.Summary.NotReady"
-					: report.WarningCount > 0
-						? "Diagnostics.Readiness.Summary.Review"
-						: "Diagnostics.Readiness.Summary.Ready",
-				readyPercent,
-				report.FailedCount,
-				report.WarningCount,
-				report.PassedCount);
+			if (report.FailedCount > 0)
+				return LocalizationManager.Get("Diagnostics.Readiness.Summary.NotReady",
+					readyPercent, report.FailedCount, report.WarningCount);
+			return LocalizationManager.Get(report.WarningCount > 0
+				? "Diagnostics.Readiness.Summary.Review"
+				: "Diagnostics.Readiness.Summary.Ready",
+				readyPercent, report.WarningCount > 0 ? report.WarningCount : report.PassedCount);
 		}
 
 		private void PopulateReport(SynixHealthReport report)
@@ -269,7 +271,7 @@ namespace Synix_Control_Panel.SynixApp.UI.Diagnostics
 		private void UpdateActionButton()
 		{
 			SynixHealthItem? item = GetSelectedItem();
-			actionButton.Enabled = !_running && item?.Action != SynixHealthAction.None;
+			actionButton.Enabled = !_running && item is { Action: not SynixHealthAction.None };
 			LocalizationManager.BindText(
 				actionButton,
 				item == null || item.Action == SynixHealthAction.None
@@ -374,12 +376,13 @@ namespace Synix_Control_Panel.SynixApp.UI.Diagnostics
 				LocalizationManager.Get("MessageText.AA9402AAA45447FCB9A8"),
 				LocalizationManager.Get("MessageText.E66DFFEC800B8E0880C2"),
 				MessageBoxButtons.YesNo,
-				MessageBoxIcon.Warning);
+				MessageBoxIcon.Warning,
+				MessageBoxDefaultButton.Button2);
 			if (confirmation != DialogResult.Yes)
 				return;
 
 			ConfigurationApplyResult result = await GameFix.ResetManagedConfiguration(server);
-			if (!result.Succeeded)
+			if (!result.Succeeded || !result.Complete)
 				throw new InvalidOperationException(result.Message);
 			FileHandler.SaveServers();
 			LocalizedMessageBox.Show(

@@ -25,7 +25,8 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 		XML = 2,
 		JSON = 3,
 		Space = 4,
-		SII = 5
+		SII = 5,
+		YAML = 6
 	}
 
 	public enum ConfigValueType
@@ -60,6 +61,7 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 				".json" or ".eco" => ConfigFormat.JSON,
 				".xml" => ConfigFormat.XML,
 				".sii" => ConfigFormat.SII,
+				".yaml" or ".yml" => ConfigFormat.YAML,
 				".ini" or ".cfg" or ".conf" or ".properties" =>
 					ConfigFormat.StandardINI,
 				_ => (ConfigFormat)(-1)
@@ -79,7 +81,10 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 			JsonNull,
 			XmlAttribute,
 			XmlText,
-			XmlCData
+			XmlCData,
+			YamlPlain,
+			YamlSingle,
+			YamlDouble
 		}
 
 		private sealed class ParsedValue
@@ -231,6 +236,7 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 				ConfigFormat.XML => "XML",
 				ConfigFormat.Space => "SPACE",
 				ConfigFormat.SII => "SII",
+				ConfigFormat.YAML => "YAML",
 				_ => "INI"
 			};
 		}
@@ -245,6 +251,7 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 				ConfigFormat.XML => ParseXmlDocument(text),
 				ConfigFormat.Space => ParseSpaceDocument(text),
 				ConfigFormat.SII => ParseSiiDocument(text),
+				ConfigFormat.YAML => new YamlConfigScanner(text).Parse(),
 				_ => throw new NotSupportedException(
 					LocalizationManager.Get(
 						"Configuration.Editor.Error.FormatUnsupported",
@@ -294,6 +301,7 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 			}
 
 			return normalized.Contains("password") ||
+				normalized.EndsWith("pwd", StringComparison.Ordinal) ||
 				normalized.Contains("passwd") ||
 				normalized.Contains("secret") ||
 				normalized.Contains("token") ||

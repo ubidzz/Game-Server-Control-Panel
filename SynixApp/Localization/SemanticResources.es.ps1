@@ -1,6 +1,31 @@
+# ============================================================================
+# PROJECT: Synix Game Server Control Panel
+# AUTHOR: Jason Turner (ubidzz)
+# COPYRIGHT: © 2026 All Rights Reserved.
+#
+# LEGAL NOTICE:
+# This source code is proprietary and confidential.
+# 1. Permission is granted for PERSONAL, NON-COMMERCIAL use only.
+# 2. You may modify this code for your own use, but you may NOT redistribute,
+#    rebrand, or sell this code or derivative works without written consent.
+# 3. The "Synix" brand and logic remain the property of Jason Turner.
+# ============================================================================
+
 # Additional named Spanish interface resources.
 # The Game Definition Builder guide intentionally remains English like the Help Center.
 [ordered]@{
+    'ServerSetup.World.Seed.Hint' = 'Genere una semilla para un mundo nuevo o introduzca la suya. Para un mundo existente, conserve su semilla original.'
+    'ServerSetup.World.Seed.Generate' = 'Generar semilla'
+    'GameInput.WorldSeed.RequiredNumber' = 'La semilla del mundo es obligatoria para {0}: use un entero de {1} a {2}. Corríjala en Configuración del servidor > Generación del mundo.'
+    'ServerSetup.World.Seed.Required' = 'Semilla del mundo (obligatoria)'
+    'ServerSetup.World.Seed.RangeHint' = 'Entero de {0} a {1}. Para un mundo existente, conserve su semilla original.'
+    'Configuration.Editor.Error.YamlUnsupported' = 'La línea YAML {0} no es válida o usa una función que este editor no puede modificar de forma segura. Se admite un documento con claves/listas con sangría y valores de una sola línea. No se admiten colecciones en línea, valores multilínea, etiquetas, anclas ni alias. No se guardó nada.'
+    'ModManager.Error.LinkedPath' = 'Esta operación de complementos utiliza un archivo o una carpeta enlazados. Elige una carpeta normal; Synix no seguirá ese enlace.'
+    'ModManager.Error.PreviousFileMissing' = 'Falta un archivo anterior del complemento necesario para restaurarlo. No se ha cambiado ningún archivo. Restaura el archivo de recuperación que falta o utiliza una copia de seguridad verificada del servidor antes de eliminar este complemento.'
+    'ModManager.Error.RecoveryRetained' = 'La importación del complemento ha fallado y no se han podido revertir algunos cambios. Los archivos de recuperación se han conservado en {0}. Mantén el servidor detenido y restaura esos archivos o una copia de seguridad verificada antes de iniciarlo.'
+    'LaunchCommand.Error.UnsafeBatchValue' = 'El campo de inicio {0} no puede pasarse de forma segura a este iniciador por lotes de Windows. Aquí no se admiten comillas dobles internas, saltos de línea ni expresiones de variables. El valor no se ha cambiado.'
+    'LaunchCommand.Error.UnsafeBatchArguments' = 'El comando por lotes completo contiene sintaxis insegura o expansión de variables. Revisa los valores de inicio y los argumentos adicionales; no se ha iniciado nada.'
+    'ServerStart.Arguments.CustomHidden' = '[Argumentos personalizados proporcionados; contenido omitido del registro]'
     'Satisfactory.ConnectHeading' = "Conectar este servidor"
     'Satisfactory.ConnectAutomatically' = "Conectar automáticamente"
     'Satisfactory.ConnectingAutomatically' = "Conectando: enviando el comando, capturando el token y verificando…"
@@ -641,6 +666,8 @@
     'Configuration.Report.FixConfig.Unavailable' = "No disponible para este juego"
     'Configuration.Report.State.Pass' = "CORRECTO"
     'Configuration.Report.State.Warning' = "ADVERTENCIA"
+    'Configuration.Report.State.Information' = "NOTA"
+    'Diagnostics.Health.Summary.Review' = "ELEMENTOS PARA REVISAR  •  {0} advertencias  •  {1} superadas"
     'Configuration.Report.State.Fail' = "ERROR"
     'Configuration.Report.Item' = "[{0}] {1}"
     'Configuration.Report.FixConfig.Footer' = "Reparar configuración reconstruye el archivo completo a partir de la plantilla de Synix de confianza, vuelve a aplicar los valores guardados del servidor y conserva una copia de seguridad. Un restablecimiento completo puede eliminar otros valores personalizados."
@@ -779,7 +806,7 @@
     'GameDefinitions.Builder.ProjectNotFound' = "Synix Control Panel.csproj no se pudo encontrar en esta compilación de desarrollo."
     'GameDefinitions.Builder.Saved.Body' = "Las plantillas de definición y configuración validadas se guardaron en el proyecto. Reconstruya Synix y ejecute las pruebas automatizadas antes de usarlo.`n`n¿Abrir la carpeta de definiciones ahora?"
     'GameDefinitions.Builder.SavedPath' = "Guardado: {0}"
-    'GameDefinitions.Builder.TemplatePicker.Filter' = "Archivos de configuración|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|Todos los archivos|*.*"
+    'GameDefinitions.Builder.TemplatePicker.Filter' = "Archivos de configuración|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|Todos los archivos|*.*"
     'GameDefinitions.Builder.TemplatePicker.Title' = "Selecciona una plantilla de configuración de juego completa"
     'GameDefinitions.Builder.ValidSummary' = "Definición válida • revisión {0} • plantilla(s) {1} • acciones seguras {2}"
     'GameDefinitions.Queue.ArgumentRecorded' = "{0}: verificación de argumento registrada de la prueba del servidor real."
@@ -965,7 +992,7 @@
     'Schedule.Smart.WaitForPlayers' = "Espera a los jugadores"
     'Schedule.Smart.WaitToggle.AccessibleName' = "Espera a los jugadores conectados"
     'ServerActions.ConfigurationApplyFailed.Title' = "No se pudo aplicar la configuración"
-    'ServerActions.Delete.ConfirmBody' = "Esto borrará la instalación en:`n{0}"
+    'ServerActions.Delete.ConfirmBody' = "Esto eliminará permanentemente la instalación en:`n{0}`n`nTambién se eliminarán el historial de importación de complementos y las copias de recuperación de este servidor guardados por Synix.`n`nLas copias de seguridad completas del servidor se conservarán, salvo que marques la opción de abajo."
     'ServerActions.Delete.ConfirmHeading' = "¿Está seguro de que desea eliminar PERMANENTEMENTE '{0}'?"
     'ServerActions.Delete.ConfirmTitle' = "Confirmar eliminación total"
     'ServerActions.Delete.Error.Body' = "Los archivos se eliminaron parcialmente, pero ocurrió un error:`n{0}"
@@ -1579,6 +1606,9 @@
     'FileHandler.Activity.MigrationUpgraded' = "[MIGRACIÓN] Se actualizaron {0} registro(s) de servidor al esquema de datos {1}. Se creó una copia del archivo original antes de guardar."
     'FileHandler.Activity.MigrationProtected' = "[MIGRACIÓN] Se protegieron las contraseñas y los webhooks de Discord de {0} servidor(es) con el cifrado del usuario de Windows."
     'FileSystem.Error.FolderMoveFailed' = "No se pudo mover la carpeta: {0}"
+    'FileSystem.Error.UnsafeDeletionPath' = "Synix se negó a eliminar «{0}» porque no es una carpeta segura de servidor o de copias de seguridad. Las raíces de las unidades, las carpetas de Windows y de aplicaciones, las raíces de los datos de usuario y las carpetas compartidas de Synix están protegidas."
+    'FileSystem.Error.LinkedDeletionPath' = "Synix se negó a eliminar «{0}» porque la carpeta o una de sus carpetas superiores es un enlace. Las carpetas enlazadas no se pueden eliminar automáticamente."
+    'FileSystem.Error.DeletionPathUnavailable' = "Synix no pudo verificar de forma segura la carpeta que se va a eliminar: «{0}»."
     'Configuration.Activity.Error' = "[ERROR DE CONFIGURACIÓN] {0}"
     'Configuration.Activity.Warning' = "[ADVERTENCIA DE CONFIGURACIÓN] {0}"
     'Configuration.Definition.Duplicate' = "Definición de configuración duplicada: {0}."
@@ -1979,6 +2009,7 @@
     'GameDefinition.Tag.SharedAdminPassword.Description' = "La contraseña de administrador guardada que usan los juegos que la comparten con RCON."
     'ServerActions.Activity.AnalyzingFiles' = "[VALIDACIÓN] Analizando los archivos instalados del servidor..."
     'ServerActions.Activity.BackupsDeleted' = "[ELIMINACIÓN] Se quitaron las copias del servidor de {0}."
+    'ServerActions.Activity.AddOnDataDeleted' = "[ELIMINACIÓN] Se eliminaron el historial de complementos y las copias de recuperación de este servidor de {0}."
     'ServerActions.Activity.ConfigCaptureCopied' = "[CAPTURA DE CONFIGURACIÓN] Se copiaron {0} archivo(s) de {1} en {2}."
     'ServerActions.Activity.ConfigCaptureFailed' = "[ERROR DE CAPTURA] No se pudieron recopilar los archivos generados de {0}: {1}"
     'ServerActions.Activity.ConfigCaptureWarning' = "[ADVERTENCIA DE CAPTURA] {0}"
@@ -2099,4 +2130,54 @@
     'Eco.Configuration.DirectoryUnavailable' = "La carpeta de configuración de Eco no está disponible."
     'Dashboard.Restore.Activity' = "[RESTAURACIÓN] {0}"
     'Dashboard.Uptime.Days' = "{0} d {1:D2} h {2:D2} min"
+    'ModManager.Known.Scenario' = 'Escenario'
+    'EmpyrionMods.Error.Profile' = 'Esta estructura de paquete solo se admite en las carpetas Content documentadas de Empyrion.'
+    'EmpyrionMods.Error.FolderName' = 'Use un nombre de carpeta de 1 a 80 caracteres, sin barras, nombres reservados de Windows ni espacios al principio o al final. El nombre de un escenario no puede ser solo un número de Workshop.'
+    'EmpyrionMods.Error.Layout' = 'Seleccione un escenario descargado completo o un paquete completo de mod compilado para servidor, no el juego, una colección de Workshop, un plano ni un archivo de código fuente.'
+    'EmpyrionMods.Error.ScenarioLayout' = 'Un escenario debe incluir gameoptions.yaml junto con sus recursos Content, Playfields, Sectors o Prefabs, en la raíz del ZIP o en una única carpeta de escenario.'
+    'EmpyrionMods.Error.ScenarioCode' = 'Este escenario contiene código DLL, C# o JAR. Importe el código del servidor por separado mediante los mods de servidor de Empyrion, después de consultar las instrucciones del autor.'
+    'EmpyrionMods.Error.ModLayout' = 'Seleccione un paquete completo de mod compilado: las DLL y sus archivos auxiliares deben estar en la raíz del paquete o en carpetas individuales de mods. No se aceptan carpetas contenedoras adicionales ni archivos de un servidor completo.'
+    'EmpyrionMods.Error.MissingScenario' = 'Ese escenario no está instalado. Importe primero el escenario completo y después selecciónelo en la lista.'
+    'EmpyrionMods.Error.ConfigurationChanged' = 'La configuración del escenario o de la partida cambió mientras esta ventana estaba abierta. Ciérrela y seleccione el escenario de nuevo.'
+    'EmpyrionMods.Error.ExistingSave' = 'Esa partida ya existe. Otro escenario necesita un nombre de partida nuevo y sin usar. Synix no ha reemplazado ni eliminado el mundo existente.'
+    'EmpyrionMods.Error.Configuration' = 'dedicated.yaml falta, es demasiado grande o no contiene exactamente una opción GameConfig.CustomScenario y una GameConfig.GameName. Configure primero el servidor.'
+    'EmpyrionMods.Error.SaveFailed' = 'Synix no pudo guardar la entrada del servidor. Se restauró la configuración anterior del escenario; se conserva la copia de seguridad.'
+    'EmpyrionMods.Error.ProtectedScenario' = 'Synix no eliminará el escenario seleccionado ni sus recursos mientras existan mundos guardados. Esos mundos aún pueden depender de los archivos. No se eliminó ningún archivo de escenario.'
+    'EmpyrionMods.Status.Protected' = 'Protegido para mundos guardados'
+    'EmpyrionMods.Status.Installed' = 'Instalado (sin volver a verificar)'
+    'EmpyrionMods.Button.Import' = 'Importar paquete'
+    'EmpyrionMods.Button.ChooseScenario' = 'Elegir escenario'
+    'EmpyrionMods.ImportedScenario' = 'Se importaron los archivos del escenario. No se cambiaron el mundo actual ni el escenario seleccionado. Use Elegir escenario para seleccionar el escenario y el nombre de partida. Conserve el mismo nombre de carpeta al importar una actualización.'
+    'EmpyrionMods.Picker.ScenarioTitle' = 'Importar escenario de Empyrion'
+    'EmpyrionMods.Picker.ModTitle' = 'Importar mods de servidor de Empyrion'
+    'EmpyrionMods.Picker.ScenarioHelp' = 'Suscríbase en Steam y espere a que termine la descarga. Después seleccione la carpeta del escenario en steamapps\workshop\content\383120 o un ZIP de escenario completo. Se importa una copia local; Steam no actualizará automáticamente esa copia del servidor.'
+    'EmpyrionMods.Picker.ModHelp' = 'Elija un ZIP o carpeta de mod compilado para servidor completo de un autor de confianza. Mantenga juntos las DLL, _Info.yaml (si se incluye), las dependencias y los recursos. Synix no descarga dependencias ni ejecuta por sí mismo el código del mod.'
+    'EmpyrionMods.Picker.FolderName' = 'Carpeta del escenario en el servidor (conserve el nombre para actualizar)'
+    'EmpyrionMods.Picker.Zip' = 'Elegir ZIP'
+    'EmpyrionMods.Picker.Folder' = 'Elegir carpeta'
+    'EmpyrionMods.Picker.Review' = 'Revisar paquete'
+    'EmpyrionMods.Selection.Confirm' = 'Escenario: {0}
+Nombre de partida: {1}
+
+Synix hará una copia de dedicated.yaml, cambiará solo la selección del escenario y la partida, y guardará la entrada correspondiente del servidor. No se modificarán las carpetas de mundos existentes. ¿Aplicar estos ajustes en el próximo inicio?'
+    'EmpyrionMods.Selection.Saved' = 'Se guardó la selección del escenario y la partida. Inicie el servidor cuando esté listo, revise el registro del juego y conecte un cliente. Se conservaron las carpetas de mundos existentes.'
+    'EmpyrionMods.Selection.Help' = 'Escenario actual: {0}
+Partida actual: {1}
+Seleccione abajo el contenido instalado. Importar los archivos no activa el escenario.'
+    'EmpyrionMods.Selection.Scenario' = 'Escenario instalado'
+    'EmpyrionMods.Selection.SaveName' = 'Nombre de partida (GameConfig.GameName — no el nombre visible del servidor)'
+    'EmpyrionMods.Selection.NewSaveNotice' = 'Otro escenario necesita una partida nueva. Synix sugiere un nombre nuevo y nunca elimina ni sobrescribe un mundo existente.'
+    'EmpyrionMods.Selection.Use' = 'Usar escenario'
+    'EmpyrionMods.Support.Scenarios' = 'Importe una carpeta descargada o un ZIP y después use Elegir escenario. Las partidas existentes están protegidas.'
+    'EmpyrionMods.Support.Mods' = 'Importe carpetas o ZIP de mods compilados completos. Revise las dependencias del autor; el código se ejecuta en Empyrion.'
+    'EmpyrionMods.Button.RollBack' = 'Deshacer import.'
+    'EmpyrionMods.Remove.Confirm' = '¿Deshacer la importación que contiene {0}? Todos los archivos instalados por ese paquete se eliminarán o restaurarán a sus copias anteriores, incluidos otros mods del paquete. Los archivos modificados fuera de Synix impedirán la reversión. Conserve una copia completa del servidor antes de continuar.'
+    'ModPackages.Error.FolderUnsupported' = 'Este sistema de complementos no admite importar carpetas. Elija un archivo de paquete compatible.'
+    'ModPackages.Error.Layout' = 'Seleccione una carpeta completa de mod o escenario con sus archivos necesarios, no la instalación del juego ni una colección de descargas sin relación.'
+    'ModPackages.Error.Size' = 'El paquete supera los límites de importación de este sistema o su contenido cambió durante la copia. No se instaló nada.'
+    'ModPackages.Picker.Title' = 'Importar un paquete de mod'
+    'ModPackages.Picker.Help' = 'Elija un ZIP o carpeta de mod completo para el juego y el framework seleccionados. Mantenga juntos el manifiesto necesario, las dependencias y los recursos. Revise el destino y el análisis antes de instalar.'
+    'ModPackages.Picker.Destination' = 'Carpeta de instalación en el servidor'
+    'ModPackages.Picker.SelectFolder' = 'Seleccione la carpeta completa del mod o escenario, no la instalación del juego'
+    'EmpyrionMods.Import.ExistingScenario' = 'Esta carpeta de escenario ya existe. Los archivos coincidentes se reemplazarán, lo que puede afectar a mundos que usen este escenario. Conserve una copia completa del servidor y use otro nombre de carpeta para un escenario diferente. Los archivos de mundos guardados no se modificarán.'
 }

@@ -32,14 +32,12 @@ namespace Synix_Control_Panel.SynixApp.UI.Configuration
 				_titleLabel,
 				"Configuration.Validation.Title",
 				report.GameName);
-			LocalizationManager.BindText(
-				_summaryLabel,
-				report.IsCurrent
-					? "Configuration.Validation.Current"
-					: "Configuration.Validation.Attention",
-				report.PassedCount,
-				report.FailedCount,
-				report.WarningCount);
+			if (report.IsCurrent)
+				LocalizationManager.BindText(_summaryLabel, "Configuration.Validation.Current",
+					report.PassedCount);
+			else
+				LocalizationManager.BindText(_summaryLabel, "Configuration.Validation.Attention",
+					report.FailedCount, report.WarningCount);
 			_summaryLabel.ForeColor = report.IsCurrent
 				? SettingsPalette.Success
 				: report.FailedCount > 0

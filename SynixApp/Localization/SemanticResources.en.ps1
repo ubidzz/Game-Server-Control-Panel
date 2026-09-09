@@ -1,7 +1,32 @@
+# ============================================================================
+# PROJECT: Synix Game Server Control Panel
+# AUTHOR: Jason Turner (ubidzz)
+# COPYRIGHT: © 2026 All Rights Reserved.
+#
+# LEGAL NOTICE:
+# This source code is proprietary and confidential.
+# 1. Permission is granted for PERSONAL, NON-COMMERCIAL use only.
+# 2. You may modify this code for your own use, but you may NOT redistribute,
+#    rebrand, or sell this code or derivative works without written consent.
+# 3. The "Synix" brand and logic remain the property of Jason Turner.
+# ============================================================================
+
 # Additional named interface resources introduced by the full UI localization pass.
 # Machine-facing game commands, launch values, configuration keys, and protocol
 # identifiers intentionally do not belong in this catalog.
 [ordered]@{
+    'ServerSetup.World.Seed.Hint' = 'Generate a seed for a new world, or enter your own. For an existing world, keep its original seed.'
+    'ServerSetup.World.Seed.Generate' = 'Generate seed'
+    'GameInput.WorldSeed.RequiredNumber' = 'World Seed is required for {0}: use a whole number from {1} to {2}. Correct it in Server Setup > World Generation.'
+    'ServerSetup.World.Seed.Required' = 'World Seed (required)'
+    'ServerSetup.World.Seed.RangeHint' = 'Whole number from {0} to {1}. For an existing world, keep its original seed.'
+    'Configuration.Editor.Error.YamlUnsupported' = 'YAML line {0} is invalid or uses a feature this editor cannot safely change. Supported: one document with indented mappings/lists and single-line values. Flow collections, multiline values, tags, anchors, and aliases are not supported. Nothing was saved.'
+    'ModManager.Error.LinkedPath' = 'This add-on operation uses a linked file or folder. Choose a normal folder; Synix will not follow that link.'
+    'ModManager.Error.PreviousFileMissing' = 'A previous add-on file needed for restoration is missing. No files were changed. Restore the missing recovery file or use a verified server backup before removing this add-on.'
+    'ModManager.Error.RecoveryRetained' = 'The add-on import failed and some changes could not be rolled back. Recovery files were kept at {0}. Keep the server stopped and restore those files or a verified server backup before starting it.'
+    'LaunchCommand.Error.UnsafeBatchValue' = 'The launch field {0} cannot be passed safely through this Windows batch launcher. Embedded double quotes, line breaks, or variable expressions are not supported here. The value was not changed.'
+    'LaunchCommand.Error.UnsafeBatchArguments' = 'The completed batch command contains unsafe command syntax or variable expansion. Review the launch values and extra arguments; nothing was started.'
+    'ServerStart.Arguments.CustomHidden' = '[Custom arguments supplied; contents omitted from log]'
     'Satisfactory.ConnectHeading' = "Connect this server"
     'Satisfactory.ConnectAutomatically' = "Connect automatically"
     'Satisfactory.ConnectingAutomatically' = "Connecting: sending the command, capturing the token, and verifying the connection…"
@@ -463,6 +488,8 @@
     'Configuration.Report.FixConfig.Unavailable' = "Not available for this game"
     'Configuration.Report.State.Pass' = "PASS"
     'Configuration.Report.State.Warning' = "WARNING"
+    'Configuration.Report.State.Information' = "NOTE"
+    'Diagnostics.Health.Summary.Review' = "ITEMS TO REVIEW  •  {0} warnings  •  {1} passed"
     'Configuration.Report.State.Fail' = "FAIL"
     'Configuration.Report.Item' = "[{0}] {1}"
     'Configuration.Report.FixConfig.Footer' = "Fix Config rebuilds the complete file from the trusted Synix template, reapplies the saved server values, and preserves a backup. Other custom values can be removed by a full reset."
@@ -600,7 +627,7 @@
     'GameDefinitions.Builder.Lifecycle.Process' = "Track the launched server process"
     'GameDefinitions.Builder.ProjectNotFound' = "Synix Control Panel.csproj could not be found from this development build."
     'GameDefinitions.Builder.SavedPath' = "Saved: {0}"
-    'GameDefinitions.Builder.TemplatePicker.Filter' = "Configuration files|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|All files|*.*"
+    'GameDefinitions.Builder.TemplatePicker.Filter' = "Configuration files|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|All files|*.*"
     'GameDefinitions.Builder.TemplatePicker.Title' = "Select a complete game configuration template"
     'GameDefinitions.Queue.ArgumentRecorded' = "{0}: argument verification recorded from the real-server test."
     'GameDefinitions.Queue.ClearConfirm' = "Remove the {0} verification from {1}?"
@@ -743,7 +770,7 @@
     'Schedule.Smart.WaitForPlayers' = "Wait for players"
     'Schedule.Smart.WaitToggle.AccessibleName' = "Wait for connected players"
     'ServerActions.ConfigurationApplyFailed.Title' = "Configuration Could Not Be Applied"
-    'ServerActions.Delete.ConfirmBody' = "This will wipe the installation at:`n{0}"
+    'ServerActions.Delete.ConfirmBody' = "This will permanently delete the installation at:`n{0}`n`nThis server's add-on import history and recovery copies stored by Synix will also be deleted.`n`nFull server backup archives are kept unless you select the option below."
     'ServerActions.Delete.ConfirmHeading' = "Are you sure you want to PERMANENTLY delete '{0}'?"
     'ServerActions.Delete.ConfirmTitle' = "Confirm Total Deletion"
     'ServerActions.Delete.Error.Body' = "Files were partially deleted, but an error occurred:`n{0}"
@@ -1650,6 +1677,9 @@ Examples: logs\latest.log, Saved\Logs\*.log, profiles\{Identity}\logs\**\*.log. 
     'FileHandler.Activity.MigrationUpgraded' = "[MIGRATION] Upgraded {0} server record(s) to data schema {1}. The original file was backed up before saving."
     'FileHandler.Activity.MigrationProtected' = "[MIGRATION] Protected saved passwords and Discord webhooks for {0} server(s) with Windows user encryption."
     'FileSystem.Error.FolderMoveFailed' = "The folder could not be moved: {0}"
+    'FileSystem.Error.UnsafeDeletionPath' = "Synix refused to delete '{0}' because it is not a safe server or backup folder. Drive roots, Windows and application folders, user-data roots, and shared Synix folders are protected."
+    'FileSystem.Error.LinkedDeletionPath' = "Synix refused to delete '{0}' because the folder or one of its parent folders is a link. Linked folders cannot be deleted automatically."
+    'FileSystem.Error.DeletionPathUnavailable' = "Synix could not safely verify the deletion folder '{0}'."
     'Configuration.Activity.Error' = "[CONFIG ERROR] {0}"
     'Configuration.Activity.Warning' = "[CONFIG WARNING] {0}"
     'Configuration.Definition.Duplicate' = "Duplicate configuration definition: {0}."
@@ -2050,6 +2080,7 @@ Examples: logs\latest.log, Saved\Logs\*.log, profiles\{Identity}\logs\**\*.log. 
     'GameDefinition.Tag.SharedAdminPassword.Description' = "The saved administrator password used by games that share it with RCON."
     'ServerActions.Activity.AnalyzingFiles' = "[VALIDATE] Analyzing installed server files..."
     'ServerActions.Activity.BackupsDeleted' = "[DELETE] Removed server backups from {0}."
+    'ServerActions.Activity.AddOnDataDeleted' = "[DELETE] Removed this server's add-on history and recovery copies from {0}."
     'ServerActions.Activity.ConfigCaptureCopied' = "[CONFIG CAPTURE] Copied {0} file(s) for {1} to {2}."
     'ServerActions.Activity.ConfigCaptureFailed' = "[CONFIG CAPTURE ERROR] Could not collect generated files for {0}: {1}"
     'ServerActions.Activity.ConfigCaptureWarning' = "[CONFIG CAPTURE WARNING] {0}"
@@ -2170,4 +2201,54 @@ Examples: logs\latest.log, Saved\Logs\*.log, profiles\{Identity}\logs\**\*.log. 
     'Eco.Configuration.DirectoryUnavailable' = "The Eco configuration directory is unavailable."
     'Dashboard.Restore.Activity' = "[RESTORE] {0}"
     'Dashboard.Uptime.Days' = "{0}d {1:D2}h {2:D2}m"
+    'ModManager.Known.Scenario' = 'Scenario'
+    'EmpyrionMods.Error.Profile' = 'This package layout is only supported for Empyrion''s documented Content folders.'
+    'EmpyrionMods.Error.FolderName' = 'Use a folder name of 1–80 characters, without slashes, reserved Windows names, or leading/trailing spaces. A scenario name cannot be only a Workshop number.'
+    'EmpyrionMods.Error.Layout' = 'Select a complete downloaded scenario or compiled server mod package, not the game installation, a Workshop collection, a blueprint, or a source-code archive.'
+    'EmpyrionMods.Error.ScenarioLayout' = 'A scenario must have gameoptions.yaml and its Content, Playfields, Sectors, or Prefabs assets together, either at the ZIP root or inside one scenario folder.'
+    'EmpyrionMods.Error.ScenarioCode' = 'This scenario package contains DLL, C#, or JAR code. Import server code separately through Empyrion server mods after reviewing the author''s instructions.'
+    'EmpyrionMods.Error.ModLayout' = 'Select a complete compiled mod package: DLL files and their support files must be at the package root or inside individual mod folders. Extra wrapper folders and full server archives are not accepted.'
+    'EmpyrionMods.Error.MissingScenario' = 'That scenario is not installed. Import the complete scenario first, then choose it from the installed list.'
+    'EmpyrionMods.Error.ConfigurationChanged' = 'The scenario or save settings changed while this window was open. Close it and choose the scenario again.'
+    'EmpyrionMods.Error.ExistingSave' = 'That save already exists. A different scenario needs a new, unused save name. Synix has not replaced or deleted the existing world.'
+    'EmpyrionMods.Error.Configuration' = 'dedicated.yaml is missing, too large, or does not contain one GameConfig.CustomScenario and GameConfig.GameName setting. Configure the server first.'
+    'EmpyrionMods.Error.SaveFailed' = 'Synix could not save the server entry. The previous scenario configuration has been restored; the backup is retained.'
+    'EmpyrionMods.Error.ProtectedScenario' = 'Synix will not remove the selected scenario or scenario assets while saved worlds exist. Those worlds may still depend on the files. No scenario files were removed.'
+    'EmpyrionMods.Status.Protected' = 'Protected for saved worlds'
+    'EmpyrionMods.Status.Installed' = 'Installed (not re-verified)'
+    'EmpyrionMods.Button.Import' = 'Import Package'
+    'EmpyrionMods.Button.ChooseScenario' = 'Choose Scenario'
+    'EmpyrionMods.ImportedScenario' = 'Scenario files were imported. The current world and scenario selection were not changed. Use Choose Scenario to select the scenario and a save name. Keep the same scenario folder name when importing an update.'
+    'EmpyrionMods.Picker.ScenarioTitle' = 'Import an Empyrion scenario'
+    'EmpyrionMods.Picker.ModTitle' = 'Import Empyrion server mods'
+    'EmpyrionMods.Picker.ScenarioHelp' = 'Subscribe in Steam and let the download finish, then select the scenario folder under steamapps\workshop\content\383120, or choose a complete scenario ZIP. This imports a local copy; Steam will not update that server copy automatically.'
+    'EmpyrionMods.Picker.ModHelp' = 'Choose a complete compiled server mod ZIP or folder from an author you trust. Keep DLLs, _Info.yaml (when supplied), dependencies and assets together. Synix does not download dependencies or run mod code itself.'
+    'EmpyrionMods.Picker.FolderName' = 'Scenario folder name on the server (reuse this name for updates)'
+    'EmpyrionMods.Picker.Zip' = 'Choose ZIP'
+    'EmpyrionMods.Picker.Folder' = 'Choose Folder'
+    'EmpyrionMods.Picker.Review' = 'Review Package'
+    'EmpyrionMods.Selection.Confirm' = 'Scenario: {0}
+Save name: {1}
+
+Synix will back up dedicated.yaml, update only the scenario/save selection, and save the matching server entry. Existing world folders are not changed. Apply these settings for the next start?'
+    'EmpyrionMods.Selection.Saved' = 'The scenario and save selection were saved. Start the server when ready, then check its game log and connect with a client. Existing world folders were preserved.'
+    'EmpyrionMods.Selection.Help' = 'Current scenario: {0}
+Current save: {1}
+Choose installed content below. Importing files alone does not activate a scenario.'
+    'EmpyrionMods.Selection.Scenario' = 'Installed scenario'
+    'EmpyrionMods.Selection.SaveName' = 'Save name (GameConfig.GameName — not the server''s display name)'
+    'EmpyrionMods.Selection.NewSaveNotice' = 'A different scenario needs a new save. Synix suggests a new name and never deletes or overwrites an existing world.'
+    'EmpyrionMods.Selection.Use' = 'Use Scenario'
+    'EmpyrionMods.Support.Scenarios' = 'Import a downloaded folder or ZIP. Use Choose Scenario afterwards; existing saves are protected.'
+    'EmpyrionMods.Support.Mods' = 'Import complete compiled mod folders or ZIPs. Check the author''s dependencies; code runs in Empyrion.'
+    'EmpyrionMods.Button.RollBack' = 'Roll Back Import'
+    'EmpyrionMods.Remove.Confirm' = 'Roll back the import containing {0}? All files installed by that same package will be removed or restored to their previous copies, including other mods in the package. Files changed outside Synix will block rollback. Keep a full server backup before continuing.'
+    'ModPackages.Error.FolderUnsupported' = 'This add-on system does not support folder imports. Choose one of its supported package files.'
+    'ModPackages.Error.Layout' = 'Select a complete mod or scenario folder containing the required package files, not the game installation or a collection of unrelated downloads.'
+    'ModPackages.Error.Size' = 'The package exceeds this add-on system''s import limits, or its contents changed while being copied. Nothing was installed.'
+    'ModPackages.Picker.Title' = 'Import a mod package'
+    'ModPackages.Picker.Help' = 'Choose a complete mod ZIP or folder for the selected game and framework. Keep its required manifest, dependencies and assets together. Review the destination and scan results before installing.'
+    'ModPackages.Picker.Destination' = 'Installation folder on the server'
+    'ModPackages.Picker.SelectFolder' = 'Select the complete mod or scenario folder, not the game installation'
+    'EmpyrionMods.Import.ExistingScenario' = 'This scenario folder already exists. Matching files will be replaced, which can affect worlds using this scenario. Keep a full server backup and use a different folder name for a different scenario. Saved-world files themselves will not be changed.'
 }

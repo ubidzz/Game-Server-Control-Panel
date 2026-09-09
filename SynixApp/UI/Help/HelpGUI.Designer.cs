@@ -679,7 +679,7 @@ namespace Synix_Control_Panel.SynixApp.UI.Help
 			lblFooterHint.Name = "lblFooterHint";
 			lblFooterHint.Size = new Size(333, 15);
 			lblFooterHint.TabIndex = 0;
-			lblFooterHint.Text = "Ctrl+F  Search     •     Esc  Close     •     Links open in your browser";
+			lblFooterHint.Text = "Ctrl+F  Search     •     Esc  Close     •     Offline help";
 			//
 			// lblFooterStatus
 			//

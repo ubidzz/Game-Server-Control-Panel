@@ -10,13 +10,17 @@
 //    rebrand, or sell this code or derivative works without written consent.
 // 3. The "Synix" brand and logic remain the property of Jason Turner.
 // ============================================================================
+using Synix_Control_Panel.SynixEngine.ModManagement;
+
 namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 {
 	public sealed record ServerFolderDeletionResult(
 		string InstallationPath,
 		bool InstallationDeleted,
 		string? BackupPath,
-		bool BackupsDeleted);
+		bool BackupsDeleted,
+		string AddOnDataPath,
+		bool AddOnDataDeleted);
 
 	public static class FolderHandler
 	{
@@ -42,15 +46,49 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 				GameServer server,
 				bool deleteBackups)
 			{
+				// Validate every target before deleting anything, including add-on
+				// recovery files stored separately from the game's installation.
+				(string installationPath, string? backupRoot, string addOnDataPath) =
+					ValidateDeletionTargets(server, deleteBackups);
 				bool installationDeleted = false;
-				if (Directory.Exists(server.InstallPath))
+				if (Directory.Exists(installationPath))
 				{
-					Directory.Delete(server.InstallPath, true);
+					Directory.Delete(installationPath, true);
 					installationDeleted = true;
 				}
 
-				string? backupRoot = null;
 				bool backupsDeleted = false;
+				if (backupRoot != null && Directory.Exists(backupRoot))
+				{
+					Directory.Delete(backupRoot, true);
+					backupsDeleted = true;
+				}
+
+				// Retain add-on recovery copies until the requested game-file deletions
+				// succeed. Recheck links immediately before removing this exact folder.
+				ModPathSafety.EnsureTreeHasNoLinks(addOnDataPath);
+				bool addOnDataDeleted = false;
+				if (Directory.Exists(addOnDataPath))
+				{
+					Directory.Delete(addOnDataPath, recursive: true);
+					addOnDataDeleted = true;
+				}
+
+				return new ServerFolderDeletionResult(
+					installationPath,
+					installationDeleted,
+					backupRoot,
+					backupsDeleted,
+					addOnDataPath,
+					addOnDataDeleted);
+			}
+
+			internal static (string InstallationPath, string? BackupPath, string AddOnDataPath) ValidateDeletionTargets(
+				GameServer server, bool deleteBackups)
+			{
+				ArgumentNullException.ThrowIfNull(server);
+				string installationPath = ServerDeletionSafety.ValidatePath(server.InstallPath);
+				string? backupRoot = null;
 				if (deleteBackups)
 				{
 					string cleanGame = SynixEngine.Core.Instance.GetSafeName(server.Game);
@@ -64,19 +102,21 @@ namespace Synix_Control_Panel.SynixApp.FileFolderHandler
 						baseBackupFolder = Properties.Settings.Default.CustomBackupPath;
 					}
 
-					backupRoot = Path.Combine(baseBackupFolder, cleanGame, cleanServer);
-					if (Directory.Exists(backupRoot))
-					{
-						Directory.Delete(backupRoot, true);
-						backupsDeleted = true;
-					}
+					if (string.IsNullOrWhiteSpace(server.Game) || string.IsNullOrWhiteSpace(server.ServerName) ||
+						string.IsNullOrWhiteSpace(cleanGame) || string.IsNullOrWhiteSpace(cleanServer))
+						throw new InvalidOperationException(LocalizationManager.Get(
+							"FileSystem.Error.UnsafeDeletionPath", baseBackupFolder));
+					backupRoot = ServerDeletionSafety.ValidatePath(
+						Path.Combine(baseBackupFolder, cleanGame, cleanServer), baseBackupFolder);
 				}
-
-				return new ServerFolderDeletionResult(
-					server.InstallPath,
-					installationDeleted,
-					backupRoot,
-					backupsDeleted);
+				// Use the same identity as imports, not a name wildcard or a sweep of
+				// AddOns. This also protects other servers that happen to share a name.
+				string addOnDataPath = ModPackageManager.GetServerDataFolder(server);
+				ModPathSafety.EnsureTreeHasNoLinks(addOnDataPath);
+				if (File.Exists(addOnDataPath))
+					throw new IOException(LocalizationManager.Get(
+						"FileSystem.Error.DeletionPathUnavailable", addOnDataPath));
+				return (installationPath, backupRoot, addOnDataPath);
 			}
 
 			public static bool Rename(GameServer oldServer, GameServer newServer)

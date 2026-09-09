@@ -2668,6 +2668,12 @@ This does not delete the webhook from Discord.</value>
   <data name="Configuration.Report.State.Warning" xml:space="preserve">
     <value>WARNING</value>
   </data>
+  <data name="Configuration.Report.State.Information" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="Diagnostics.Health.Summary.Review" xml:space="preserve">
+    <value>ITEMS TO REVIEW  •  {0} warnings  •  {1} passed</value>
+  </data>
   <data name="Configuration.Report.State.Fail" xml:space="preserve">
     <value>FAIL</value>
   </data>
@@ -3080,7 +3086,7 @@ This does not delete the webhook from Discord.</value>
     <value>Saved: {0}</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Filter" xml:space="preserve">
-    <value>Configuration files|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties|All files|*.*</value>
+    <value>Configuration files|*.ini;*.cfg;*.json;*.xml;*.txt;*.properties;*.yaml;*.yml|All files|*.*</value>
   </data>
   <data name="GameDefinitions.Builder.TemplatePicker.Title" xml:space="preserve">
     <value>Select a complete game configuration template</value>
@@ -3529,8 +3535,12 @@ Please stop a server before starting another.</value>
     <value>Configuration Could Not Be Applied</value>
   </data>
   <data name="ServerActions.Delete.ConfirmBody" xml:space="preserve">
-    <value>This will wipe the installation at:
-{0}</value>
+    <value>This will permanently delete the installation at:
+{0}
+
+This server's add-on import history and recovery copies stored by Synix will also be deleted.
+
+Full server backup archives are kept unless you select the option below.</value>
   </data>
   <data name="ServerActions.Delete.ConfirmHeading" xml:space="preserve">
     <value>Are you sure you want to PERMANENTLY delete '{0}'?</value>
@@ -6188,6 +6198,15 @@ Examples: logs\latest.log, Saved\Logs\*.log, profiles\{Identity}\logs\**\*.log. 
   <data name="FileSystem.Error.FolderMoveFailed" xml:space="preserve">
     <value>The folder could not be moved: {0}</value>
   </data>
+  <data name="FileSystem.Error.UnsafeDeletionPath" xml:space="preserve">
+    <value>Synix refused to delete '{0}' because it is not a safe server or backup folder. Drive roots, Windows and application folders, user-data roots, and shared Synix folders are protected.</value>
+  </data>
+  <data name="FileSystem.Error.LinkedDeletionPath" xml:space="preserve">
+    <value>Synix refused to delete '{0}' because the folder or one of its parent folders is a link. Linked folders cannot be deleted automatically.</value>
+  </data>
+  <data name="FileSystem.Error.DeletionPathUnavailable" xml:space="preserve">
+    <value>Synix could not safely verify the deletion folder '{0}'.</value>
+  </data>
   <data name="Configuration.Activity.Error" xml:space="preserve">
     <value>[CONFIG ERROR] {0}</value>
   </data>
@@ -7394,6 +7413,9 @@ Required destinations:
   </data>
   <data name="ServerActions.Activity.BackupsDeleted" xml:space="preserve">
     <value>[DELETE] Removed server backups from {0}.</value>
+  </data>
+  <data name="ServerActions.Activity.AddOnDataDeleted" xml:space="preserve">
+    <value>[DELETE] Removed this server's add-on history and recovery copies from {0}.</value>
   </data>
   <data name="ServerActions.Activity.ConfigCaptureCopied" xml:space="preserve">
     <value>[CONFIG CAPTURE] Copied {0} file(s) for {1} to {2}.</value>
@@ -10734,5 +10756,176 @@ Any other custom configuration values will be removed.</value>
   </data>
   <data name="MessageText.19580FB3CF2A0F82762D" xml:space="preserve">
     <value>You must stop the server before validating server files.</value>
+  </data>
+  <data name="ModManager.Error.LinkedPath" xml:space="preserve">
+    <value>This add-on operation uses a linked file or folder. Choose a normal folder; Synix will not follow that link.</value>
+  </data>
+  <data name="ModManager.Error.PreviousFileMissing" xml:space="preserve">
+    <value>A previous add-on file needed for restoration is missing. No files were changed. Restore the missing recovery file or use a verified server backup before removing this add-on.</value>
+  </data>
+  <data name="ModManager.Error.RecoveryRetained" xml:space="preserve">
+    <value>The add-on import failed and some changes could not be rolled back. Recovery files were kept at {0}. Keep the server stopped and restore those files or a verified server backup before starting it.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchValue" xml:space="preserve">
+    <value>The launch field {0} cannot be passed safely through this Windows batch launcher. Embedded double quotes, line breaks, or variable expressions are not supported here. The value was not changed.</value>
+  </data>
+  <data name="LaunchCommand.Error.UnsafeBatchArguments" xml:space="preserve">
+    <value>The completed batch command contains unsafe command syntax or variable expansion. Review the launch values and extra arguments; nothing was started.</value>
+  </data>
+  <data name="ServerStart.Arguments.CustomHidden" xml:space="preserve">
+    <value>[Custom arguments supplied; contents omitted from log]</value>
+  </data>
+  <data name="Configuration.Editor.Error.YamlUnsupported" xml:space="preserve">
+    <value>YAML line {0} is invalid or uses a feature this editor cannot safely change. Supported: one document with indented mappings/lists and single-line values. Flow collections, multiline values, tags, anchors, and aliases are not supported. Nothing was saved.</value>
+  </data>
+  <data name="GameInput.WorldSeed.RequiredNumber" xml:space="preserve">
+    <value>World Seed is required for {0}: use a whole number from {1} to {2}. Correct it in Server Setup &gt; World Generation.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Required" xml:space="preserve">
+    <value>World Seed (required)</value>
+  </data>
+  <data name="ServerSetup.World.Seed.RangeHint" xml:space="preserve">
+    <value>Whole number from {0} to {1}. For an existing world, keep its original seed.</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Generate" xml:space="preserve">
+    <value>Generate seed</value>
+  </data>
+  <data name="ServerSetup.World.Seed.Hint" xml:space="preserve">
+    <value>Generate a seed for a new world, or enter your own. For an existing world, keep its original seed.</value>
+  </data>
+  <data name="ModManager.Known.Scenario" xml:space="preserve">
+    <value>Scenario</value>
+  </data>
+  <data name="EmpyrionMods.Error.Profile" xml:space="preserve">
+    <value>This package layout is only supported for Empyrion's documented Content folders.</value>
+  </data>
+  <data name="EmpyrionMods.Error.FolderName" xml:space="preserve">
+    <value>Use a folder name of 1–80 characters, without slashes, reserved Windows names, or leading/trailing spaces. A scenario name cannot be only a Workshop number.</value>
+  </data>
+  <data name="EmpyrionMods.Error.Layout" xml:space="preserve">
+    <value>Select a complete downloaded scenario or compiled server mod package, not the game installation, a Workshop collection, a blueprint, or a source-code archive.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ScenarioLayout" xml:space="preserve">
+    <value>A scenario must have gameoptions.yaml and its Content, Playfields, Sectors, or Prefabs assets together, either at the ZIP root or inside one scenario folder.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ScenarioCode" xml:space="preserve">
+    <value>This scenario package contains DLL, C#, or JAR code. Import server code separately through Empyrion server mods after reviewing the author's instructions.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ModLayout" xml:space="preserve">
+    <value>Select a complete compiled mod package: DLL files and their support files must be at the package root or inside individual mod folders. Extra wrapper folders and full server archives are not accepted.</value>
+  </data>
+  <data name="EmpyrionMods.Error.MissingScenario" xml:space="preserve">
+    <value>That scenario is not installed. Import the complete scenario first, then choose it from the installed list.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ConfigurationChanged" xml:space="preserve">
+    <value>The scenario or save settings changed while this window was open. Close it and choose the scenario again.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ExistingSave" xml:space="preserve">
+    <value>That save already exists. A different scenario needs a new, unused save name. Synix has not replaced or deleted the existing world.</value>
+  </data>
+  <data name="EmpyrionMods.Error.Configuration" xml:space="preserve">
+    <value>dedicated.yaml is missing, too large, or does not contain one GameConfig.CustomScenario and GameConfig.GameName setting. Configure the server first.</value>
+  </data>
+  <data name="EmpyrionMods.Error.SaveFailed" xml:space="preserve">
+    <value>Synix could not save the server entry. The previous scenario configuration has been restored; the backup is retained.</value>
+  </data>
+  <data name="EmpyrionMods.Error.ProtectedScenario" xml:space="preserve">
+    <value>Synix will not remove the selected scenario or scenario assets while saved worlds exist. Those worlds may still depend on the files. No scenario files were removed.</value>
+  </data>
+  <data name="EmpyrionMods.Status.Protected" xml:space="preserve">
+    <value>Protected for saved worlds</value>
+  </data>
+  <data name="EmpyrionMods.Status.Installed" xml:space="preserve">
+    <value>Installed (not re-verified)</value>
+  </data>
+  <data name="EmpyrionMods.Button.Import" xml:space="preserve">
+    <value>Import Package</value>
+  </data>
+  <data name="EmpyrionMods.Button.ChooseScenario" xml:space="preserve">
+    <value>Choose Scenario</value>
+  </data>
+  <data name="EmpyrionMods.ImportedScenario" xml:space="preserve">
+    <value>Scenario files were imported. The current world and scenario selection were not changed. Use Choose Scenario to select the scenario and a save name. Keep the same scenario folder name when importing an update.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ScenarioTitle" xml:space="preserve">
+    <value>Import an Empyrion scenario</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ModTitle" xml:space="preserve">
+    <value>Import Empyrion server mods</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ScenarioHelp" xml:space="preserve">
+    <value>Subscribe in Steam and let the download finish, then select the scenario folder under steamapps\workshop\content\383120, or choose a complete scenario ZIP. This imports a local copy; Steam will not update that server copy automatically.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.ModHelp" xml:space="preserve">
+    <value>Choose a complete compiled server mod ZIP or folder from an author you trust. Keep DLLs, _Info.yaml (when supplied), dependencies and assets together. Synix does not download dependencies or run mod code itself.</value>
+  </data>
+  <data name="EmpyrionMods.Picker.FolderName" xml:space="preserve">
+    <value>Scenario folder name on the server (reuse this name for updates)</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Zip" xml:space="preserve">
+    <value>Choose ZIP</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Folder" xml:space="preserve">
+    <value>Choose Folder</value>
+  </data>
+  <data name="EmpyrionMods.Picker.Review" xml:space="preserve">
+    <value>Review Package</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Confirm" xml:space="preserve">
+    <value>Scenario: {0}&#10;Save name: {1}&#10;&#10;Synix will back up dedicated.yaml, update only the scenario/save selection, and save the matching server entry. Existing world folders are not changed. Apply these settings for the next start?</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Saved" xml:space="preserve">
+    <value>The scenario and save selection were saved. Start the server when ready, then check its game log and connect with a client. Existing world folders were preserved.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Help" xml:space="preserve">
+    <value>Current scenario: {0}&#10;Current save: {1}&#10;Choose installed content below. Importing files alone does not activate a scenario.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Scenario" xml:space="preserve">
+    <value>Installed scenario</value>
+  </data>
+  <data name="EmpyrionMods.Selection.SaveName" xml:space="preserve">
+    <value>Save name (GameConfig.GameName — not the server's display name)</value>
+  </data>
+  <data name="EmpyrionMods.Selection.NewSaveNotice" xml:space="preserve">
+    <value>A different scenario needs a new save. Synix suggests a new name and never deletes or overwrites an existing world.</value>
+  </data>
+  <data name="EmpyrionMods.Selection.Use" xml:space="preserve">
+    <value>Use Scenario</value>
+  </data>
+  <data name="EmpyrionMods.Support.Scenarios" xml:space="preserve">
+    <value>Import a downloaded folder or ZIP. Use Choose Scenario afterwards; existing saves are protected.</value>
+  </data>
+  <data name="EmpyrionMods.Support.Mods" xml:space="preserve">
+    <value>Import complete compiled mod folders or ZIPs. Check the author's dependencies; code runs in Empyrion.</value>
+  </data>
+  <data name="EmpyrionMods.Button.RollBack" xml:space="preserve">
+    <value>Roll Back Import</value>
+  </data>
+  <data name="EmpyrionMods.Remove.Confirm" xml:space="preserve">
+    <value>Roll back the import containing {0}? All files installed by that same package will be removed or restored to their previous copies, including other mods in the package. Files changed outside Synix will block rollback. Keep a full server backup before continuing.</value>
+  </data>
+  <data name="ModPackages.Error.FolderUnsupported" xml:space="preserve">
+    <value>This add-on system does not support folder imports. Choose one of its supported package files.</value>
+  </data>
+  <data name="ModPackages.Error.Layout" xml:space="preserve">
+    <value>Select a complete mod or scenario folder containing the required package files, not the game installation or a collection of unrelated downloads.</value>
+  </data>
+  <data name="ModPackages.Error.Size" xml:space="preserve">
+    <value>The package exceeds this add-on system's import limits, or its contents changed while being copied. Nothing was installed.</value>
+  </data>
+  <data name="ModPackages.Picker.Title" xml:space="preserve">
+    <value>Import a mod package</value>
+  </data>
+  <data name="ModPackages.Picker.Help" xml:space="preserve">
+    <value>Choose a complete mod ZIP or folder for the selected game and framework. Keep its required manifest, dependencies and assets together. Review the destination and scan results before installing.</value>
+  </data>
+  <data name="ModPackages.Picker.Destination" xml:space="preserve">
+    <value>Installation folder on the server</value>
+  </data>
+  <data name="ModPackages.Picker.SelectFolder" xml:space="preserve">
+    <value>Select the complete mod or scenario folder, not the game installation</value>
+  </data>
+  <data name="EmpyrionMods.Import.ExistingScenario" xml:space="preserve">
+    <value>This scenario folder already exists. Matching files will be replaced, which can affect worlds using this scenario. Keep a full server backup and use a different folder name for a different scenario. Saved-world files themselves will not be changed.</value>
   </data>
 </root>

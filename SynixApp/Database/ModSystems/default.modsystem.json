@@ -2,6 +2,62 @@
   "schemaVersion": 1,
   "profiles": [
     {
+      "id": "empyrion-scenarios",
+      "displayName": "Empyrion scenarios",
+      "description": "Import a complete downloaded scenario, then choose its save separately. Steam subscriptions do not update the server copy.",
+      "supportLevel": "Managed",
+      "gameNames": [ "Empyrion - Galactic Survival" ],
+      "frameworkName": "Empyrion scenario system",
+      "frameworkMarkers": [ "EmpyrionLauncher.exe" ],
+      "catalogUrl": "https://steamcommunity.com/app/383120/workshop/",
+      "restartRequired": true,
+      "targets": [
+        {
+          "id": "scenarios",
+          "displayName": "Server scenarios",
+          "kind": "Scenario",
+          "mode": "FileImport",
+          "packageLayout": "EmpyrionScenario",
+          "providerName": "Local / Steam Workshop copy",
+          "relativePath": "Content/Scenarios",
+          "allowedExtensions": [ ".yaml" ],
+          "allowArchives": true,
+          "allowFolderImport": true,
+          "archiveOnly": true,
+          "preserveArchiveContents": true,
+          "scanDirectories": true
+        }
+      ]
+    },
+    {
+      "id": "empyrion-server-mods",
+      "displayName": "Empyrion server mods",
+      "description": "Install complete server mod packages. Empyrion runs their code; check dependencies and trust the author before installation.",
+      "supportLevel": "Managed",
+      "gameNames": [ "Empyrion - Galactic Survival" ],
+      "frameworkName": "Empyrion mod API",
+      "frameworkMarkers": [ "EmpyrionLauncher.exe" ],
+      "catalogUrl": "https://empyriononline.com/forums/empyrion-api.39/",
+      "restartRequired": true,
+      "targets": [
+        {
+          "id": "server-mods",
+          "displayName": "Server mod packages",
+          "kind": "Mod",
+          "mode": "FileImport",
+          "packageLayout": "EmpyrionMod",
+          "providerName": "Local mod package",
+          "relativePath": "Content/Mods",
+          "allowedExtensions": [ ".dll" ],
+          "allowArchives": true,
+          "allowFolderImport": true,
+          "archiveOnly": true,
+          "preserveArchiveContents": true,
+          "scanDirectories": true
+        }
+      ]
+    },
+    {
       "id": "rust-umod",
       "displayName": "Oxide/uMod",
       "description": "Rust plugins loaded by the Oxide/uMod framework.",
@@ -72,7 +128,7 @@
     {
       "id": "seven-days-to-die-mods",
       "displayName": "7 Days to Die server mods",
-      "description": "Synix installs complete mod ZIP packages into the dedicated server's Mods folder. Mods with client assets may also need to be installed by every player.",
+      "description": "Synix installs complete mod ZIP packages or folders into the dedicated server's Mods folder. Mods with client assets may also need to be installed by every player.",
       "supportLevel": "Managed",
       "gameNames": [ "7 Days to Die" ],
       "frameworkName": "Built-in mod loader",
@@ -101,6 +157,7 @@
           "markerPaths": [ "Mods" ],
           "frameworkNames": [],
           "allowArchives": true,
+          "allowFolderImport": true,
           "archiveOnly": true,
           "preserveArchiveContents": true,
           "requiredArchiveFileName": "ModInfo.xml",

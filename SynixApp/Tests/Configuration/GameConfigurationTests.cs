@@ -1899,26 +1899,6 @@ public sealed class GameConfigurationTests : IDisposable
 			return;
 		}
 
-		if (gameName == "Dysterra")
-		{
-			string worldDirectory = Path.Combine(
-				server.InstallPath,
-				@"Dysterra\WorldSettings");
-			Directory.CreateDirectory(worldDirectory);
-			File.WriteAllText(
-				Path.Combine(worldDirectory, "Survival_Landscape_Template.json"),
-				"""
-				{
-				  "WorldName": "Generated",
-				  "WorldInfo": "Complete installed template",
-				  "Password": "",
-				  "MaxPlayers": 16,
-				  "ValueOverrides": { "DayLength": 1.0 }
-				}
-				""");
-			return;
-		}
-
 		if (gameName == "Mount & Blade II: Bannerlord")
 		{
 			string nativeDirectory = Path.Combine(

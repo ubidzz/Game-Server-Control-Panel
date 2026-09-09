@@ -215,8 +215,10 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 
 			if (!ManagedConfigurationsEnabled)
 			{
+				// This preference controls automatic writes, not the health of the
+				// files. An explicit repair cannot (and must not) change it.
 				items.Add(new ConfigurationValidationItem(
-					ConfigurationValidationState.Warning,
+					ConfigurationValidationState.Information,
 					LocalizationManager.Get(
 						"Configuration.Check.DevelopmentSetting"),
 					LocalizationManager.Get(

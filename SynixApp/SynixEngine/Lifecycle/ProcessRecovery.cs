@@ -40,38 +40,44 @@ namespace Synix_Control_Panel.SynixEngine
 					server.InstallPath,
 					executableName));
 			}
-			catch
+			catch (Exception exception)
 			{
+				ApplicationLogService.WriteSuppressedException(exception);
 				return null;
 			}
 
 			string processName = Path.GetFileNameWithoutExtension(executableName);
-			foreach (Process process in Process.GetProcessesByName(processName))
+			Process[] candidates = Process.GetProcessesByName(processName);
+			Process? matched = null;
+			try
 			{
-				if (process.Id == Environment.ProcessId ||
-					process.Id == excludedProcessId)
+				foreach (Process process in candidates)
 				{
-					process.Dispose();
-					continue;
-				}
+					if (process.Id == Environment.ProcessId || process.Id == excludedProcessId)
+						continue;
 
-				try
-				{
-					if (!process.HasExited &&
-						string.Equals(
-							Path.GetFullPath(process.MainModule?.FileName ?? string.Empty),
-							expectedPath,
-							StringComparison.OrdinalIgnoreCase))
+					try
 					{
-						return process;
+						string? actualPath = Servers.TryGetProcessImagePath(process.Id);
+						if (!string.IsNullOrWhiteSpace(actualPath) &&
+							string.Equals(Path.GetFullPath(actualPath), expectedPath, StringComparison.OrdinalIgnoreCase) &&
+							!process.HasExited)
+						{
+							matched = process;
+							return matched;
+						}
+					}
+					catch (Exception exception)
+					{
+						ApplicationLogService.WriteSuppressedException(exception);
 					}
 				}
-				catch (Exception suppressedException)
-				{
-					Synix_Control_Panel.SynixEngine.ApplicationLogService.WriteSuppressedException(suppressedException);
-				}
-
-				process.Dispose();
+			}
+			finally
+			{
+				foreach (Process process in candidates)
+					if (!ReferenceEquals(process, matched))
+						process.Dispose();
 			}
 
 			return null;
@@ -81,7 +87,7 @@ namespace Synix_Control_Panel.SynixEngine
 			GameServer server,
 			GameInfo game)
 		{
-			if (!server.PID.HasValue || server.PID.Value <= 0)
+			if (!server.PID.HasValue || server.PID.Value <= 0 || server.PID.Value == Environment.ProcessId)
 				return false;
 
 			try
@@ -90,16 +96,32 @@ namespace Synix_Control_Panel.SynixEngine
 				if (process.HasExited)
 					return false;
 
+				string? imagePath = Servers.TryGetProcessImagePath(process.Id);
+				if (string.IsNullOrWhiteSpace(imagePath))
+					return false;
+				string actualPath = Path.GetFullPath(imagePath);
 				string executableName = MinecraftControlProfile.ResolveExecutableName(server, game);
-				if (executableName.EndsWith(".bat", StringComparison.OrdinalIgnoreCase))
-					return process.ProcessName.Equals("cmd", StringComparison.OrdinalIgnoreCase);
+				if (executableName.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
+					executableName.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase))
+				{
+					// A Windows command interpreter lives outside the server folder.
+					// Recover only the exact launcher Synix previously recorded, never
+					// an arbitrary cmd.exe that has reused the saved process ID.
+					if (!Path.GetFileName(actualPath).Equals("cmd.exe", StringComparison.OrdinalIgnoreCase))
+						return false;
+					DateTime startTime = process.StartTime.ToUniversalTime();
+					return Servers.GetServerProcessSnapshot(server).Any(identity =>
+						identity.ProcessId == process.Id && identity.StartTimeUtc == startTime &&
+						!string.IsNullOrWhiteSpace(identity.ExecutablePath) &&
+						string.Equals(Path.GetFullPath(identity.ExecutablePath), actualPath, StringComparison.OrdinalIgnoreCase));
+				}
 
 				string expectedPath = Path.GetFullPath(Path.Combine(server.InstallPath, executableName));
-				string actualPath = Path.GetFullPath(process.MainModule?.FileName ?? string.Empty);
 				return string.Equals(expectedPath, actualPath, StringComparison.OrdinalIgnoreCase);
 			}
-			catch
+			catch (Exception exception)
 			{
+				ApplicationLogService.WriteSuppressedException(exception);
 				return false;
 			}
 		}

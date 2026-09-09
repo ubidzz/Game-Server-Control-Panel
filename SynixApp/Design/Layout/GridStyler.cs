@@ -97,6 +97,8 @@ namespace Synix_Control_Panel.SynixApp.Design
 			grid.Resize += Grid_Resize;
 			grid.Paint -= Grid_Paint;
 			grid.Paint += Grid_Paint;
+			grid.Scroll -= Grid_Scroll;
+			grid.Scroll += Grid_Scroll;
 		}
 
 		public static void SetStatusColor(DataGridView grid, DataGridViewCellFormattingEventArgs eventArgs)
@@ -282,6 +284,16 @@ namespace Synix_Control_Panel.SynixApp.Design
 		{
 			if (sender is DataGridView grid)
 				UpdateGridRegion(grid);
+		}
+
+		private static void Grid_Scroll(object? sender, ScrollEventArgs eventArgs)
+		{
+			// DataGridView scrolls existing pixels, including our fixed rounded outline.
+			// Repaint the whole surface (also the empty area below the rows) so copied
+			// border pixels cannot accumulate as vertical/horizontal trails. Invalidate
+			// lets Windows combine repaint requests without forcing a synchronous refresh.
+			if (sender is DataGridView grid)
+				grid.Invalidate();
 		}
 
 		private static void UpdateGridRegion(DataGridView grid)

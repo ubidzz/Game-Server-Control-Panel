@@ -293,11 +293,11 @@ namespace Synix_Control_Panel.SynixApp.ServerHandler
 						server,
 						selectedDefinition,
 						fullExePath);
-					if (!GameLaunchCommandBuilder.TryBuildArguments(
+					if (!GameLaunchCommandBuilder.TryBuildLogArguments(
 						server,
 						selectedDefinition,
 						invokedId,
-						GameLaunchCommandBuilder.CreateRedactedPasswords(launchPasswords),
+						launchPasswords,
 						launchPublicIp,
 						out safeLogArgs,
 						out _))
